@@ -1,0 +1,31 @@
+<% include partials/header %>
+<% include partials/nav %>
+
+    <div class="container-fluid">
+      <div class="row">
+        &nbsp;
+      </div>
+      <a href="new/"><button class="form-control">Create New Officer</button></a>
+      <hr>
+      <h4>List of Officers</h4>
+      <div class="row">
+        <table class="table table-hover">
+          <tr>
+            <th>NRIC</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>E-mail</th>
+          </tr>
+          <% for (var key in officer_details) { %>
+          <tr class='clickable-row' data-href='/officers/<%=key%>/'>
+            <td><%=key%></td>
+            <td><%=officer_details[key].fname%></td>
+            <td><%=officer_details[key].lname%></td>
+            <td><%=officer_details[key].email%></td>
+          </tr>
+          <% } %>
+        </table>
+      </div>
+    </div>
+
+<% include partials/footer %>

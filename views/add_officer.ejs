@@ -1,0 +1,51 @@
+<% include partials/header %>
+<% include partials/nav %>
+<%
+function UNIXConverter(UNIX_timestamp){
+  var a = new Date(UNIX_timestamp * 1000);
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var year = a.getFullYear();
+  var month = a.getMonth() + 1;
+  var date = a.getDate();
+  var hour = a.getHours();
+  var min = a.getMinutes();
+  var sec = a.getSeconds();
+  var time = date + '/' + month + '/' + year;
+  return time;
+}
+
+var message;
+%>
+    <div class="container-fluid">
+      <div class="row">
+        &nbsp;
+      </div>
+      <h3><% if (message != null) { %>Message: <%=message%><% } %></h3>
+      <h4>Create New Officer</h4>
+      <hr>
+      <form action='/officers/new/' method="POST">
+      NRIC: <input type="text" class="form-control" name="nric" id="nric_textbox" maxlength="9" size="9" required> <br>
+      First Name: <input type="text" class="form-control" name="fname" required> <br>
+      Last Name: <input type="text" class="form-control" name="lname" required> <br>
+      Email: <input type="text" class="form-control" name="email" required> <br>
+      Certification Card No.: <input type="text" class="form-control" name="cert_card_no" required> <br>
+      Organisation: <input type="text" class="form-control" name="organisation" required> <br>
+      Gender: <select class="form-control" name="gender" required><option value="0">Male</option><option value="1">Female</option></select> <br>
+      Serial No: <input type="text" class="form-control" name="serial_no" required> <br>
+      Designation: <input type="text" class="form-control" name="designation" required> <br>
+      Rank: <input type="text" class="form-control" name="rank" required> <br>
+      Remarks: <textarea class="form-control" name="remarks" required></textarea> <br>
+      <hr>
+      <h4>Certified On:</h4>
+      General Screener: <input type="text" class="form-control datepicker" name="general_screener" > <br>
+      Access Control: <input type="text" class="form-control datepicker" name="access_control" > <br>
+      ETD: <input type="text" class="form-control datepicker" name="etd" > <br>
+      Front Loader: <input type="text" class="form-control datepicker" name="front_loader" > <br>
+      X-Ray HBS: <input type="text" class="form-control datepicker" name="xray_hbs" > <br>
+      X-Ray Pre-Board: <input type="text" class="form-control datepicker" name="xray_pb" > <br>
+      X-Ray Cargo: <input type="text" class="form-control datepicker" name="xray_cargo" > <br>
+      <input type="submit" class="form-control" value="Create"> <br>
+      </form>
+    </div>
+
+<% include partials/footer %>

@@ -1,0 +1,32 @@
+<% include partials/header %>
+<% include partials/nav %>
+<% var error; %>
+<script>
+var availableTags = [
+"<%=s1%>",
+"<%=s2%>",
+"<%=s3%>",
+"<%=s4%>",
+"<%=s5%>"
+];
+</script>
+
+    <div class="container-fluid">
+      <div class="row">
+        &nbsp;
+      </div>
+      <div class="row">
+          <div class="col-md-2">
+
+          </div>
+          <div class="col-md-8">
+            <% if (error != null) { %><h5>Error! The NRIC does not exist</h5><% } %>
+            <h4>Welcome, Admin</h4>
+            <form action="/" method="POST">
+              <input type="text" placeholder="Search Officer NRIC" class="form-control" name="search_nric" id="search_nric" size="9" maxlength="9">
+            </form>
+          </div>
+      </div>
+    </div>
+
+<% include partials/footer %>
