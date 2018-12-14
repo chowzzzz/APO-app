@@ -1,5 +1,4 @@
 <% include partials/header %>
-<% include partials/nav %>
 <% var error; %>
 <script>
 var availableTags = [
@@ -11,6 +10,8 @@ var availableTags = [
 ];
 </script>
 
+<link href="css/main.css" rel="stylesheet">
+
     <div class="container-fluid">
       <div class="row">
         &nbsp;
@@ -19,12 +20,17 @@ var availableTags = [
           <div class="col-md-2">
 
           </div>
-          <div class="col-md-8">
+          <div class="col-md-8" id="welcome">
             <% if (error != null) { %><h5>Error! The NRIC does not exist</h5><% } %>
             <h4>Welcome, Admin</h4>
+            <img src="/images/line.png" />
+            <h6>Who do you want to search for today?</h6>
+          </br>
             <form action="/" method="POST">
-              <input type="text" placeholder="Search Officer NRIC" class="form-control" name="search_nric" id="search_nric" size="9" maxlength="9">
+              <input type="text" placeholder="Search Officer NRIC" class="form-control col-7 text-center" name="search_nric" id="search_nric" size="9" maxlength="9">
             </form>
+            <a class="btn btn-primary col-5 text-center" href="#">Administrators</a></br>
+            <a class="btn btn-primary col-5 text-center" href="/officers/">Officers</a>
           </div>
       </div>
     </div>

@@ -14,9 +14,11 @@
     <link href="css/signin.css" rel="stylesheet">
   </head>
 
+  <img src="/images/logo.jpg" style="width:250px;height:250px;"/>
+
   <body class="text-center">
     <form class="form-signin" method="POST" action="/login">
-      <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+      <!--<h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>-->
       <% if (flash) { %>
         <span style='color:red; font-size:20px;'><%=flash%></span>
       <% } %>
