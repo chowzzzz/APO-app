@@ -9,6 +9,7 @@ var flash = require('connect-flash');
 
 var app = express();
 
+app.use( express.static( "public" ) );
 //hello
 // flash
 app.use(flash());
