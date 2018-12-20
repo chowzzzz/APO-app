@@ -3,8 +3,8 @@
 <%
 function UNIXConverter(UNIX_timestamp){
   try {
-    if (UNIX_timestamp == 0) {
-      return "";
+    if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
+      return "-";
     }
     var a = new Date(UNIX_timestamp * 1000);
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -20,6 +20,35 @@ function UNIXConverter(UNIX_timestamp){
     return "";
   }
 }
+
+
+// line 26-39, iterate through the gs_details to get that particular record.
+var gs_date=0;
+var ac_date=0;
+
+if (gs_details != null) {
+  for (var id in gs_details) { // since you're not sure of the latest ID, iterate to get the ID.
+    gs_date = gs_details[id].certified_date;
+  }
+}
+
+if (ac_details != null) {
+  for (var id in ac_details) { // since you're not sure of the latest ID, iterate to get the ID.
+    ac_date = ac_details[id].certified_date;
+  }
+}
+
+// in some cases, there will not be any XRAY fields upon creation of officers, therefore this is used as a safe check.
+var xray_hbs_date=0;
+var xray_pb_date=0;
+var xray_cargo_date=0;
+
+if (officer_details.certification !== undefined) {
+  if (officer_details.certification.xray_hbs != null) { xray_hbs_date = officer_details.certification.xray_hbs; }
+  if (officer_details.certification.xray_pb != null) { xray_pb_date = officer_details.certification.xray_pb; }
+  if (officer_details.certification.xray_cargo != null) { xray_cargo_date = officer_details.certification.xray_cargo; }
+}
+
 %>
     <div class="container-fluid">
       <div class="row">
@@ -43,14 +72,15 @@ function UNIXConverter(UNIX_timestamp){
       Remarks: <textarea class="form-control" name="remarks" required><%=officer_details.remarks%></textarea> <br>
       <hr>
       <h4>Certified On:</h4>
-      General Screener: <input type="text" class="form-control datepicker" name="general_screener" value="<%=UNIXConverter(officer_details.certification.general_screener)%>"> <br>
-      Access Control: <input type="text" class="form-control datepicker" name="access_control" value="<%=UNIXConverter(officer_details.certification.access_control)%>"> <br>
-      ETD: <input type="text" class="form-control datepicker" name="etd" value="<%=UNIXConverter(officer_details.certification.etd)%>"> <br>
-      Front Loader: <input type="text" class="form-control datepicker" name="front_loader" value="<%=UNIXConverter(officer_details.certification.front_loader)%>"> <br>
-      X-Ray HBS: <input type="text" class="form-control datepicker" name="xray_hbs" value="<%=UNIXConverter(officer_details.certification.xray_hbs)%>"> <br>
-      X-Ray Pre-Board: <input type="text" class="form-control datepicker" name="xray_pb" value="<%=UNIXConverter(officer_details.certification.xray_pb)%>"> <br>
-      X-Ray Cargo: <input type="text" class="form-control datepicker" name="xray_cargo" value="<%=UNIXConverter(officer_details.certification.xray_cargo)%>"> <br>
+      General Screener: <input type="text" class="form-control" name="general_screener" value="<%=UNIXConverter(gs_date)%>" readonly> <br>
+      Access Control: <input type="text" class="form-control" name="access_control" value="<%=UNIXConverter(ac_date)%>" readonly> <br>
+      X-Ray HBS: <input type="text" class="form-control" name="xray_hbs" value="<%=UNIXConverter(xray_hbs_date)%>" readonly> <br>
+      X-Ray Pre-Board: <input type="text" class="form-control" name="xray_pb" value="<%=UNIXConverter(xray_pb_date)%>" readonly> <br>
+      X-Ray Cargo: <input type="text" class="form-control" name="xray_cargo" value="<%=UNIXConverter(xray_cargo_date)%>" readonly> <br>
+      <input type="submit" class="form-control btn btn-warning" value="View Certificate Details" name="view_cert_btn"> <br> <br>
+      <% if (user.role == 1) { %>
       <input type="submit" class="form-control" value="Update" name="update_btn"> <br> <input type="submit" class="form-control btn btn-danger" value="Delete" name="delete_btn" id="delete_btn"> <br> <br>
+      <% } %>
       </form>
     </div>
 
