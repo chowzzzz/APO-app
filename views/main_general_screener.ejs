@@ -1,0 +1,51 @@
+<% include partials/header %>
+<% include partials/nav %>
+<%
+function UNIXConverter(UNIX_timestamp){
+  try {
+    if (UNIX_timestamp == 0) {
+      return "";
+    }
+    var a = new Date(UNIX_timestamp * 1000);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = a.getFullYear();
+    var month = a.getMonth() + 1;
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    var sec = a.getSeconds();
+    var time = date + '/' + month + '/' + year;
+    return time;
+  } catch (error) {
+    return "";
+  }
+}
+%>
+    <div class="container-fluid">
+      <div class="row">
+        &nbsp;
+      </div>
+      <h4>General Screener: Select Officer</h4>
+      <hr>
+      <table class="table table-hover">
+        <thead>
+          <th>NRIC</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>E-mail</th>
+        </thead>
+        <tbody>
+          <% for (var officer_id in officer_details) { %>
+            <tr class='clickable-row' data-href='/general_screener/<%=officer_details[officer_id].nric%>/'>
+              <td><%=officer_details[officer_id].nric%></td>
+              <td><%=officer_details[officer_id].fname%></td>
+              <td><%=officer_details[officer_id].lname%></td>
+              <td><%=officer_details[officer_id].email%></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+
+    </div>
+
+<% include partials/footer %>

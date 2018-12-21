@@ -1,0 +1,49 @@
+<% include partials/header %>
+<% include partials/nav %>
+<%
+function UNIXConverter(UNIX_timestamp){
+  try {
+    if (UNIX_timestamp == 0) {
+      return "";
+    }
+    var a = new Date(UNIX_timestamp * 1000);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = a.getFullYear();
+    var month = a.getMonth() + 1;
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    var sec = a.getSeconds();
+    var time = date + '/' + month + '/' + year;
+    return time;
+  } catch (error) {
+    return "";
+  }
+}
+%>
+    <div class="container-fluid">
+      <div class="row">
+        &nbsp;
+      </div>
+      <h4>Add New Admin</h4>
+      <hr>
+      <% if (error) { %>
+      <div class="alert alert-danger" role="alert">
+        <%=error%>
+      </div>
+      <hr>
+      <% } %>
+      <form method="POST" action="/admin/new">
+        First Name: <input type="text" class="form-control" name="fname" /> <br>
+        Last Name: <input type="text" class="form-control" name="lname" /> <br>
+        NRIC: <input type="text" class="form-control" name="nric" /> <br>
+        Username: <input type="text" class="form-control" name="username" /> <br>
+        Password: <input type="password" class="form-control" name="password" /> <br>
+        Role: <select class="form-control" name="role"><option value="1">Administrator</option><option value="2">User</option><option value="3">Read-only User</option></select> <br><br>
+        <input type="submit" class="form-control btn btn-primary" name="adduser_btn" />
+      </form>
+      <hr>
+
+    </div>
+
+<% include partials/footer %>
