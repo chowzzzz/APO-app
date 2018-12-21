@@ -10,30 +10,22 @@
   ];
 </script>
 
-<link href="css/main.css" rel="stylesheet">
-
-<div class="container-fluid">
-  <div class="row">
-    &nbsp;
-  </div>
-  <div class="row">
-    <div class="col-md-2">
-
-    </div>
-    <div class="col-md-8" id="welcome">
+<div class="container d-flex h-100">
+  <div class="row align-self-center w-100">
+    <div class="col-6 mx-auto">
       <% if (error != null) { %>
       <h5>Error! The NRIC does not exist</h5>
       <% } %>
       <h4>Welcome, Admin</h4>
-      <hr>
+      <hr id="index-hr">
       <h6>Who do you want to search for today?</h6>
       </br>
       <form action="/" method="POST">
-        <div class="input-group col align-self-center">
-          <input type="text" placeholder="Search Officer NRIC" class="form-control col-7 text-center" name="search_nric"
-            id="search_nric" size="9" maxlength="9">
-          <div class="input-group-prepend">
-            <div class="input-group-text">@</div>
+        <div class="input-group mb-3 mx-auto" id="searchInput">
+          <input type="text" class="form-control" placeholder="Search Officer's NRIC" name="search_nric" id="search_nric"
+            aria-describedby="search_nric" size="9" maxlength="9">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="submit" id="search_nric"><i class="fas fa-search"></i></button>
           </div>
         </div>
       </form>

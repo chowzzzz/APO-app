@@ -1,55 +1,22 @@
+/* overall css */
 html, body {
   height: 100%;
 }
 
-.header-padding {
-  padding:.5rem;
+.btn-primary,
+.btn-primary:active,
+.btn-primary:visited,
+.btn-primary:focus {
+    margin-top: 15px;
+    background-color: #00205B;
+    border-color: #00205B;
+}
+.btn-primary:hover{
+  background-color: rgb(42, 80, 131);
+  border-color: rgb(42, 80, 131);
 }
 
-.filter {
-  padding:0;
-  color:#000;
-}
-
-.filter button {
-  color:#000;
-}
-
-card-padding {
-  padding:0.5rem 1.25rem;
-}
-
-.card input[type=checkbox] {
-  padding:.5rem;
-  width:15px;
-  height:15px;
-}
-
-.checkbox-label {
-  vertical-align: middle;
-}
-
-h1.match-header, h3.match-header {
-  display:inline-block;
-}
-
-.smalltext {
-  font-size:.75rem;
-}
-
-.league {
-  height:400px;
-  overflow:auto;
-}
-
-.history {
-  height:400px;
-  overflow:auto;
-}
-
-/* Paste this css to your style sheet file or under head tag */
-/* This only works with JavaScript,
-if it's not present, don't show loader */
+/* loader */
 .no-js #loader { display: none;  }
 .js #loader { display: block; position: absolute; left: 100px; top: 0; }
 .se-pre-con {
@@ -66,47 +33,32 @@ if it's not present, don't show loader */
   background: url(/res/Preloader_3.gif) center no-repeat #fff;
 }
 
-html, body {
-  height:100%;
-}
-#welcome {
-  margin-top: 100px;
-  text-align: center;
-}
-img {
-  margin-top: -25px;
-  margin-left: 1px;
-}
-form {
-  /* margin-left: 24%; */
-  /* margin-bottom: 4%; */
-}
-
-.btn-primary,
-.btn-primary:active,
-.btn-primary:visited,
-.btn-primary:focus {
-    margin-top: 15px;
-    /* margin-left: 5px; */
-    background-color: #00205B;
-    border-color: #00205B;
-}
-.btn-primary:hover{
-  background-color: rgb(42, 80, 131);
-  border-color: rgb(42, 80, 131);
-}
-
-/*nav bar color*/
-#nav {
+/* nav bar */
+.navbar {
   background-color: #888B8D;
 }
 
-hr {
+/* index */
+.index-container {
+  max-width: 80%;
+}
+
+#index-hr {
   width: 200px;
   border: none;
   height: 2px;
-  /* color: #000; */
   background-color: #77777770;
   margin-top: 1px;
   border-radius: 10px;
 }
+
+#searchInput {
+  max-width: 60%;
+}
+
+img {
+  margin-top: -25px;
+  margin-left: 1px;
+}
+
+

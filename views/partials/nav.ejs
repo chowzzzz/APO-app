@@ -1,10 +1,10 @@
-<link href="css/main.css" rel="stylesheet">
-<nav class="navbar navbar-expand-lg border-bottom shadow-sm" id="nav">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+<nav class="navbar navbar-dark navbar-expand-lg border-bottom shadow-sm">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navBar" aria-controls="navBar"
+    aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+  <div class="collapse navbar-collapse" id="navBar">
     <ul class="navbar-nav mr-auto">
       <li>
         <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
@@ -23,11 +23,10 @@
       </li>
     </ul>
 
-    <!-- WHERE ALL THE RIGHT SIDE MAGIC HAPPENS -->
     <% if (user) { %>
-      <a class="btn btn-primary" href="/logout">Logout</a>
+    <a class="btn btn-primary my-2 my-sm-0" href="/logout"><i class="fas fa-sign-out-alt"></i></a>
     <% } else { %>
-    <a class="btn btn-primary" href="/login">Login</a>
+    <a class="btn btn-primary my-2 my-sm-0" href="/login"><i class="fas fa-sign-in-alt"></i></a>
     <% } %>
 
 

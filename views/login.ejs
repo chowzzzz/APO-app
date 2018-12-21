@@ -1,34 +1,25 @@
+<% include partials/header %>
 
-  <% include partials/header %>
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<body class="text-center" id="signinBody">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <form class="form-signin" method="POST" action="/login">
+    <img class="mb-4 logoImg" src="res/logo.png" alt="logo" />
 
+    <label for="inputUsername" class="sr-only">Username</label>
+    <input type="text" id="inputUsername" name="inputUsername" class="form-control" placeholder="Username" required
+      autofocus>
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" name="inputPassword" class="form-control" placeholder="Password" required>
 
-    <title>Login Page</title>
-
-    <!-- Custom styles for this template -->
-    <link href="css/signin.css" rel="stylesheet">
-  </head>
-
-  <img src="/images/logo.jpg" style="width:250px;height:250px;"/>
-
-  <body class="text-center">
-    <form class="form-signin" method="POST" action="/login">
-      <!--<h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>-->
+    <div>
       <% if (flash) { %>
-        <span style='color:red; font-size:20px;'><%=flash%></span>
+      <span class="errMsg"'>
+        <%=flash%></span>
       <% } %>
-      <label for="inputUsername" class="sr-only">Username</label>
-      <input type="text" id="inputUsername" name="inputUsername" class="form-control" placeholder="Username" required autofocus>
-      <label for="inputPassword" class="sr-only">Password</label>
-      <input type="password" id="inputPassword" name="inputPassword" class="form-control" placeholder="Password" required>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-    </form>
-  </body>
+    </div>
 
-  <% include partials/footer %>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+  </form>
+</body>
+
+<% include partials/footer %>
