@@ -21,109 +21,37 @@ function UNIXConverter(UNIX_timestamp){
   }
 }
 %>
-<div class="container-fluid">
-  <div class="row">
-    &nbsp;
-  </div>
-  <div class="row justify-content-center">
-    <h4>Officer Detail:
-    </h4>
-  </div>
-
-  <hr>
-  <div class="row justify-content-center">
-    <div class="col-9">
-      Name:
-      <%=officer_details.fname%>
-      <%=officer_details.lname%> <br>
-      NRIC:
-      <%=nric%> <br>
-      D.O.B:
-      <%=officer_details.dob%>
+    <div class="container-fluid">
+      <div class="row">
+        &nbsp;
+      </div>
+      <h4>Officer Detail: <%=officer_details.fname%> <%=officer_details.lname%></h4>
+      <hr>
+      NRIC: <%=nric%> <br>
+      First Name: <%=officer_details.fname%> <br>
+      Last Name: <%=officer_details.lname%> <br>
+      Email: <%=officer_details.email%>
+      <hr>
+      <form action='/officers/<%=nric%>/' method="POST">
+      Certification Card No.: <input type="text" class="form-control" name="cert_card_no" value="<%=officer_details.cert_card_no%>" required> <br>
+      Organisation: <input type="text" class="form-control" name="organisation" value="<%=officer_details.organisation%>" required> <br>
+      <% if (officer_details.gender == "0") { } %>
+      Gender: <select class="form-control" name="gender" required><option value="0" <% if (officer_details.gender == "0") {%> selected <% } %>>Male</option><option value="1" <% if (officer_details.gender == "1") {%> selected <% } %>>Female</option></select> <br>
+      Serial No: <input type="text" class="form-control" name="serial_no" value="<%=officer_details.serial_no%>" required> <br>
+      Designation: <input type="text" class="form-control" name="designation" value="<%=officer_details.designation%>" required> <br>
+      Rank: <input type="text" class="form-control" name="rank" value="<%=officer_details.rank%>" required> <br>
+      Remarks: <textarea class="form-control" name="remarks" required><%=officer_details.remarks%></textarea> <br>
+      <hr>
+      <h4>Certified On:</h4>
+      General Screener: <input type="text" class="form-control datepicker" name="general_screener" value="<%=UNIXConverter(officer_details.certification.general_screener)%>"> <br>
+      Access Control: <input type="text" class="form-control datepicker" name="access_control" value="<%=UNIXConverter(officer_details.certification.access_control)%>"> <br>
+      ETD: <input type="text" class="form-control datepicker" name="etd" value="<%=UNIXConverter(officer_details.certification.etd)%>"> <br>
+      Front Loader: <input type="text" class="form-control datepicker" name="front_loader" value="<%=UNIXConverter(officer_details.certification.front_loader)%>"> <br>
+      X-Ray HBS: <input type="text" class="form-control datepicker" name="xray_hbs" value="<%=UNIXConverter(officer_details.certification.xray_hbs)%>"> <br>
+      X-Ray Pre-Board: <input type="text" class="form-control datepicker" name="xray_pb" value="<%=UNIXConverter(officer_details.certification.xray_pb)%>"> <br>
+      X-Ray Cargo: <input type="text" class="form-control datepicker" name="xray_cargo" value="<%=UNIXConverter(officer_details.certification.xray_cargo)%>"> <br>
+      <input type="submit" class="form-control" value="Update" name="update_btn"> <br> <input type="submit" class="form-control btn btn-danger" value="Delete" name="delete_btn" id="delete_btn"> <br> <br>
+      </form>
     </div>
-  </div>
-  <hr>
-
-  <form action='/officers/<%=nric%>/' method="POST">
-    <div class="row justify-content-center">
-      <div class="col-sm-3">
-        Certification Card No.: <input type="text" class="form-control" name="cert_card_no" value="<%=officer_details.cert_card_no%>"
-          required>
-      </div>
-      <div class="col-sm-3">
-        Organisation: <input type="text" class="form-control" name="organisation" value="<%=officer_details.organisation%>"
-          required>
-      </div>
-      <div class="col-sm-3">
-        <% if (officer_details.gender == "0") { } %>
-        Gender: <select class="form-control" name="gender" required>
-          <option value="0" <% if (officer_details.gender=="0" ) {%> selected
-            <% } %>>Male</option>
-          <option value="1" <% if (officer_details.gender=="1" ) {%> selected
-            <% } %>>Female</option>
-        </select> <br>
-      </div>
-    </div>
-
-    <div class="row justify-content-center">
-      <div class="col-sm-3">
-        Serial No: <input type="text" class="form-control" name="serial_no" value="<%=officer_details.serial_no%>"
-          required>
-      </div>
-      <div class="col-sm-3">
-        Designation: <input type="text" class="form-control" name="designation" value="<%=officer_details.designation%>"
-          required>
-      </div>
-      <div class="col-sm-3">
-        Rank: <input type="text" class="form-control" name="rank" value="<%=officer_details.rank%>" required> <br>
-      </div>
-    </div>
-
-    <div class="row justify-content-center">
-      <div class="col-sm-9">
-        Remarks: <textarea class="form-control" name="remarks" required><%=officer_details.remarks%></textarea>
-      </div>
-    </div>
-
-    <hr>
-    <h4 align="center">Certified On:</h4>
-
-    <div class="row justify-content-center">
-      <div class="col-sm-3">
-        General Screener: <input type="text" class="form-control datepicker" name="general_screener" value="<%=UNIXConverter(officer_details.certification.general_screener)%>">
-      </div>
-      <div class="col-sm-3">
-        Access Control: <input type="text" class="form-control datepicker" name="access_control" value="<%=UNIXConverter(officer_details.certification.access_control)%>">
-      </div>
-      <div class="col-sm-3">
-        ETD: <input type="text" class="form-control datepicker" name="etd" value="<%=UNIXConverter(officer_details.certification.etd)%>">
-      </div>
-    </div>
-
-    <div class="row justify-content-center">
-      <div class="col-sm-3">
-        Front Loader: <input type="text" class="form-control datepicker" name="front_loader" value="<%=UNIXConverter(officer_details.certification.front_loader)%>">
-      </div>
-      <div class="col-sm-3">
-        X-Ray HBS: <input type="text" class="form-control datepicker" name="xray_hbs" value="<%=UNIXConverter(officer_details.certification.xray_hbs)%>">
-      </div>
-      <div class="col-sm-3">
-        X-Ray Pre-Board: <input type="text" class="form-control datepicker" name="xray_pb" value="<%=UNIXConverter(officer_details.certification.xray_pb)%>">
-      </div>
-    </div>
-
-    <div class="row justify-content-center">
-      <div class="col-sm-3">
-        X-Ray Cargo: <input type="text" class="form-control datepicker" name="xray_cargo" value="<%=UNIXConverter(officer_details.certification.xray_cargo)%>">
-      </div>
-    </div>
-
-    <br>
-    <div class="row justify-content-center">
-      <input type="submit" class="btn btn-outline-dark col-9" value="Update" name="update_btn"> <br>
-      <input type="submit" class="col-9 btn btn-danger" value="Delete" name="delete_btn" id="delete_btn">
-    </div>
-  </form>
-</div>
 
 <% include partials/footer %>
