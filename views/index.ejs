@@ -10,7 +10,17 @@
   ];
 </script>
 
-<div class="container d-flex h-100">
+<nav class="navbar sticky-top justify-content-end">
+
+  <% if (user) { %>
+  <a class="btn btn-primary my-2 my-sm-0" href="/logout"><i class="fas fa-sign-out-alt"></i></a>
+  <% } else { %>
+  <a class="btn btn-primary my-2 my-sm-0" href="/login"><i class="fas fa-sign-in-alt"></i></a>
+  <% } %>
+
+</nav>
+
+<div class="index-container d-flex">
   <div class="row align-self-center w-100">
     <div class="col-6 mx-auto">
       <% if (error != null) { %>

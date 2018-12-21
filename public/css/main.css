@@ -33,14 +33,10 @@ html, body {
   background: url(/res/Preloader_3.gif) center no-repeat #fff;
 }
 
-/* nav bar */
-.navbar {
-  background-color: #888B8D;
-}
 
 /* index */
 .index-container {
-  max-width: 80%;
+  height: 80%;
 }
 
 #index-hr {
