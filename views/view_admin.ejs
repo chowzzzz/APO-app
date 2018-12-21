@@ -1,0 +1,67 @@
+<% include partials/header %>
+<% include partials/nav %>
+<head>
+
+  <script>
+    $(document).ready(function() { // sets the value grabbed from firebase to the textboxes.
+      $('input[name=fname]').val("<%=admin_details.fname%>");
+      $('input[name=lname]').val("<%=admin_details.lname%>");
+      $('input[name=nric]').val("<%=admin_details.nric%>");
+      $('input[name=username]').val("<%=admin_details.username%>");
+      $('input[name=password]').val("<%=admin_details.password%>");
+      $('#role').val(<%=admin_details.role%>);
+    });
+  </script>
+
+</head>
+<%
+function UNIXConverter(UNIX_timestamp){
+  try {
+    if (UNIX_timestamp == 0) {
+      return "";
+    }
+    var a = new Date(UNIX_timestamp * 1000);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = a.getFullYear();
+    var month = a.getMonth() + 1;
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    var sec = a.getSeconds();
+    var time = date + '/' + month + '/' + year;
+    return time;
+  } catch (error) {
+    return "";
+  }
+}
+%>
+    <div class="container-fluid">
+      <div class="row">
+        &nbsp;
+      </div>
+      <h4><%=admin_details.username%>: View/Edit Admin</h4>
+      <hr>
+      <% if (error) { %>
+      <div class="alert alert-danger" role="alert">
+        <%=error%>
+      </div>
+      <hr>
+      <% } %>
+      <form method="POST" action="/admin/view/<%=admin_details.username%>">
+        First Name: <input type="text" class="form-control" name="fname" /> <br>
+        Last Name: <input type="text" class="form-control" name="lname" /> <br>
+        NRIC: <input type="text" class="form-control" name="nric" /> <br>
+        Role: <select class="form-control" id="role" name="role"><option value="1">Administrator</option><option value="2">User</option><option value="3">Read-only User</option></select> <br><br>
+        <% if ((user.role != 1 && user.username == admin_details.username) || user.role == 1) { %>
+        <button type="button" class="btn btn-primary" onclick="window.location.href='/admin/changepw/<%=admin_details.username%>'">Change Password</button> <br><br>
+        <% } %>
+        <% if (user.role == 1) { %>
+        <input type="submit" class="form-control btn btn-primary" name="edituser_btn" value="Edit User" /> <br><br>
+        <input type="submit" class="form-control btn btn-danger" name="deleteuser_btn" value="Delete User" />
+        <% } %>
+      </form>
+      <hr>
+
+    </div>
+
+<% include partials/footer %>
