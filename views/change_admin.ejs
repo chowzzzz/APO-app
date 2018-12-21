@@ -1,0 +1,54 @@
+<% include partials/header %>
+<% include partials/nav %>
+<head>
+
+  <script>
+    $(document).ready(function() {
+
+    });
+  </script>
+
+</head>
+<%
+function UNIXConverter(UNIX_timestamp){
+  try {
+    if (UNIX_timestamp == 0) {
+      return "";
+    }
+    var a = new Date(UNIX_timestamp * 1000);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = a.getFullYear();
+    var month = a.getMonth() + 1;
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    var sec = a.getSeconds();
+    var time = date + '/' + month + '/' + year;
+    return time;
+  } catch (error) {
+    return "";
+  }
+}
+%>
+    <div class="container-fluid">
+      <div class="row">
+        &nbsp;
+      </div>
+      <h4><%=admin_details.username%>: Change Password</h4>
+      <hr>
+      <% if (notif != null) { %>
+      <div class="alert alert-info" role="alert">
+        <%=notif%>
+      </div>
+      <hr>
+      <% } %>
+      <form method="POST" action="/admin/changepw/<%=admin_details.username%>">
+        Password: <input type="password" class="form-control" name="password" /> <br>
+        Repeat Password: <input type="password" class="form-control" name="rpassword" /> <br><br>
+        <input type="submit" class="form-control btn btn-primary">
+      </form>
+      <hr>
+
+    </div>
+
+<% include partials/footer %>

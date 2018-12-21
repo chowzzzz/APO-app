@@ -1,0 +1,66 @@
+<% include partials/header %>
+<% include partials/nav %>
+<%
+function UNIXConverter(UNIX_timestamp){
+  try {
+    if (UNIX_timestamp == 0) {
+      return "";
+    }
+    var a = new Date(UNIX_timestamp * 1000);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = a.getFullYear();
+    var month = a.getMonth() + 1;
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    var sec = a.getSeconds();
+    var time = date + '/' + month + '/' + year;
+    return time;
+  } catch (error) {
+    return "";
+  }
+}
+%>
+    <div class="container-fluid">
+      <div class="row">
+        &nbsp;
+      </div>
+      <button class="btn btn-primary" onclick="window.location.href='/access_control/<%=officer_details.nric%>'">View Access Control</button>
+      <hr>
+      <h4>General Screener: <%=officer_details.nric%></h4>
+      <hr>
+      <table class="table table-hover">
+        <thead>
+          <th>Status</th>
+          <th>Certified Date</th>
+          <th>Theory</th>
+          <th>HHMD</th>
+          <th>PDS</th>
+        </thead>
+        <tbody>
+          <% if (gs_details == null) { %>
+            <tr>
+              <td colspan="5" style="text-align:center;">Officer does not have any existing certificate.</td>
+            </tr>
+          <% } %>
+          <% for (var general_screener_id in gs_details) { %>
+            <% var status; %>
+            <% if (gs_details[general_screener_id].overall_status == "1") { status = "PASS"; } else { status = "FAIL"; } %>
+            <tr class='clickable-row' data-href='/general_screener/<%=officer_details.nric%>/<%=general_screener_id%>'>
+              <td><%=status%></td>
+              <td><%=UNIXConverter(gs_details[general_screener_id].certified_date)%></td>
+              <td><%=UNIXConverter(gs_details[general_screener_id].theory.date)%></td>
+              <td><%=UNIXConverter(gs_details[general_screener_id].hhmd.date)%></td>
+              <td><%=UNIXConverter(gs_details[general_screener_id].pds.date)%></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+      <hr>
+      <% if (user.role == 1) { %>
+      <button class="form-control btn btn-primary" onclick="window.location.href='/general_screener/new/<%=officer_details.nric%>'">Add New Record</button>
+      <% } %>
+
+    </div>
+
+<% include partials/footer %>

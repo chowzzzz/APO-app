@@ -1,0 +1,57 @@
+<% include partials/header %>
+<% include partials/nav %>
+
+<%
+
+var roles = ["Administrator", "User", "Read-only User"];
+
+function UNIXConverter(UNIX_timestamp){
+  try {
+    if (UNIX_timestamp == 0) {
+      return "";
+    }
+    var a = new Date(UNIX_timestamp * 1000);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = a.getFullYear();
+    var month = a.getMonth() + 1;
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    var sec = a.getSeconds();
+    var time = date + '/' + month + '/' + year;
+    return time;
+  } catch (error) {
+    return "";
+  }
+}
+%>
+    <div class="container-fluid">
+      <div class="row">
+        &nbsp;
+      </div>
+      <h4>Administration</h4>
+      <hr>
+        <table class="table table-hover">
+          <thead>
+            <th>Name</th>
+            <th>NRIC</th>
+            <th>Role</th>
+          </thead>
+          <tbody>
+            <% for (var admin_id in admin_details) { %>
+              <tr class='clickable-row' data-href='/admin/view/<%=admin_id%>'>
+                <td><%=admin_details[admin_id].fname%> <%=admin_details[admin_id].lname%></td>
+                <td><%=admin_details[admin_id].nric%></td>
+                <td><%=roles[admin_details[admin_id].role - 1]%></td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      <hr>
+      <% if (user.role == 1) { %>
+      <button class="form-control btn btn-primary" onclick="window.location.href='/admin/new'">Add New User</button>
+      <% } %>
+
+    </div>
+
+<% include partials/footer %>
