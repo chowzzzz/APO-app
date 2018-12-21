@@ -65,3 +65,23 @@ if it's not present, don't show loader */
 html, body {
   height:100%;
 }
+
+table {
+  padding: 10px;
+}
+
+.btn,
+.btn:active,
+.btn:focus{
+  margin-bottom:5px;
+  background-color: #00205B;
+  border-color: #00205B;
+  color:white;
+}
+
+
+.btn:hover{
+  background-color: rgb(42, 80, 131);
+  border-color: rgb(42, 80, 131);
+  color: white;
+}
