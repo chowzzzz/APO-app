@@ -65,3 +65,34 @@ if it's not present, don't show loader */
 html, body {
   height:100%;
 }
+#welcome {
+  margin-top: 100px;
+  text-align: center;
+}
+img {
+  margin-top: -25px;
+  margin-left: 1px;
+}
+form {
+  margin-left: 264px;
+  margin-bottom: 17px;
+}
+
+.btn-primary,
+.btn-primary:active,
+.btn-primary:visited,
+.btn-primary:focus {
+    margin-top: 15px;
+    margin-left: 5px;
+    background-color: #00205B;
+    border-color: #00205B;
+}
+.btn-primary:hover{
+  background-color: rgb(42, 80, 131);
+  border-color: rgb(42, 80, 131);
+}
+/*nav bar color*/
+#nav {
+  background-color: #888B8D;
+}
+
