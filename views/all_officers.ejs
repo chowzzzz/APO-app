@@ -5,36 +5,46 @@
   <div class="row">
     &nbsp;
   </div>
-  <% if (user.role == 1) { %>
-  <a href="new/"><button class="form-control">Create New Officer</button></a>
-  <% } %>
+
+  <h4 style="text-align:center;">List of Officers</h4>
   <hr>
-  <h4>List of Officers</h4>
   <div class="row">
-    <table class="table table-hover">
-      <tr>
-        <th>NRIC</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>E-mail</th>
-      </tr>
+    <table class="table table-hover table-responsive-sm col-sm-10" align="center">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>NRIC</th>
+          <th>Certification Card No.</th>
+          <th>Designation</th>
+        </tr>
+      </thead>
       <% for (var key in officer_details) { %>
       <tr class='clickable-row' data-href='/officers/<%=key%>/'>
+        <td>
+          <%=officer_details[key].fname%>
+          <%=officer_details[key].lname%>
+        </td>
         <td>
           <%=key%>
         </td>
         <td>
-          <%=officer_details[key].fname%>
+          <%=officer_details[key].cert_card_no%>
         </td>
         <td>
-          <%=officer_details[key].lname%>
-        </td>
-        <td>
-          <%=officer_details[key].email%>
+          <%=officer_details[key].designation%>
         </td>
       </tr>
       <% } %>
     </table>
+  </div>
+  <div class="text-center">
+    <a href="new/" class="btn btn-outline-dark col-sm-10">Add New Officer</a>
+    <div class="row">
+      <div class="col-sm-12" align="center">
+        <a href="expiring" class="btn btn-light col-sm-5">Expiring Certification</a>
+        <a href="failure/" class="btn btn-light col-sm-5">Security Tests & Breach Failures</a>
+      </div>
+    </div>
   </div>
 </div>
 
