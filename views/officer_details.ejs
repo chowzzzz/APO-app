@@ -39,11 +39,15 @@ if (ac_details != null) {
 }
 
 // in some cases, there will not be any XRAY fields upon creation of officers, therefore this is used as a safe check.
+var etd_date=0;
+var front_loader_date=0;
 var xray_hbs_date=0;
 var xray_pb_date=0;
 var xray_cargo_date=0;
 
 if (officer_details.certification !== undefined) {
+  if (officer_details.certification.etd != null) { etd_date = officer_details.certification.etd; }
+  if (officer_details.certification.front_loader != null) { front_loader_date = officer_details.certification.front_loader; }
   if (officer_details.certification.xray_hbs != null) { xray_hbs_date = officer_details.certification.xray_hbs; }
   if (officer_details.certification.xray_pb != null) { xray_pb_date = officer_details.certification.xray_pb; }
   if (officer_details.certification.xray_cargo != null) { xray_cargo_date = officer_details.certification.xray_cargo; }
@@ -119,31 +123,31 @@ if (officer_details.certification !== undefined) {
 
     <div class="row justify-content-center">
       <div class="col-sm-3">
-        General Screener: <input type="text" class="form-control datepicker" name="general_screener" value="<%=UNIXConverter(officer_details.certification.general_screener)%>">
+        General Screener: <input type="text" class="form-control datepicker" name="general_screener" value="<%=UNIXConverter(gs_date)%>">
       </div>
       <div class="col-sm-3">
-        Access Control: <input type="text" class="form-control datepicker" name="access_control" value="<%=UNIXConverter(officer_details.certification.access_control)%>">
+        Access Control: <input type="text" class="form-control datepicker" name="access_control" value="<%=UNIXConverter(ac_date)%>">
       </div>
       <div class="col-sm-3">
-        ETD: <input type="text" class="form-control datepicker" name="etd" value="<%=UNIXConverter(officer_details.certification.etd)%>">
-      </div>
-    </div>
-
-    <div class="row justify-content-center">
-      <div class="col-sm-3">
-        Front Loader: <input type="text" class="form-control datepicker" name="front_loader" value="<%=UNIXConverter(officer_details.certification.front_loader)%>">
-      </div>
-      <div class="col-sm-3">
-        X-Ray HBS: <input type="text" class="form-control datepicker" name="xray_hbs" value="<%=UNIXConverter(officer_details.certification.xray_hbs)%>">
-      </div>
-      <div class="col-sm-3">
-        X-Ray Pre-Board: <input type="text" class="form-control datepicker" name="xray_pb" value="<%=UNIXConverter(officer_details.certification.xray_pb)%>">
+        ETD: <input type="text" class="form-control datepicker" name="etd" value="<%=UNIXConverter(etd_date)%>">
       </div>
     </div>
 
     <div class="row justify-content-center">
       <div class="col-sm-3">
-        X-Ray Cargo: <input type="text" class="form-control datepicker" name="xray_cargo" value="<%=UNIXConverter(officer_details.certification.xray_cargo)%>">
+        Front Loader: <input type="text" class="form-control datepicker" name="front_loader" value="<%=UNIXConverter(front_loader_date)%>">
+      </div>
+      <div class="col-sm-3">
+        X-Ray HBS: <input type="text" class="form-control datepicker" name="xray_hbs" value="<%=UNIXConverter(xray_hbs_date)%>">
+      </div>
+      <div class="col-sm-3">
+        X-Ray Pre-Board: <input type="text" class="form-control datepicker" name="xray_pb" value="<%=UNIXConverter(xray_pb_date)%>">
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-sm-3">
+        X-Ray Cargo: <input type="text" class="form-control datepicker" name="xray_cargo" value="<%=UNIXConverter(xray_cargo_date)%>">
       </div>
     </div>
 

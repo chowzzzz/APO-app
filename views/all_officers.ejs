@@ -38,7 +38,9 @@
     </table>
   </div>
   <div class="text-center">
+    <% if (user.role == 1) { %>
     <a href="new/" class="btn btn-outline-dark col-sm-10">Add New Officer</a>
+    <% } %>
     <div class="row">
       <div class="col-sm-12" align="center">
         <a href="expiring" class="btn btn-light col-sm-5">Expiring Certification</a>
