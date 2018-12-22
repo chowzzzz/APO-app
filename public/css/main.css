@@ -3,17 +3,19 @@ html, body {
   height: 100%;
 }
 
-.btn-primary,
-.btn-primary:active,
-.btn-primary:visited,
-.btn-primary:focus {
-    margin-top: 15px;
-    background-color: #00205B;
-    border-color: #00205B;
+.btn,
+.btn:active,
+.btn:focus{
+  margin-bottom: 10px;
+  background-color: #00205B;
+  border-color: #00205B;
+  color:white;
 }
-.btn-primary:hover{
+
+.btn:hover{
   background-color: rgb(42, 80, 131);
   border-color: rgb(42, 80, 131);
+  color: white;
 }
 
 /* loader */
@@ -52,28 +54,7 @@ html, body {
   max-width: 60%;
 }
 
-img {
-  margin-top: -25px;
-  margin-left: 1px;
-}
-
-
 table {
   padding: 10px;
 }
 
-.btn,
-.btn:active,
-.btn:focus{
-  margin-bottom:5px;
-  background-color: #00205B;
-  border-color: #00205B;
-  color:white;
-}
-
-
-.btn:hover{
-  background-color: rgb(42, 80, 131);
-  border-color: rgb(42, 80, 131);
-  color: white;
-}
