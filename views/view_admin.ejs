@@ -52,12 +52,14 @@ function UNIXConverter(UNIX_timestamp){
         Last Name: <input type="text" class="form-control" name="lname" /> <br>
         NRIC: <input type="text" class="form-control" name="nric" /> <br>
         Role: <select class="form-control" id="role" name="role"><option value="1">Administrator</option><option value="2">User</option><option value="3">Read-only User</option></select> <br><br>
-        <% if ((user.role != 1 && user.username == admin_details.username) || user.role == 1) { %>
+        <% if ((user.role != 1 && user.username == admin_details.username) || user.role == 1 || (user.role == 2 && admin_details.role == 2)) { %>
         <button type="button" class="btn btn-primary" onclick="window.location.href='/admin/changepw/<%=admin_details.username%>'">Change Password</button> <br><br>
         <% } %>
         <% if (user.role == 1) { %>
         <input type="submit" class="form-control btn btn-primary" name="edituser_btn" value="Edit User" /> <br><br>
+        <% if (admin_count > 1) { %>
         <input type="submit" class="form-control btn btn-danger" name="deleteuser_btn" value="Delete User" />
+        <% } %>
         <% } %>
       </form>
       <hr>

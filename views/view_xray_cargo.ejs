@@ -1,0 +1,96 @@
+<% include partials/header %>
+<% include partials/nav %>
+<%
+function UNIXConverter(UNIX_timestamp){
+  try {
+    if (UNIX_timestamp == 0) {
+      return "";
+    }
+    var a = new Date(UNIX_timestamp * 1000);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = a.getFullYear();
+    var month = a.getMonth() + 1;
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    var sec = a.getSeconds();
+    var time = date + '/' + month + '/' + year;
+    return time;
+  } catch (error) {
+    return "";
+  }
+}
+%>
+<head>
+  <script>
+  function UNIXConverter(UNIX_timestamp){
+    try {
+      if (UNIX_timestamp == 0) {
+        return "";
+      }
+      var a = new Date(UNIX_timestamp * 1000);
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var year = a.getFullYear();
+      var month = a.getMonth() + 1;
+      var date = a.getDate();
+      var hour = a.getHours();
+      var min = a.getMinutes();
+      var sec = a.getSeconds();
+      var time = date + '/' + month + '/' + year;
+      return time;
+    } catch (error) {
+      return "";
+    }
+  }
+
+  $(document).ready(function() { // the whole function below sets the value of the Xray HBS (from firebase) to the various textboxes. this is a neater way to do it as compared to doing it in the value fields.
+    $('input[name=overall_status][value='+<%=xray_cargo_details.overall_status%>+']').attr('checked', 'checked');
+    $('input[name=xray_cargo_theory_status][value='+<%=xray_cargo_details.theory.status%>+']').attr('checked', 'checked');
+    $('input[name=xray_cargo_etd_status][value='+<%=xray_cargo_details.etd.status%>+']').attr('checked', 'checked');
+    $('input[name=xray_cargo_iit_status][value='+<%=xray_cargo_details.iit.status%>+']').attr('checked', 'checked');
+
+    $('input[name=certified_date]').val(UNIXConverter(<%=xray_cargo_details.certified_date%>));
+    $('input[name=xray_cargo_theory]').val(UNIXConverter(<%=xray_cargo_details.theory.date%>));
+    $('input[name=xray_cargo_etd]').val(UNIXConverter(<%=xray_cargo_details.etd.date%>));
+    $('input[name=xray_cargo_iit]').val(UNIXConverter(<%=xray_cargo_details.iit.date%>));
+
+    $("#ACForm").on("submit",function(e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
+      var alert = confirm("Are you sure you want to edit/delete the Xray Cargo?");
+      if (alert == true) {
+        return true;
+      } else {
+        e.preventDefault();
+        return false;
+      }
+    });
+  });
+  </script>
+</head>
+    <div class="container-fluid">
+      <div class="row">
+        &nbsp;
+      </div>
+      <h4>Xray Cargo Record</h4>
+      <hr>
+      <form action='/xray_cargo/<%=officer_details.nric%>/<%=xray_cargo_id%>' method="POST" id="ACForm">
+        <b>Name:</b> <%=officer_details.fname%> <%=officer_details.lname%> <br>
+        <b>NRIC:</b> <%=officer_details.nric%> <br>
+        <b>Status:</b> <input type="radio" value="1" name="overall_status"> Pass <input type="radio" value="0" name="overall_status"> Fail <br>
+        <b>Certified Date:</b> <input type="text" class="form-control datepicker" name="certified_date" value="" required>  <br>
+        <hr>
+        Theory <input type="text" class="form-control datepicker" name="xray_cargo_theory" value="" required>
+        <input type="radio" value="1" name="xray_cargo_theory_status"> Pass <input type="radio" value="0" name="xray_cargo_theory_status"> Fail <br>
+        ETD <input type="text" class="form-control datepicker" name="xray_cargo_etd" value="" required>
+        <input type="radio" value="1" name="xray_cargo_etd_status"> Pass <input type="radio" value="0" name="xray_cargo_etd_status"> Fail <br>
+        IIT <input type="text" class="form-control datepicker" name="xray_cargo_iit" value="" required>
+        <input type="radio" value="1" name="xray_cargo_iit_status"> Pass <input type="radio" value="0" name="xray_cargo_iit_status"> Fail <br><br>
+
+        <% if (user.role == 1) { %>
+        <input type="submit" class="form-control" value="Edit Record" name="edit_btn"/> <br>
+        <input type="submit" class="form-control btn btn-danger" value="Delete Record" name="delete_btn"/>
+        <% } %>
+      </form>
+      <hr>
+    </div>
+
+<% include partials/footer %>

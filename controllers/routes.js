@@ -159,9 +159,9 @@ router.post('/officers/new', functions.isAdminPage, function (req, res, next) {
   });
 });
 
-router.get('/officers/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getLatestACRecord, functions.getLatestGSRecord, function (req, res) {
+router.get('/officers/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getLatestACRecord, functions.getLatestGSRecord, functions.getLatestXrayHBSRecord, functions.getLatestXrayPBRecord, functions.getLatestXrayCargoRecord, function (req, res) {
   console.log(req.ac_details);
-  res.render('officer_details', { user: req.user, officer_details: req.officer_details, ac_details: req.ac_details, gs_details: req.gs_details, nric: req.params.nric });
+  res.render('officer_details', { user: req.user, officer_details: req.officer_details, ac_details: req.ac_details, gs_details: req.gs_details, xray_hbs_details: req.xray_hbs_details, xray_pb_details: req.xray_pb_details, xray_cargo_details: req.xray_cargo_details, nric: req.params.nric });
 });
 
 router.post('/officers/:nric', functions.verifyAdmin, function (req, res, next) {
@@ -226,10 +226,12 @@ router.post('/officers/:nric', functions.verifyAdmin, function (req, res, next) 
   //res.render('officer_details', {user: req.user, officer_details: req.officer_details, nric: req.params.id});
 }, functions.getEachOfficers, function (req, res) {
   console.log(req.officer_details);
-  res.render('officer_details', { user: req.user, officer_details: req.officer_details, nric: req.params.id });
+  res.render('officer_details', { user: req.user, officer_details: req.officer_details, ac_details: req.ac_details, gs_details: req.gs_details, xray_hbs_details: req.xray_hbs_details, xray_pb_details: req.xray_pb_details, xray_cargo_details: req.xray_cargo_details, nric: req.params.nric });
 });
 
-router.get('/access_control', functions.getOfficers, function (req, res) {
+//Access Control Section
+
+router.get('/access_control', functions.verifyAdmin, functions.getOfficers, function (req, res) {
   res.render('main_access_control', { user: req.user, officer_details: req.officer_details });
 })
 
@@ -379,7 +381,9 @@ router.post('/access_control/:nric/:ac_id', functions.verifyAdmin, function (req
   }
 });
 
-router.get('/general_screener', functions.getOfficers, function (req, res) {
+//General Screener Section
+
+router.get('/general_screener', functions.verifyAdmin, functions.getOfficers, function (req, res) {
   res.render('main_general_screener', { user: req.user, officer_details: req.officer_details });
 })
 
@@ -529,6 +533,308 @@ router.post('/general_screener/:nric/:gs_id', functions.verifyAdmin, function (r
   }
 });
 
+//Xray HBS Section
+
+router.get('/xray_hbs', functions.verifyAdmin, functions.getOfficers, function (req, res) {
+  res.render('main_xray_hbs', { user: req.user, officer_details: req.officer_details });
+})
+
+router.get('/xray_hbs/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getXrayHBSRecords, function (req, res) {
+  res.render('xray_hbs', { user: req.user, officer_details: req.officer_details, xray_hbs_details: req.xray_hbs_details });
+})
+
+router.get('/xray_hbs/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
+  var officer_id = req.params.id;
+  res.render('new_xray_hbs', { user: req.user, officer_details: req.officer_details })
+})
+
+router.post('/xray_hbs/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
+  var officer_id = req.params.nric;
+
+  var overall_status = req.body.overall_status;
+  var certified_date = functions.dateToUNIX(req.body.certified_date);
+  var xray_hbs_theory = req.body.xray_hbs_theory;
+  var xray_hbs_theory_status = req.body.xray_hbs_theory_status;
+  var xray_hbs_etd = req.body.xray_hbs_etd;
+  var xray_hbs_etd_status = req.body.xray_hbs_etd_status;
+  var xray_hbs_iit = req.body.xray_hbs_iit;
+  var xray_hbs_iit_status = req.body.xray_hbs_iit_status;
+
+  var data = {
+    overall_status: overall_status,
+    certified_date: certified_date,
+    theory: {
+      date: functions.dateToUNIX(xray_hbs_theory),
+      status: xray_hbs_theory_status
+    },
+    etd: {
+      date: functions.dateToUNIX(xray_hbs_etd),
+      status: xray_hbs_etd_status
+    },
+    iit: {
+      date: functions.dateToUNIX(xray_hbs_iit),
+      status: xray_hbs_iit_status
+    }
+  }
+
+  var insertData = firebase.db.ref("officers/" + officer_id + "/certification/xray_hbs/").push(data, function (error) {
+    if (!error) {
+      var dataId = insertData.key;
+      res.redirect('/xray_hbs/' + officer_id + '/' + dataId);
+    }
+  });
+})
+
+router.get('/xray_hbs/:nric/:xray_hbs_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachXrayHBSRecord, function (req, res) {
+  res.render('view_xray_hbs', { user: req.user, officer_details: req.officer_details, xray_hbs_id: req.params.xray_hbs_id, xray_hbs_details: req.xray_hbs_details });
+});
+
+router.post('/xray_hbs/:nric/:xray_hbs_id', functions.verifyAdmin, function (req, res) {
+  var officer_id = req.params.nric;
+  var xray_hbs_id = req.params.xray_hbs_id;
+
+  var editBtn = req.body.edit_btn;
+  var deleteBtn = req.body.delete_btn;
+
+  if (deleteBtn != null) { // IF DELETE BUTTON PRESSED
+    firebase.db.ref("officers/" + officer_id + "/certification/xray_hbs/" + xray_hbs_id).set(null, function (error) {
+      if (!error) {
+        res.redirect('/xray_hbs/' + officer_id);
+      }
+    });
+  } else if (editBtn != null) {
+    var overall_status = req.body.overall_status;
+    var certified_date = functions.dateToUNIX(req.body.certified_date);
+    var xray_hbs_theory = req.body.xray_hbs_theory;
+    var xray_hbs_theory_status = req.body.xray_hbs_theory_status;
+    var xray_hbs_etd = req.body.xray_hbs_etd;
+    var xray_hbs_etd_status = req.body.xray_hbs_etd_status;
+    var xray_hbs_iit = req.body.xray_hbs_iit;
+    var xray_hbs_iit_status = req.body.xray_hbs_iit_status;
+
+    var data = {
+      overall_status: overall_status,
+      certified_date: certified_date,
+      theory: {
+        date: functions.dateToUNIX(xray_hbs_theory),
+        status: xray_hbs_theory_status
+      },
+      etd: {
+        date: functions.dateToUNIX(xray_hbs_etd),
+        status: xray_hbs_etd_status
+      },
+      iit: {
+        date: functions.dateToUNIX(xray_hbs_iit),
+        status: xray_hbs_iit_status
+      }
+    }
+
+    firebase.db.ref("officers/" + officer_id + "/certification/xray_hbs/" + xray_hbs_id).update(data, function (error) {
+      if (!error) {
+        res.redirect('/xray_hbs/' + officer_id + '/' + xray_hbs_id);
+      }
+    });
+  }
+});
+
+//Xray Preboard (PB) Section
+
+router.get('/xray_pb', functions.verifyAdmin, functions.getOfficers, function (req, res) {
+  res.render('main_xray_pb', { user: req.user, officer_details: req.officer_details });
+})
+
+router.get('/xray_pb/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getXrayPBRecords, function (req, res) {
+  res.render('xray_pb', { user: req.user, officer_details: req.officer_details, xray_pb_details: req.xray_pb_details });
+})
+
+router.get('/xray_pb/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
+  var officer_id = req.params.id;
+  res.render('new_xray_pb', { user: req.user, officer_details: req.officer_details })
+})
+
+router.post('/xray_pb/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
+  var officer_id = req.params.nric;
+
+  var overall_status = req.body.overall_status;
+  var certified_date = functions.dateToUNIX(req.body.certified_date);
+  var xray_pb_theory = req.body.xray_pb_theory;
+  var xray_pb_theory_status = req.body.xray_pb_theory_status;
+  var xray_pb_iit = req.body.xray_pb_iit;
+  var xray_pb_iit_status = req.body.xray_pb_iit_status;
+
+  var data = {
+    overall_status: overall_status,
+    certified_date: certified_date,
+    theory: {
+      date: functions.dateToUNIX(xray_pb_theory),
+      status: xray_pb_theory_status
+    },
+    iit: {
+      date: functions.dateToUNIX(xray_pb_iit),
+      status: xray_pb_iit_status
+    }
+  }
+
+  var insertData = firebase.db.ref("officers/" + officer_id + "/certification/xray_pb/").push(data, function (error) {
+    if (!error) {
+      var dataId = insertData.key;
+      res.redirect('/xray_pb/' + officer_id + '/' + dataId);
+    }
+  });
+})
+
+router.get('/xray_pb/:nric/:xray_pb_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachXrayPBRecord, function (req, res) {
+  res.render('view_xray_pb', { user: req.user, officer_details: req.officer_details, xray_pb_id: req.params.xray_pb_id, xray_pb_details: req.xray_pb_details });
+});
+
+router.post('/xray_pb/:nric/:xray_pb_id', functions.verifyAdmin, function (req, res) {
+  var officer_id = req.params.nric;
+  var xray_pb_id = req.params.xray_pb_id;
+
+  var editBtn = req.body.edit_btn;
+  var deleteBtn = req.body.delete_btn;
+
+  if (deleteBtn != null) { // IF DELETE BUTTON PRESSED
+    firebase.db.ref("officers/" + officer_id + "/certification/xray_pb/" + xray_pb_id).set(null, function (error) {
+      if (!error) {
+        res.redirect('/xray_pb/' + officer_id);
+      }
+    });
+  } else if (editBtn != null) {
+    var overall_status = req.body.overall_status;
+    var certified_date = functions.dateToUNIX(req.body.certified_date);
+    var xray_pb_theory = req.body.xray_pb_theory;
+    var xray_pb_theory_status = req.body.xray_pb_theory_status;
+    var xray_pb_iit = req.body.xray_pb_iit;
+    var xray_pb_iit_status = req.body.xray_pb_iit_status;
+
+    var data = {
+      overall_status: overall_status,
+      certified_date: certified_date,
+      theory: {
+        date: functions.dateToUNIX(xray_pb_theory),
+        status: xray_pb_theory_status
+      },
+      iit: {
+        date: functions.dateToUNIX(xray_pb_iit),
+        status: xray_pb_iit_status
+      }
+    }
+
+    firebase.db.ref("officers/" + officer_id + "/certification/xray_pb/" + xray_pb_id).update(data, function (error) {
+      if (!error) {
+        res.redirect('/xray_pb/' + officer_id + '/' + xray_pb_id);
+      }
+    });
+  }
+});
+
+//Xray Cargo Section
+
+router.get('/xray_cargo', functions.verifyAdmin, functions.getOfficers, function (req, res) {
+  res.render('main_xray_cargo', { user: req.user, officer_details: req.officer_details });
+})
+
+router.get('/xray_cargo/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getXrayCargoRecords, function (req, res) {
+  res.render('xray_cargo', { user: req.user, officer_details: req.officer_details, xray_cargo_details: req.xray_cargo_details });
+})
+
+router.get('/xray_cargo/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
+  var officer_id = req.params.id;
+  res.render('new_xray_cargo', { user: req.user, officer_details: req.officer_details })
+})
+
+router.post('/xray_cargo/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
+  var officer_id = req.params.nric;
+
+  var overall_status = req.body.overall_status;
+  var certified_date = functions.dateToUNIX(req.body.certified_date);
+  var xray_cargo_theory = req.body.xray_cargo_theory;
+  var xray_cargo_theory_status = req.body.xray_cargo_theory_status;
+  var xray_cargo_etd = req.body.xray_cargo_etd;
+  var xray_cargo_etd_status = req.body.xray_cargo_etd_status;
+  var xray_cargo_iit = req.body.xray_cargo_iit;
+  var xray_cargo_iit_status = req.body.xray_cargo_iit_status;
+
+  var data = {
+    overall_status: overall_status,
+    certified_date: certified_date,
+    theory: {
+      date: functions.dateToUNIX(xray_cargo_theory),
+      status: xray_cargo_theory_status
+    },
+    etd: {
+      date: functions.dateToUNIX(xray_cargo_etd),
+      status: xray_cargo_etd_status
+    },
+    iit: {
+      date: functions.dateToUNIX(xray_cargo_iit),
+      status: xray_cargo_iit_status
+    }
+  }
+
+  var insertData = firebase.db.ref("officers/" + officer_id + "/certification/xray_cargo/").push(data, function (error) {
+    if (!error) {
+      var dataId = insertData.key;
+      res.redirect('/xray_cargo/' + officer_id + '/' + dataId);
+    }
+  });
+})
+
+router.get('/xray_cargo/:nric/:xray_cargo_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachXrayCargoRecord, function (req, res) {
+  res.render('view_xray_cargo', { user: req.user, officer_details: req.officer_details, xray_cargo_id: req.params.xray_cargo_id, xray_cargo_details: req.xray_cargo_details });
+});
+
+router.post('/xray_cargo/:nric/:xray_cargo_id', functions.verifyAdmin, function (req, res) {
+  var officer_id = req.params.nric;
+  var xray_cargo_id = req.params.xray_cargo_id;
+
+  var editBtn = req.body.edit_btn;
+  var deleteBtn = req.body.delete_btn;
+
+  if (deleteBtn != null) { // IF DELETE BUTTON PRESSED
+    firebase.db.ref("officers/" + officer_id + "/certification/xray_cargo/" + xray_cargo_id).set(null, function (error) {
+      if (!error) {
+        res.redirect('/xray_cargo/' + officer_id);
+      }
+    });
+  } else if (editBtn != null) {
+    var overall_status = req.body.overall_status;
+    var certified_date = functions.dateToUNIX(req.body.certified_date);
+    var xray_cargo_theory = req.body.xray_cargo_theory;
+    var xray_cargo_theory_status = req.body.xray_cargo_theory_status;
+    var xray_cargo_etd = req.body.xray_cargo_etd;
+    var xray_cargo_etd_status = req.body.xray_cargo_etd_status;
+    var xray_cargo_iit = req.body.xray_cargo_iit;
+    var xray_cargo_iit_status = req.body.xray_cargo_iit_status;
+
+    var data = {
+      overall_status: overall_status,
+      certified_date: certified_date,
+      theory: {
+        date: functions.dateToUNIX(xray_cargo_theory),
+        status: xray_cargo_theory_status
+      },
+      etd: {
+        date: functions.dateToUNIX(xray_cargo_etd),
+        status: xray_cargo_etd_status
+      },
+      iit: {
+        date: functions.dateToUNIX(xray_cargo_iit),
+        status: xray_cargo_iit_status
+      }
+    }
+
+    firebase.db.ref("officers/" + officer_id + "/certification/xray_cargo/" + xray_cargo_id).update(data, function (error) {
+      if (!error) {
+        res.redirect('/xray_cargo/' + officer_id + '/' + xray_cargo_id);
+      }
+    });
+  }
+});
+
+//Admin Section
+
 router.get('/admin', functions.verifyAdmin, functions.getAllAdmin, function (req, res) {
   res.render('administration', { user: req.user, admin_details: req.admin_details });
 });
@@ -537,16 +843,15 @@ router.get('/admin/new', functions.isAdminPage, functions.verifyAdmin, function 
   res.render('new_admin', { user: req.user, error: null });
 });
 
-router.post('/admin/new', functions.isAdminPage, functions.verifyAdmin, function (req, res) {
+router.post('/admin/new', functions.isAdminPage, functions.verifyAdmin, functions.checkUsername, functions.checkNRIC, function (req, res) {
   var fname = req.body.fname;
   var lname = req.body.lname;
   var nric = req.body.nric;
   var username = req.body.username;
   var password = req.body.password;
   var role = req.body.role;
-  var error = null;
 
-  if (!functions.checkUsername(username)) { // check if username exists, false = dont exist, true = exist
+  if (req.error == null) {
     var data = {
       fname: fname,
       lname: lname,
@@ -559,16 +864,17 @@ router.post('/admin/new', functions.isAdminPage, functions.verifyAdmin, function
     firebase.db.ref("admin/" + username + "/").set(data, function (error) {
       if (!error) {
         res.redirect('/admin/');
+      } else {
+        console.log("There is an error inserting admin into firebase.");
       }
     });
   } else {
-    error = "The username already exists.";
-    res.render('new_admin', { user: req.user, error: error });
+    res.render('new_admin', { user: req.user, error: req.error });
   }
 });
 
-router.get('/admin/view/:username', functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
-  res.render('view_admin', { user: req.user, admin_details: req.admin_details, error: null });
+router.get('/admin/view/:username', functions.verifyAdmin, functions.getEachAdmin, functions.checkAdminCount, function (req, res) {
+  res.render('view_admin', { user: req.user, admin_details: req.admin_details, admin_count: req.admin_count, error: null });
 });
 
 router.post('/admin/view/:username', functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
@@ -595,7 +901,7 @@ router.post('/admin/view/:username', functions.verifyAdmin, functions.getEachAdm
       }
     });
   } else if (delete_btn != null) {
-    firebase.db.ref("/admin/" + nric).set(null, function (error) {
+    firebase.db.ref("/admin/" + username).set(null, function (error) {
       if (!error) {
         res.redirect('/admin/');
       }
