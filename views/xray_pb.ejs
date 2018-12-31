@@ -1,6 +1,5 @@
 <% include partials/header %>
 <% include partials/nav %>
-
 <%
 function UNIXConverter(UNIX_timestamp){
   try {
@@ -26,43 +25,42 @@ function UNIXConverter(UNIX_timestamp){
       <div class="row">
         &nbsp;
       </div>
+      <button class="btn btn-primary" onclick="window.location.href='/access_control/<%=officer_details.nric%>'">View Access Control</button>
       <button class="btn btn-primary" onclick="window.location.href='/general_screener/<%=officer_details.nric%>'">View General Screener</button>
       <button class="btn btn-primary" onclick="window.location.href='/xray_hbs/<%=officer_details.nric%>'">View X-Ray HBS</button>
-      <button class="btn btn-primary" onclick="window.location.href='/xray_pb/<%=officer_details.nric%>'">View X-Ray Preboard</button>
       <button class="btn btn-primary" onclick="window.location.href='/xray_cargo/<%=officer_details.nric%>'">View X-Ray Cargo</button>
       <hr>
-      <h4>Access Control: <%=officer_details.nric%></h4>
+      <h4>Xray PB: <%=officer_details.nric%></h4>
       <hr>
       <table class="table table-hover">
         <thead>
           <th>Status</th>
           <th>Certified Date</th>
           <th>Theory</th>
-          <th>HHMD</th>
-          <th>PDS</th>
+          <th>ETD</th>
+          <th>IIT</th>
         </thead>
         <tbody>
-          <% if (ac_details == null) { %>
+          <% if (xray_pb_details == null) { %>
             <tr>
               <td colspan="5" style="text-align:center;">Officer does not have any existing certificate.</td>
             </tr>
           <% } %>
-          <% for (var access_control_id in ac_details) { %>
+          <% for (var xray_pb_id in xray_pb_details) { %>
             <% var status; %>
-            <% if (ac_details[access_control_id].overall_status == "1") { status = "PASS"; } else { status = "FAIL"; } %>
-            <tr class='clickable-row' data-href='/access_control/<%=officer_details.nric%>/<%=access_control_id%>'>
+            <% if (xray_pb_details[xray_pb_id].overall_status == "1") { status = "PASS"; } else { status = "FAIL"; } %>
+            <tr class='clickable-row' data-href='/xray_pb/<%=officer_details.nric%>/<%=xray_pb_id%>'>
               <td><%=status%></td>
-              <td><%=UNIXConverter(ac_details[access_control_id].certified_date)%></td>
-              <td><%=UNIXConverter(ac_details[access_control_id].theory.date)%></td>
-              <td><%=UNIXConverter(ac_details[access_control_id].hhmd.date)%></td>
-              <td><%=UNIXConverter(ac_details[access_control_id].pds.date)%></td>
+              <td><%=UNIXConverter(xray_pb_details[xray_pb_id].certified_date)%></td>
+              <td><%=UNIXConverter(xray_pb_details[xray_pb_id].theory.date)%></td>
+              <td><%=UNIXConverter(xray_pb_details[xray_pb_id].iit.date)%></td>
             </tr>
           <% } %>
         </tbody>
       </table>
       <hr>
       <% if (user.role == 1) { %>
-      <button class="form-control btn btn-primary" onclick="window.location.href='/access_control/new/<%=officer_details.nric%>'">Add New Record</button>
+      <button class="form-control btn btn-primary" onclick="window.location.href='/xray_pb/new/<%=officer_details.nric%>'">Add New Record</button>
       <% } %>
 
     </div>

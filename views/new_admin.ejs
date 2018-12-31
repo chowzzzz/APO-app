@@ -34,12 +34,12 @@ function UNIXConverter(UNIX_timestamp){
       <hr>
       <% } %>
       <form method="POST" action="/admin/new">
-        First Name: <input type="text" class="form-control" name="fname" /> <br>
-        Last Name: <input type="text" class="form-control" name="lname" /> <br>
-        NRIC: <input type="text" class="form-control" name="nric" /> <br>
-        Username: <input type="text" class="form-control" name="username" /> <br>
-        Password: <input type="password" class="form-control" name="password" /> <br>
-        Role: <select class="form-control" name="role"><option value="1">Administrator</option><option value="2">User</option><option value="3">Read-only User</option></select> <br><br>
+        First Name: <input type="text" class="form-control" name="fname" required /> <br>
+        Last Name: <input type="text" class="form-control" name="lname" required /> <br>
+        NRIC: <input type="text" class="form-control" name="nric" required /> <br>
+        Username: <input type="text" class="form-control" name="username" required /> <br>
+        Password: <input type="password" class="form-control" name="password" required /> <br>
+        Role: <select class="form-control" name="role" required><option value="1">Administrator</option><option value="2">User</option><option value="3">Read-only User</option></select> <br><br>
         <input type="submit" class="form-control btn btn-primary" name="adduser_btn" />
       </form>
       <hr>

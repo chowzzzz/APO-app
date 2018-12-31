@@ -84,21 +84,21 @@ function UNIXConverter(UNIX_timestamp){
         <b>Name:</b> <%=officer_details.fname%> <%=officer_details.lname%> <br>
         <b>NRIC:</b> <%=officer_details.nric%> <br>
         <b>Status:</b> <input type="radio" value="1" name="overall_status"> Pass <input type="radio" value="0" name="overall_status"> Fail <br>
-        <b>Certified Date:</b> <input type="text" class="form-control datepicker" name="certified_date" value="">  <br>
+        <b>Certified Date:</b> <input type="text" class="form-control datepicker" name="certified_date" value="" required>  <br>
         <hr>
-        Theory <input type="text" class="form-control datepicker" name="gs_theory" value="">
+        Theory <input type="text" class="form-control datepicker" name="gs_theory" value="" required>
         <input type="radio" value="1" name="gs_theory_status"> Pass <input type="radio" value="0" name="gs_theory_status"> Fail <br>
-        HHMD <input type="text" class="form-control datepicker" name="gs_hhmd" value="">
+        HHMD <input type="text" class="form-control datepicker" name="gs_hhmd" value="" required>
         <input type="radio" value="1" name="gs_hhmd_status"> Pass <input type="radio" value="0" name="gs_hhmd_status"> Fail <br>
-        PDS <input type="text" class="form-control datepicker" name="gs_pds" value="">
+        PDS <input type="text" class="form-control datepicker" name="gs_pds" value="" required>
         <input type="radio" value="1" name="gs_pds_status"> Pass <input type="radio" value="0" name="gs_pds_status"> Fail <br>
-        WTMD <input type="text" class="form-control datepicker" name="gs_wtmd" value="">
+        WTMD <input type="text" class="form-control datepicker" name="gs_wtmd" value="" required>
         <input type="radio" value="1" name="gs_wtmd_status"> Pass <input type="radio" value="0" name="gs_wtmd_status"> Fail <br>
-        FL <input type="text" class="form-control datepicker" name="gs_fl" value="">
+        FL <input type="text" class="form-control datepicker" name="gs_fl" value="" required>
         <input type="radio" value="1" name="gs_fl_status"> Pass <input type="radio" value="0" name="gs_fl_status"> Fail <br>
-        ETD <input type="text" class="form-control datepicker" name="gs_etd" value="">
+        ETD <input type="text" class="form-control datepicker" name="gs_etd" value="" required>
         <input type="radio" value="1" name="gs_etd_status"> Pass <input type="radio" value="0" name="gs_etd_status"> Fail <br>
-        MBS <input type="text" class="form-control datepicker" name="gs_mbs" value="">
+        MBS <input type="text" class="form-control datepicker" name="gs_mbs" value="" required>
         <input type="radio" value="1" name="gs_mbs_status"> Pass <input type="radio" value="0" name="gs_mbs_status"> Fail <br><br>
 
         <% if (user.role == 1) { %>

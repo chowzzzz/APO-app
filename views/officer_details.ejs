@@ -22,9 +22,12 @@ function UNIXConverter(UNIX_timestamp){
 }
 
 
-// line 26-39, iterate through the gs_details to get that particular record.
+//iterate through the certification details to get that particular record.
 var gs_date=0;
 var ac_date=0;
+var xray_hbs_date = 0;
+var xray_pb_date = 0;
+var xray_cargo_date = 0;
 
 if (gs_details != null) {
   for (var id in gs_details) { // since you're not sure of the latest ID, iterate to get the ID.
@@ -38,20 +41,33 @@ if (ac_details != null) {
   }
 }
 
+if (xray_hbs_details != null) {
+  for (var id in xray_hbs_details) { // since you're not sure of the latest ID, iterate to get the ID.
+    xray_hbs_date = xray_hbs_details[id].certified_date;
+  }
+}
+
+if (xray_pb_details != null) {
+  for (var id in xray_pb_details) { // since you're not sure of the latest ID, iterate to get the ID.
+    xray_pb_date = xray_pb_details[id].certified_date;
+  }
+}
+
+if (xray_cargo_details != null) {
+  for (var id in xray_cargo_details) { // since you're not sure of the latest ID, iterate to get the ID.
+    xray_cargo_date = xray_cargo_details[id].certified_date;
+  }
+}
+
 // in some cases, there will not be any XRAY fields upon creation of officers, therefore this is used as a safe check.
-var etd_date=0;
+
+/*var etd_date=0;
 var front_loader_date=0;
-var xray_hbs_date=0;
-var xray_pb_date=0;
-var xray_cargo_date=0;
 
 if (officer_details.certification !== undefined) {
   if (officer_details.certification.etd != null) { etd_date = officer_details.certification.etd; }
   if (officer_details.certification.front_loader != null) { front_loader_date = officer_details.certification.front_loader; }
-  if (officer_details.certification.xray_hbs != null) { xray_hbs_date = officer_details.certification.xray_hbs; }
-  if (officer_details.certification.xray_pb != null) { xray_pb_date = officer_details.certification.xray_pb; }
-  if (officer_details.certification.xray_cargo != null) { xray_cargo_date = officer_details.certification.xray_cargo; }
-}
+}*/
 
 %>
 <div class="container-fluid">
@@ -81,15 +97,15 @@ if (officer_details.certification !== undefined) {
     <div class="row justify-content-center">
       <div class="col-sm-3">
         Certification Card No.: <input type="text" class="form-control" name="cert_card_no" value="<%=officer_details.cert_card_no%>"
-          required>
+          <% if (user.role > 1) { %> readonly <% } %> required>
       </div>
       <div class="col-sm-3">
         Organisation: <input type="text" class="form-control" name="organisation" value="<%=officer_details.organisation%>"
-          required>
+          <% if (user.role > 1) { %> readonly <% } %> required>
       </div>
       <div class="col-sm-3">
         <% if (officer_details.gender == "0") { } %>
-        Gender: <select class="form-control" name="gender" required>
+        Gender: <select class="form-control" name="gender" <% if (user.role > 1) { %> readonly <% } %> required>
           <option value="0" <% if (officer_details.gender=="0" ) {%> selected
             <% } %>>Male</option>
           <option value="1" <% if (officer_details.gender=="1" ) {%> selected
@@ -101,20 +117,20 @@ if (officer_details.certification !== undefined) {
     <div class="row justify-content-center">
       <div class="col-sm-3">
         Serial No: <input type="text" class="form-control" name="serial_no" value="<%=officer_details.serial_no%>"
-          required>
+          <% if (user.role > 1) { %> readonly <% } %> required>
       </div>
       <div class="col-sm-3">
         Designation: <input type="text" class="form-control" name="designation" value="<%=officer_details.designation%>"
-          required>
+          <% if (user.role > 1) { %> readonly <% } %> required>
       </div>
       <div class="col-sm-3">
-        Rank: <input type="text" class="form-control" name="rank" value="<%=officer_details.rank%>" required> <br>
+        Rank: <input type="text" class="form-control" name="rank" value="<%=officer_details.rank%>" <% if (user.role > 1) { %> readonly <% } %> required> <br>
       </div>
     </div>
 
     <div class="row justify-content-center">
       <div class="col-sm-9">
-        Remarks: <textarea class="form-control" name="remarks" required><%=officer_details.remarks%></textarea>
+        Remarks: <textarea class="form-control" name="remarks" <% if (user.role > 1) { %> readonly <% } %> required><%=officer_details.remarks%></textarea>
       </div>
     </div>
 
@@ -123,38 +139,37 @@ if (officer_details.certification !== undefined) {
 
     <div class="row justify-content-center">
       <div class="col-sm-3">
-        General Screener: <input type="text" class="form-control datepicker" name="general_screener" value="<%=UNIXConverter(gs_date)%>">
+        General Screener: <input type="text" class="form-control" name="general_screener" value="<%=UNIXConverter(gs_date)%>" readonly>
       </div>
       <div class="col-sm-3">
-        Access Control: <input type="text" class="form-control datepicker" name="access_control" value="<%=UNIXConverter(ac_date)%>">
-      </div>
-      <div class="col-sm-3">
-        ETD: <input type="text" class="form-control datepicker" name="etd" value="<%=UNIXConverter(etd_date)%>">
+        Access Control: <input type="text" class="form-control" name="access_control" value="<%=UNIXConverter(ac_date)%>" readonly>
       </div>
     </div>
 
     <div class="row justify-content-center">
       <div class="col-sm-3">
-        Front Loader: <input type="text" class="form-control datepicker" name="front_loader" value="<%=UNIXConverter(front_loader_date)%>">
+        X-Ray HBS: <input type="text" class="form-control" name="xray_hbs" value="<%=UNIXConverter(xray_hbs_date)%>" readonly>
       </div>
       <div class="col-sm-3">
-        X-Ray HBS: <input type="text" class="form-control datepicker" name="xray_hbs" value="<%=UNIXConverter(xray_hbs_date)%>">
+        X-Ray Pre-Board: <input type="text" class="form-control" name="xray_pb" value="<%=UNIXConverter(xray_pb_date)%>" readonly>
       </div>
       <div class="col-sm-3">
-        X-Ray Pre-Board: <input type="text" class="form-control datepicker" name="xray_pb" value="<%=UNIXConverter(xray_pb_date)%>">
+        X-Ray Cargo: <input type="text" class="form-control" name="xray_cargo" value="<%=UNIXConverter(xray_cargo_date)%>" readonly>
       </div>
     </div>
 
-    <div class="row justify-content-center">
+    <!---<div class="row justify-content-center">
       <div class="col-sm-3">
         X-Ray Cargo: <input type="text" class="form-control datepicker" name="xray_cargo" value="<%=UNIXConverter(xray_cargo_date)%>">
       </div>
-    </div>
+    </div>-->
 
     <br>
     <div class="row justify-content-center">
+      <% if (user.role == 1) { %>
       <input type="submit" class="btn btn-outline-dark col-9" value="Update" name="update_btn"> <br>
       <input type="submit" class="col-9 btn btn-danger" value="Delete" name="delete_btn" id="delete_btn">
+      <% } %>
     </div>
   </form>
 </div>

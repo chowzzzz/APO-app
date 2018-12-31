@@ -26,6 +26,9 @@ function UNIXConverter(UNIX_timestamp){
         &nbsp;
       </div>
       <button class="btn btn-primary" onclick="window.location.href='/access_control/<%=officer_details.nric%>'">View Access Control</button>
+      <button class="btn btn-primary" onclick="window.location.href='/xray_hbs/<%=officer_details.nric%>'">View X-Ray HBS</button>
+      <button class="btn btn-primary" onclick="window.location.href='/xray_pb/<%=officer_details.nric%>'">View X-Ray Preboard</button>
+      <button class="btn btn-primary" onclick="window.location.href='/xray_cargo/<%=officer_details.nric%>'">View X-Ray Cargo</button>
       <hr>
       <h4>General Screener: <%=officer_details.nric%></h4>
       <hr>

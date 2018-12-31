@@ -1,21 +1,22 @@
 <% include partials/header %>
 <% include partials/nav %>
+
 <head>
   <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
 
       $("#setall_btn").click(function () { // set all function for GS/AC.
         var setall_date = $('input[name=setall_date]').val();
         var setall_status = $('input[name=setall_overall_status]:checked').val();
 
-        $('input[name=overall_status][value='+setall_status+']').attr('checked', 'checked');
-        $('input[name=ac_theory_status][value='+setall_status+']').attr('checked', 'checked');
-        $('input[name=ac_hhmd_status][value='+setall_status+']').attr('checked', 'checked');
-        $('input[name=ac_pds_status][value='+setall_status+']').attr('checked', 'checked');
-        $('input[name=ac_wtmd_status][value='+setall_status+']').attr('checked', 'checked');
-        $('input[name=ac_etd_status][value='+setall_status+']').attr('checked', 'checked');
-        $('input[name=ac_mbs_status][value='+setall_status+']').attr('checked', 'checked');
-        $('input[name=ac_vs_status][value='+setall_status+']').attr('checked', 'checked');
+        $('input[name=overall_status][value=' + setall_status + ']').attr('checked', 'checked');
+        $('input[name=ac_theory_status][value=' + setall_status + ']').attr('checked', 'checked');
+        $('input[name=ac_hhmd_status][value=' + setall_status + ']').attr('checked', 'checked');
+        $('input[name=ac_pds_status][value=' + setall_status + ']').attr('checked', 'checked');
+        $('input[name=ac_wtmd_status][value=' + setall_status + ']').attr('checked', 'checked');
+        $('input[name=ac_etd_status][value=' + setall_status + ']').attr('checked', 'checked');
+        $('input[name=ac_mbs_status][value=' + setall_status + ']').attr('checked', 'checked');
+        $('input[name=ac_vs_status][value=' + setall_status + ']').attr('checked', 'checked');
 
         $('input[name=certified_date]').val(setall_date);
         $('input[name=ac_theory]').val(setall_date);
@@ -51,43 +52,215 @@ function UNIXConverter(UNIX_timestamp){
   }
 }
 %>
-    <div class="container-fluid">
-      <div class="row">
-        &nbsp;
-      </div>
-      <h4>Add New Access Control Record</h4>
-      <hr>
-      <h5>Set All As:</h5>
-      <b>Status:</b> <input type="radio" value="1" name="setall_overall_status"> Pass <input type="radio" value="0" name="setall_overall_status"> Fail <br>
-      <input type="text" class="form-control datepicker" name="setall_date" /> <br>
-      <button class="btn btn-primary" id="setall_btn">Set All</button>
-      <hr>
-      <form action='/access_control/new/<%=officer_details.nric%>/' method="POST">
-        <b>Name:</b> <%=officer_details.fname%> <%=officer_details.lname%> <br>
-        <b>NRIC:</b> <%=officer_details.nric%> <br>
-        <b>Status:</b> <input type="radio" value="1" name="overall_status"> Pass <input type="radio" value="0" name="overall_status"> Fail <br>
-        <b>Certified Date:</b> <input type="text" class="form-control datepicker" name="certified_date" value="">  <br>
-        <hr>
-        Theory <input type="text" class="form-control datepicker" name="ac_theory" value="">
-        <input type="radio" value="1" name="ac_theory_status"> Pass <input type="radio" value="0" name="ac_theory_status"> Fail <br>
-        HHMD <input type="text" class="form-control datepicker" name="ac_hhmd" value="">
-        <input type="radio" value="1" name="ac_hhmd_status"> Pass <input type="radio" value="0" name="ac_hhmd_status"> Fail <br>
-        PDS <input type="text" class="form-control datepicker" name="ac_pds" value="">
-        <input type="radio" value="1" name="ac_pds_status"> Pass <input type="radio" value="0" name="ac_pds_status"> Fail <br>
-        WTMD <input type="text" class="form-control datepicker" name="ac_wtmd" value="">
-        <input type="radio" value="1" name="ac_wtmd_status"> Pass <input type="radio" value="0" name="ac_wtmd_status"> Fail <br>
-        ETD <input type="text" class="form-control datepicker" name="ac_etd" value="">
-        <input type="radio" value="1" name="ac_etd_status"> Pass <input type="radio" value="0" name="ac_etd_status"> Fail <br>
-        MBS <input type="text" class="form-control datepicker" name="ac_mbs" value="">
-        <input type="radio" value="1" name="ac_mbs_status"> Pass <input type="radio" value="0" name="ac_mbs_status"> Fail <br>
-        VS <input type="text" class="form-control datepicker" name="ac_vs" value="">
-        <input type="radio" value="1" name="ac_vs_status"> Pass <input type="radio" value="0" name="ac_vs_status"> Fail <br><br>
+<div class="container-fluid">
+  <h4 class="mt-4">Add New Access Control Record</h4>
+  <hr>
 
-        <% if (user.role == 1) { %>
-        <input type="submit" class="form-control" value="Add New Record"/>
-        <% } %>
-      </form>
-      <hr>
+  <div class="row my-3 justify-content-center">
+    <div class="col-sm-3">
+      <h5 class="card-title">Set all as:</h5>
+      <label class="font-weight-bold" for="setall">Status:&nbsp;</label>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="setall_overall_status" id="setall_pass" value="1">
+        <label class="form-check-label" for="setall_pass">Pass</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="setall_overall_status" id="setall_fail" value="0">
+        <label class="form-check-label" for="setall_fail">Fail</label>
+      </div>
+      <div class="input-group mb-3">
+        <input type="text" class="form-control datepicker" name="setall_date" id="setall" value="">
+        <div class="input-group-append">
+          <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="setall_btn">Set All</button>
+
+    </div>
+  </div>
+
+
+  <form action='/access_control/new/<%=officer_details.nric%>/' method="POST">
+    <div class="card d-flex mx-auto mb-5">
+      <div class="card-header text-left">
+        <div class="d-flex flex-row">
+          <div class="flex-column mr-auto">
+            <h6 class="mb-2">Name:
+              <%=officer_details.fname%>
+              <%=officer_details.lname%>
+            </h6>
+            <p class="mb-2">NRIC:
+              <%=officer_details.nric%>
+            </p>
+
+            <div>
+              Status:&nbsp;
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="overall_status" id="passStatus" value="1">
+                <label class="form-check-label" for="passStatus">Pass</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="overall_status" id="failStatus" value="0">
+                <label class="form-check-label" for="failStatus">Fail</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex-column ml-auto">
+
+            <div>
+              <label for="ac_certified_date">Certified Date:</label>
+              <div class="input-group mb-3">
+                <input type="text" class="form-control datepicker" name="certified_date" id="ac_certified_date" value="">
+                <div class="input-group-append">
+                  <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="card-body">
+
+
+        <div class="row mb-2 justify-content-center">
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="ac_theory">Theory:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ac_theory_status" id="ac_theory_pass" value="1">
+              <label class="form-check-label" for="ac_theory_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ac_theory_status" id="ac_theory_fail" value="0">
+              <label class="form-check-label" for="ac_theory_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="ac_theory" id="ac_theory" value="">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="ac_hhmd">HHMD:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ac_hhmd_status" id="ac_hhmd_pass" value="1">
+              <label class="form-check-label" for="ac_hhmd_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ac_hhmd_status" id="ac_hhmd_fail" value="0">
+              <label class="form-check-label" for="ac_hhmd_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="ac_hhmd" id="ac_hhmd" value="">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="ac_pds">PDS:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ac_pds_status" id="ac_pds_pass" value="1">
+              <label class="form-check-label" for="ac_pds_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ac_pds_status" id="ac_pds_fail" value="0">
+              <label class="form-check-label" for="ac_pds_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="ac_pds" id="ac_pds" value="">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-2 justify-content-center">
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="ac_wtmd">WTMD:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ac_wtmd_status" id="ac_wtmd_pass" value="1">
+              <label class="form-check-label" for="ac_wtmd_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ac_wtmd_status" id="ac_wtmd_fail" value="0">
+              <label class="form-check-label" for="ac_wtmd_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="ac_wtmd" id="ac_wtmd" value="">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="ac_etd">ETD:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ac_etd_status" id="ac_etd_pass" value="1">
+              <label class="form-check-label" for="ac_etd_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ac_etd_status" id="ac_etd_fail" value="0">
+              <label class="form-check-label" for="ac_etd_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="ac_etd" id="ac_etd" value="">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="ac_mbs">MBS:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ac_mbs_status" id="ac_mbs_pass" value="1">
+              <label class="form-check-label" for="ac_mbs_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ac_mbs_status" id="ac_mbs_fail" value="0">
+              <label class="form-check-label" for="ac_mbs_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="ac_mbs" id="ac_mbs" value="">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="ac_vs">VS:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ac_vs_status" id="ac_vs_pass" value="1">
+              <label class="form-check-label" for="ac_vs_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ac_vs_status" id="ac_vs_fail" value="0">
+              <label class="form-check-label" for="ac_vs_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="ac_vs" id="ac_vs" value="">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <% if (user.role == 1) { %>
+      <div class="card-footer">
+        <button type="submit" class="btn btn-primary btn-block" name="add_btn">Add</button>
+      </div>
+      <% } %>
     </div>
 
-<% include partials/footer %>
+
+  </form>
+
+  <% include partials/footer %>

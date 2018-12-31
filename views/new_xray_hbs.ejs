@@ -1,0 +1,77 @@
+<% include partials/header %>
+<% include partials/nav %>
+<head>
+  <script>
+    $(document).ready(function() {
+
+      $("#setall_btn").click(function () { // set all function for GS/AC/Xray HBS.
+        var setall_date = $('input[name=setall_date]').val();
+        var setall_status = $('input[name=setall_overall_status]:checked').val();
+
+        $('input[name=overall_status][value='+setall_status+']').attr('checked', 'checked');
+        $('input[name=xray_hbs_theory_status][value='+setall_status+']').attr('checked', 'checked');
+        $('input[name=xray_hbs_etd_status][value='+setall_status+']').attr('checked', 'checked');
+        $('input[name=xray_hbs_iit_status][value='+setall_status+']').attr('checked', 'checked');
+
+        $('input[name=certified_date]').val(setall_date);
+        $('input[name=xray_hbs_theory]').val(setall_date);
+        $('input[name=xray_hbs_etd]').val(setall_date);
+        $('input[name=xray_hbs_iit]').val(setall_date);
+      });
+
+    });
+  </script>
+</head>
+<%
+function UNIXConverter(UNIX_timestamp){
+  try {
+    if (UNIX_timestamp == 0) {
+      return "";
+    }
+    var a = new Date(UNIX_timestamp * 1000);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = a.getFullYear();
+    var month = a.getMonth() + 1;
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    var sec = a.getSeconds();
+    var time = date + '/' + month + '/' + year;
+    return time;
+  } catch (error) {
+    return "";
+  }
+}
+%>
+    <div class="container-fluid">
+      <div class="row">
+        &nbsp;
+      </div>
+      <h4>Add New Xray HBS Record</h4>
+      <hr>
+      <h5>Set All As:</h5>
+      <b>Status:</b> <input type="radio" value="1" name="setall_overall_status"> Pass <input type="radio" value="0" name="setall_overall_status"> Fail <br>
+      <input type="text" class="form-control datepicker" name="setall_date" /> <br>
+      <button class="btn btn-primary" id="setall_btn">Set All</button>
+      <hr>
+      <form action='/xray_hbs/new/<%=officer_details.nric%>/' method="POST">
+        <b>Name:</b> <%=officer_details.fname%> <%=officer_details.lname%> <br>
+        <b>NRIC:</b> <%=officer_details.nric%> <br>
+        <b>Status:</b> <input type="radio" value="1" name="overall_status"> Pass <input type="radio" value="0" name="overall_status"> Fail <br>
+        <b>Certified Date:</b> <input type="text" class="form-control datepicker" name="certified_date" value="" required>  <br>
+        <hr>
+        Theory <input type="text" class="form-control datepicker" name="xray_hbs_theory" value="" required>
+        <input type="radio" value="1" name="xray_hbs_theory_status"> Pass <input type="radio" value="0" name="xray_hbs_theory_status"> Fail <br>
+        ETD <input type="text" class="form-control datepicker" name="xray_hbs_etd" value="" required>
+        <input type="radio" value="1" name="xray_hbs_etd_status"> Pass <input type="radio" value="0" name="xray_hbs_etd_status"> Fail <br>
+        IIT <input type="text" class="form-control datepicker" name="xray_hbs_iit" value="" required>
+        <input type="radio" value="1" name="xray_hbs_iit_status"> Pass <input type="radio" value="0" name="xray_hbs_iit_status"> Fail <br><br>
+
+        <% if (user.role == 1) { %>
+        <input type="submit" class="form-control" value="Add New Record"/>
+        <% } %>
+      </form>
+      <hr>
+    </div>
+
+<% include partials/footer %>
