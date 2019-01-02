@@ -1,21 +1,22 @@
 <% include partials/header %>
 <% include partials/nav %>
+
 <head>
   <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
 
       $("#setall_btn").click(function () { // set all function for GS/AC.
         var setall_date = $('input[name=setall_date]').val();
         var setall_status = $('input[name=setall_overall_status]:checked').val();
 
-        $('input[name=overall_status][value='+setall_status+']').attr('checked', 'checked');
-        $('input[name=gs_theory_status][value='+setall_status+']').attr('checked', 'checked');
-        $('input[name=gs_hhmd_status][value='+setall_status+']').attr('checked', 'checked');
-        $('input[name=gs_pds_status][value='+setall_status+']').attr('checked', 'checked');
-        $('input[name=gs_wtmd_status][value='+setall_status+']').attr('checked', 'checked');
-        $('input[name=gs_fl_status][value='+setall_status+']').attr('checked', 'checked');
-        $('input[name=gs_etd_status][value='+setall_status+']').attr('checked', 'checked');
-        $('input[name=gs_mbs_status][value='+setall_status+']').attr('checked', 'checked');
+        $('input[name=overall_status][value=' + setall_status + ']').attr('checked', 'checked');
+        $('input[name=gs_theory_status][value=' + setall_status + ']').attr('checked', 'checked');
+        $('input[name=gs_hhmd_status][value=' + setall_status + ']').attr('checked', 'checked');
+        $('input[name=gs_pds_status][value=' + setall_status + ']').attr('checked', 'checked');
+        $('input[name=gs_wtmd_status][value=' + setall_status + ']').attr('checked', 'checked');
+        $('input[name=gs_fl_status][value=' + setall_status + ']').attr('checked', 'checked');
+        $('input[name=gs_etd_status][value=' + setall_status + ']').attr('checked', 'checked');
+        $('input[name=gs_mbs_status][value=' + setall_status + ']').attr('checked', 'checked');
 
         $('input[name=certified_date]').val(setall_date);
         $('input[name=gs_theory]').val(setall_date);
@@ -51,43 +52,268 @@ function UNIXConverter(UNIX_timestamp){
   }
 }
 %>
-    <div class="container-fluid">
-      <div class="row">
-        &nbsp;
-      </div>
-      <h4>Add New General Screener Record</h4>
-      <hr>
-      <h5>Set All As:</h5>
-      <b>Status:</b> <input type="radio" value="1" name="setall_overall_status"> Pass <input type="radio" value="0" name="setall_overall_status"> Fail <br>
-      <input type="text" class="form-control datepicker" name="setall_date" /> <br>
-      <button class="btn btn-primary" id="setall_btn">Set All</button>
-      <hr>
-      <form action='/general_screener/new/<%=officer_details.nric%>/' method="POST">
-        <b>Name:</b> <%=officer_details.fname%> <%=officer_details.lname%> <br>
-        <b>NRIC:</b> <%=officer_details.nric%> <br>
-        <b>Status:</b> <input type="radio" value="1" name="overall_status"> Pass <input type="radio" value="0" name="overall_status"> Fail <br>
-        <b>Certified Date:</b> <input type="text" class="form-control datepicker" name="certified_date" value="" required>  <br>
-        <hr>
-        Theory <input type="text" class="form-control datepicker" name="gs_theory" value="" required>
-        <input type="radio" value="1" name="gs_theory_status"> Pass <input type="radio" value="0" name="gs_theory_status"> Fail <br>
-        HHMD <input type="text" class="form-control datepicker" name="gs_hhmd" value="" required>
-        <input type="radio" value="1" name="gs_hhmd_status"> Pass <input type="radio" value="0" name="gs_hhmd_status"> Fail <br>
-        PDS <input type="text" class="form-control datepicker" name="gs_pds" value="" required>
-        <input type="radio" value="1" name="gs_pds_status"> Pass <input type="radio" value="0" name="gs_pds_status"> Fail <br>
-        WTMD <input type="text" class="form-control datepicker" name="gs_wtmd" value="" required>
-        <input type="radio" value="1" name="gs_wtmd_status"> Pass <input type="radio" value="0" name="gs_wtmd_status"> Fail <br>
-        FL <input type="text" class="form-control datepicker" name="gs_fl" value="" required>
-        <input type="radio" value="1" name="gs_fl_status"> Pass <input type="radio" value="0" name="gs_fl_status"> Fail <br>
-        ETD <input type="text" class="form-control datepicker" name="gs_etd" value="" required>
-        <input type="radio" value="1" name="gs_etd_status"> Pass <input type="radio" value="0" name="gs_etd_status"> Fail <br>
-        MBS <input type="text" class="form-control datepicker" name="gs_mbs" value="" required>
-        <input type="radio" value="1" name="gs_mbs_status"> Pass <input type="radio" value="0" name="gs_mbs_status"> Fail <br><br>
+<div class="container-fluid">
+  <h4 class="mt-4">Add New General Screener Record</h4>
+  <hr>
 
-        <% if (user.role == 1) { %>
-        <input type="submit" class="form-control" value="Add New Record"/>
-        <% } %>
-      </form>
-      <hr>
+  <div class="row my-3 justify-content-center">
+    <div class="col-sm-4">
+      <h5 class="card-title">Set all as:</h5>
+      <label class="font-weight-bold" for="setall">Status:&nbsp;</label>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="setall_overall_status" id="setall_pass" value="1">
+        <label class="form-check-label" for="setall_pass">Pass</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="setall_overall_status" id="setall_fail" value="0">
+        <label class="form-check-label" for="setall_fail">Fail</label>
+      </div>
+      <div class="input-group mb-3">
+        <input type="text" class="form-control datepicker" name="setall_date" id="setall" value="">
+        <div class="input-group-append">
+          <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="setall_btn">Set All</button>
+
     </div>
+  </div>
+
+
+  <form action='/general_screener/new/<%=officer_details.nric%>/' method="POST">
+    <div class="card d-flex mx-auto mb-5">
+      <div class="card-header text-left">
+        <div class="d-sm-flex flex-sm-row">
+          <div class="mr-auto">
+            <h6 class="mb-2 font-weight-bold">Name:
+              <%=officer_details.fname%>
+              <%=officer_details.lname%>
+            </h6>
+            <p class="mb-2">NRIC:
+              <%=officer_details.nric%>
+            </p>
+
+            <div class="mb-2">
+              Status:&nbsp;
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="overall_status" id="passStatus" value="1">
+                <label class="form-check-label" for="passStatus">Pass</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="overall_status" id="failStatus" value="0">
+                <label class="form-check-label" for="failStatus">Fail</label>
+              </div>
+            </div>
+          </div>
+
+          <div>
+
+            <div>
+              <label for="gs_certified_date" class="font-weight-bold">Certified Date:</label>
+              <div class="input-group mb-3">
+                <input type="text" class="form-control datepicker" name="certified_date" id="gs_certified_date" value="">
+                <div class="input-group-append">
+                  <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="card-body">
+
+
+        <div class="row mb-2 justify-content-center">
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="gs_theory">Theory:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_theory_status" id="gs_theory_pass" value="1">
+              <label class="form-check-label" for="gs_theory_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_theory_status" id="gs_theory_fail" value="0">
+              <label class="form-check-label" for="gs_theory_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="gs_theory" id="gs_theory" value="">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="gs_hhmd">HHMD:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_hhmd_status" id="gs_hhmd_pass" value="1">
+              <label class="form-check-label" for="gs_hhmd_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_hhmd_status" id="gs_hhmd_fail" value="0">
+              <label class="form-check-label" for="gs_hhmd_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="gs_hhmd" id="gs_hhmd" value="">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="gs_pds">PDS:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_pds_status" id="gs_pds_pass" value="1">
+              <label class="form-check-label" for="gs_pds_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_pds_status" id="gs_pds_fail" value="0">
+              <label class="form-check-label" for="gs_pds_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="gs_pds" id="gs_pds" value="">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-2 justify-content-center">
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="gs_wtmd">WTMD:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_wtmd_status" id="gs_wtmd_pass" value="1">
+              <label class="form-check-label" for="gs_wtmd_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_wtmd_status" id="gs_wtmd_fail" value="0">
+              <label class="form-check-label" for="gs_wtmd_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="gs_wtmd" id="gs_wtmd" value="">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="gs_etd">ETD:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_etd_status" id="gs_etd_pass" value="1">
+              <label class="form-check-label" for="gs_etd_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_etd_status" id="gs_etd_fail" value="0">
+              <label class="form-check-label" for="gs_etd_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="gs_etd" id="gs_etd" value="">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="gs">GS:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_status" id="gs_pass" value="1">
+              <label class="form-check-label" for="gs_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_status" id="gs_fail" value="0">
+              <label class="form-check-label" for="gs_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="gs" id="gs" value="">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="gs_mbs">MBS:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_mbs_status" id="gs_mbs_pass" value="1">
+              <label class="form-check-label" for="gs_mbs_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_mbs_status" id="gs_mbs_fail" value="0">
+              <label class="form-check-label" for="gs_mbs_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="gs_mbs" id="gs_mbs" value="">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <% if (user.role == 1) { %>
+      <div class="card-footer">
+        <button type="submit" class="btn btn-primary btn-block" name="add_btn">Add</button>
+      </div>
+      <% } %>
+    </div>
+
+
+  </form>
+
+  <div class="row">
+    &nbsp;
+  </div>
+  <h4>Add New General Screener Record</h4>
+  <hr>
+  <h5>Set All As:</h5>
+  <b>Status:</b> <input type="radio" value="1" name="setall_overall_status"> Pass <input type="radio" value="0" name="setall_overall_status">
+  Fail <br>
+  <input type="text" class="form-control datepicker" name="setall_date" /> <br>
+  <button class="btn btn-primary" id="setall_btn">Set All</button>
+  <hr>
+  <form action='/general_screener/new/<%=officer_details.nric%>/' method="POST">
+    <b>Name:</b>
+    <%=officer_details.fname%>
+    <%=officer_details.lname%> <br>
+    <b>NRIC:</b>
+    <%=officer_details.nric%> <br>
+    <b>Status:</b> <input type="radio" value="1" name="overall_status"> Pass <input type="radio" value="0" name="overall_status">
+    Fail <br>
+    <b>Certified Date:</b> <input type="text" class="form-control datepicker" name="certified_date" value="" required>
+    <br>
+    <hr>
+    Theory <input type="text" class="form-control datepicker" name="gs_theory" value="" required>
+    <input type="radio" value="1" name="gs_theory_status"> Pass <input type="radio" value="0" name="gs_theory_status">
+    Fail <br>
+    HHMD <input type="text" class="form-control datepicker" name="gs_hhmd" value="" required>
+    <input type="radio" value="1" name="gs_hhmd_status"> Pass <input type="radio" value="0" name="gs_hhmd_status"> Fail
+    <br>
+    PDS <input type="text" class="form-control datepicker" name="gs_pds" value="" required>
+    <input type="radio" value="1" name="gs_pds_status"> Pass <input type="radio" value="0" name="gs_pds_status"> Fail
+    <br>
+    WTMD <input type="text" class="form-control datepicker" name="gs_wtmd" value="" required>
+    <input type="radio" value="1" name="gs_wtmd_status"> Pass <input type="radio" value="0" name="gs_wtmd_status"> Fail
+    <br>
+    FL <input type="text" class="form-control datepicker" name="gs_fl" value="" required>
+    <input type="radio" value="1" name="gs_fl_status"> Pass <input type="radio" value="0" name="gs_fl_status"> Fail <br>
+    ETD <input type="text" class="form-control datepicker" name="gs_etd" value="" required>
+    <input type="radio" value="1" name="gs_etd_status"> Pass <input type="radio" value="0" name="gs_etd_status"> Fail
+    <br>
+    MBS <input type="text" class="form-control datepicker" name="gs_mbs" value="" required>
+    <input type="radio" value="1" name="gs_mbs_status"> Pass <input type="radio" value="0" name="gs_mbs_status"> Fail
+    <br><br>
+
+    <% if (user.role == 1) { %>
+    <input type="submit" class="form-control" value="Add New Record" />
+    <% } %>
+  </form>
+  <hr>
+</div>
 
 <% include partials/footer %>

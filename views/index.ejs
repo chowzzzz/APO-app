@@ -26,7 +26,10 @@
       <% if (error != null) { %>
       <h5>Error! The NRIC does not exist</h5>
       <% } %>
-      <h4>Welcome, <%=user.fname%> <%=user.lname%></h4>
+      <h4>Welcome,
+        <%=user.fname%>
+        <%=user.lname%>
+      </h4>
       <hr id="index-hr">
       <h6>Who do you want to search for today?</h6>
       </br>
@@ -35,11 +38,11 @@
           <input type="text" class="form-control" placeholder="Search Officer's NRIC" name="search_nric" id="search_nric"
             aria-describedby="search_nric" size="9" maxlength="9">
           <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="submit" id="search_nric"><i class="fas fa-search"></i></button>
+            <button class="btn btn-primary" type="submit" id="search_nric"><i class="fas fa-search"></i></button>
           </div>
         </div>
       </form>
-      <a class="btn btn-primary col-5 text-center" href="#">Administrators</a></br>
+      <a class="btn btn-primary col-5 text-center" href="/admin/">Administrators</a></br>
       <a class="btn btn-primary col-5 text-center" href="/officers/">Officers</a>
     </div>
   </div>

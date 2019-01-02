@@ -3,33 +3,16 @@ html, body {
   height: 100%;
 }
 
-.btn-primary,
-.btn-primary:active,
-.btn-primary:focus{
-  margin-bottom: 10px;
-  background-color: #00205B;
-  border-color: #00205B;
-  color:white;
+.btn-danger,
+.btn-danger:active,
+.btn-danger:focus{
+  background-color: #C8102E;
+  border-color: #C8102E;
 }
 
-.btn-primary:hover{
-  background-color: rgb(42, 80, 131);
-  border-color: rgb(42, 80, 131);
-  color: white;
-}
-
-.btn,
-.btn:active,
-.btn:focus{
-  margin-bottom: 10px;
-  background-color: #00205B;
-  border-color: #00205B;
-  color:white;
-}
-
-.btn:hover{
-  background-color: rgb(42, 80, 131);
-  border-color: rgb(42, 80, 131);
+.btn-danger:hover{
+  background-color: rgba(200, 16, 47, 0.835);
+  border-color: rgba(200, 16, 47, 0.835);
   color: white;
 }
 
