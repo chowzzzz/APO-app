@@ -67,10 +67,6 @@ html, body {
   max-width: 60%;
 }
 
-table {
-  padding: 10px;
-}
-
 /* Components record page */
 .card {
   max-width: 80%;

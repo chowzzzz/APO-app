@@ -9,8 +9,8 @@
   <h4 style="text-align:center;">List of Officers</h4>
   <hr>
   <div class="row">
-    <table class="table table-hover table-responsive-sm col-sm-10" align="center">
-      <thead>
+    <table class="table table-hover table-striped table-responsive-sm col-sm-10 mx-auto">
+      <thead class="thead-light">
         <tr>
           <th>Name</th>
           <th>NRIC</th>
@@ -37,16 +37,14 @@
       <% } %>
     </table>
   </div>
-  <div class="text-center">
+
+  <div class="mb-4 col-11 mx-auto">
     <% if (user.role == 1) { %>
-    <a href="new/" class="btn btn-primary col-sm-10">Add New Officer</a>
+    <a href="new/" class="btn btn-primary col-sm-6">Add New Officer</a>
     <% } %>
-    <div class="row">
-      <div class="col-sm-12" align="center">
-        <a href="expiring" class="btn btn-primary col-sm-5">Expiring Certification</a>
-        <a href="failure/" class="btn btn-primary col-sm-5">Security Tests & Breach Failures</a>
-      </div>
-    </div>
+    <br />
+    <a href="#" class="btn btn-primary col-sm-3">Expiring Certification</a>
+    <a href="#" class="btn btn-primary col-sm-3">Security Tests & Breach Failures</a>
   </div>
 </div>
 

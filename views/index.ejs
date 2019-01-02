@@ -21,8 +21,8 @@
 </nav>
 
 <div class="index-container d-flex">
-  <div class="row align-self-center w-100">
-    <div class="col-6 mx-auto">
+  <div class="align-self-center w-100">
+    <div class="col-sm-6 mx-auto">
       <% if (error != null) { %>
       <h5>Error! The NRIC does not exist</h5>
       <% } %>
@@ -33,19 +33,24 @@
       <hr id="index-hr">
       <h6>Who do you want to search for today?</h6>
       </br>
-      <form action="/" method="POST">
+    </div>
+    <form action="/" method="POST">
+      <div class="row col-md-6 mx-auto">
         <div class="input-group mb-3 mx-auto" id="searchInput">
-          <input type="text" class="form-control" placeholder="Search Officer's NRIC" name="search_nric" id="search_nric"
-            aria-describedby="search_nric" size="9" maxlength="9">
+          <input type="text" class="form-control" placeholder="NRIC/FIN" name="search_nric" id="search_nric"
+            aria-describedby="search_nric" maxlength="9">
           <div class="input-group-append">
             <button class="btn btn-primary" type="submit" id="search_nric"><i class="fas fa-search"></i></button>
           </div>
         </div>
-      </form>
+      </div>
+    </form>
+
+    <div class="col-md-6 mx-auto">
+
       <a class="btn btn-primary col-5 text-center" href="/admin/">Administrators</a></br>
       <a class="btn btn-primary col-5 text-center" href="/officers/">Officers</a>
     </div>
   </div>
-</div>
 
-<% include partials/footer %>
+  <% include partials/footer %>
