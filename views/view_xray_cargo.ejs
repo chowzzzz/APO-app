@@ -21,76 +21,172 @@ function UNIXConverter(UNIX_timestamp){
   }
 }
 %>
+
 <head>
   <script>
-  function UNIXConverter(UNIX_timestamp){
-    try {
-      if (UNIX_timestamp == 0) {
+    function UNIXConverter(UNIX_timestamp) {
+      try {
+        if (UNIX_timestamp == 0) {
+          return "";
+        }
+        var a = new Date(UNIX_timestamp * 1000);
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        var year = a.getFullYear();
+        var month = a.getMonth() + 1;
+        var date = a.getDate();
+        var hour = a.getHours();
+        var min = a.getMinutes();
+        var sec = a.getSeconds();
+        var time = date + '/' + month + '/' + year;
+        return time;
+      } catch (error) {
         return "";
       }
-      var a = new Date(UNIX_timestamp * 1000);
-      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      var year = a.getFullYear();
-      var month = a.getMonth() + 1;
-      var date = a.getDate();
-      var hour = a.getHours();
-      var min = a.getMinutes();
-      var sec = a.getSeconds();
-      var time = date + '/' + month + '/' + year;
-      return time;
-    } catch (error) {
-      return "";
     }
-  }
 
-  $(document).ready(function() { // the whole function below sets the value of the Xray HBS (from firebase) to the various textboxes. this is a neater way to do it as compared to doing it in the value fields.
-    $('input[name=overall_status][value='+<%=xray_cargo_details.overall_status%>+']').attr('checked', 'checked');
-    $('input[name=xray_cargo_theory_status][value='+<%=xray_cargo_details.theory.status%>+']').attr('checked', 'checked');
-    $('input[name=xray_cargo_etd_status][value='+<%=xray_cargo_details.etd.status%>+']').attr('checked', 'checked');
-    $('input[name=xray_cargo_iit_status][value='+<%=xray_cargo_details.iit.status%>+']').attr('checked', 'checked');
+    $(document).ready(function () { // the whole function below sets the value of the Xray HBS (from firebase) to the various textboxes. this is a neater way to do it as compared to doing it in the value fields.
+      $('input[name=overall_status][value=' +<%=xray_cargo_details.overall_status %> +']').attr('checked', 'checked');
+      $('input[name=xray_cargo_theory_status][value=' +<%=xray_cargo_details.theory.status %> +']').attr('checked', 'checked');
+      $('input[name=xray_cargo_etd_status][value=' +<%=xray_cargo_details.etd.status %> +']').attr('checked', 'checked');
+      $('input[name=xray_cargo_iit_status][value=' +<%=xray_cargo_details.iit.status %> +']').attr('checked', 'checked');
 
-    $('input[name=certified_date]').val(UNIXConverter(<%=xray_cargo_details.certified_date%>));
-    $('input[name=xray_cargo_theory]').val(UNIXConverter(<%=xray_cargo_details.theory.date%>));
-    $('input[name=xray_cargo_etd]').val(UNIXConverter(<%=xray_cargo_details.etd.date%>));
-    $('input[name=xray_cargo_iit]').val(UNIXConverter(<%=xray_cargo_details.iit.date%>));
+      $('input[name=certified_date]').val(UNIXConverter(<%=xray_cargo_details.certified_date %>));
+      $('input[name=xray_cargo_theory]').val(UNIXConverter(<%=xray_cargo_details.theory.date %>));
+      $('input[name=xray_cargo_etd]').val(UNIXConverter(<%=xray_cargo_details.etd.date %>));
+      $('input[name=xray_cargo_iit]').val(UNIXConverter(<%=xray_cargo_details.iit.date %>));
 
-    $("#ACForm").on("submit",function(e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
-      var alert = confirm("Are you sure you want to edit/delete the Xray Cargo?");
-      if (alert == true) {
-        return true;
-      } else {
-        e.preventDefault();
-        return false;
-      }
+      $("#ACForm").on("submit", function (e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
+        var alert = confirm("Are you sure you want to edit/delete the Xray Cargo?");
+        if (alert == true) {
+          return true;
+        } else {
+          e.preventDefault();
+          return false;
+        }
+      });
     });
-  });
   </script>
 </head>
-    <div class="container-fluid">
-      <div class="row">
-        &nbsp;
-      </div>
-      <h4>Xray Cargo Record</h4>
-      <hr>
-      <form action='/xray_cargo/<%=officer_details.nric%>/<%=xray_cargo_id%>' method="POST" id="ACForm">
-        <b>Name:</b> <%=officer_details.fname%> <%=officer_details.lname%> <br>
-        <b>NRIC:</b> <%=officer_details.nric%> <br>
-        <b>Status:</b> <input type="radio" value="1" name="overall_status"> Pass <input type="radio" value="0" name="overall_status"> Fail <br>
-        <b>Certified Date:</b> <input type="text" class="form-control datepicker" name="certified_date" value="" required>  <br>
-        <hr>
-        Theory <input type="text" class="form-control datepicker" name="xray_cargo_theory" value="" required>
-        <input type="radio" value="1" name="xray_cargo_theory_status"> Pass <input type="radio" value="0" name="xray_cargo_theory_status"> Fail <br>
-        ETD <input type="text" class="form-control datepicker" name="xray_cargo_etd" value="" required>
-        <input type="radio" value="1" name="xray_cargo_etd_status"> Pass <input type="radio" value="0" name="xray_cargo_etd_status"> Fail <br>
-        IIT <input type="text" class="form-control datepicker" name="xray_cargo_iit" value="" required>
-        <input type="radio" value="1" name="xray_cargo_iit_status"> Pass <input type="radio" value="0" name="xray_cargo_iit_status"> Fail <br><br>
+<div class="container-fluid">
+  <h4 class="mt-4">X-ray Cargo Record</h4>
+  <hr>
 
-        <% if (user.role == 1) { %>
-        <input type="submit" class="form-control" value="Edit Record" name="edit_btn"/> <br>
-        <input type="submit" class="form-control btn btn-danger" value="Delete Record" name="delete_btn"/>
-        <% } %>
-      </form>
-      <hr>
+  <form action='/xray_cargo/<%=officer_details.nric%>/<%=xray_cargo_id%>' method="POST" id="CARGOForm">
+    <div class="card d-flex mx-auto mb-5">
+      <div class="card-header text-left">
+        <div class="d-sm-flex flex-sm-row">
+          <div class="mr-auto">
+            <h6 class="mb-2 font-weight-bold">Name:
+              <%=officer_details.fname%>
+              <%=officer_details.lname%>
+            </h6>
+            <p class="mb-2">NRIC:
+              <%=officer_details.nric%>
+            </p>
+
+            <div class="mb-2">
+              Status:&nbsp;
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="overall_status" id="passStatus" value="1">
+                <label class="form-check-label" for="passStatus">Pass</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="overall_status" id="failStatus" value="0">
+                <label class="form-check-label" for="failStatus">Fail</label>
+              </div>
+            </div>
+          </div>
+
+          <div>
+
+            <div>
+              <label for="xray_cargo_certified_date" class="font-weight-bold">Certified Date:</label>
+              <div class="input-group mb-3">
+                <input type="text" class="form-control datepicker" name="certified_date" id="xray_cargo_certified_date"
+                  value="" required>
+                <div class="input-group-append">
+                  <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="card-body">
+
+        <div class="row mb-2 justify-content-center">
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="xray_cargo_theory">Theory:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="xray_cargo_theory_status" id="xray_cargo_theory_pass"
+                value="1">
+              <label class="form-check-label" for="xray_cargo_theory_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="xray_cargo_theory_status" id="xray_cargo_theory_fail"
+                value="0">
+              <label class="form-check-label" for="xray_cargo_theory_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="xray_cargo_theory" id="xray_cargo_theory" value=""
+                required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="xray_cargo_etd">ETD:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="xray_cargo_etd_status" id="xray_cargo_etd_pass" value="1">
+              <label class="form-check-label" for="xray_cargo_etd_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="xray_cargo_etd_status" id="xray_cargo_etd_fail" value="0">
+              <label class="form-check-label" for="xray_cargo_etd_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="xray_cargo_etd" id="xray_cargo_etd" value=""
+                required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="xray_cargo_iit">IIT:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="xray_cargo_iit_status" id="xray_cargo_iit_pass" value="1">
+              <label class="form-check-label" for="xray_cargo_iit_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="xray_cargo_iit_status" id="xray_cargo_iit_fail" value="0">
+              <label class="form-check-label" for="xray_cargo_iit_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="xray_cargo_iit" id="xray_cargo_iit" value=""
+                required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <% if (user.role == 1) { %>
+      <div class="card-footer">
+        <button type="submit" class="btn btn-primary btn-block" name="edit_btn">Update</button>
+        <button type="submit" class="btn btn-danger btn-block" name="delete_btn">Delete</button>
+      </div>
+      <% } %>
     </div>
+
+
+  </form>
+</div>
 
 <% include partials/footer %>
