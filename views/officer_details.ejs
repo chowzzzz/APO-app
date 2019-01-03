@@ -71,107 +71,181 @@ if (officer_details.certification !== undefined) {
 
 %>
 <div class="container-fluid">
-  <div class="row">
-    &nbsp;
-  </div>
-  <div class="row justify-content-center">
-    <h4>Officer Detail:
-    </h4>
-  </div>
-
-  <hr>
-  <div class="row justify-content-center">
-    <div class="col-9">
-      Name:
-      <%=officer_details.fname%>
-      <%=officer_details.lname%> <br>
-      NRIC:
-      <%=nric%> <br>
-      D.O.B:
-      <%=officer_details.dob%>
-    </div>
-  </div>
+  <h4 class="mt-4">
+    <%=officer_details.fname%>
+    <%=officer_details.lname%>'s Details</h4>
   <hr>
 
   <form action='/officers/<%=nric%>/' method="POST">
-    <div class="row justify-content-center">
-      <div class="col-sm-3">
-        Certification Card No.: <input type="text" class="form-control" name="cert_card_no" value="<%=officer_details.cert_card_no%>"
-          <% if (user.role > 1) { %> readonly <% } %> required>
-      </div>
-      <div class="col-sm-3">
-        Organisation: <input type="text" class="form-control" name="organisation" value="<%=officer_details.organisation%>"
-          <% if (user.role > 1) { %> readonly <% } %> required>
-      </div>
-      <div class="col-sm-3">
-        <% if (officer_details.gender == "0") { } %>
-        Gender: <select class="form-control" name="gender" <% if (user.role > 1) { %> readonly <% } %> required>
-          <option value="0" <% if (officer_details.gender=="0" ) {%> selected
-            <% } %>>Male</option>
-          <option value="1" <% if (officer_details.gender=="1" ) {%> selected
-            <% } %>>Female</option>
-        </select> <br>
-      </div>
-    </div>
+    <div class="card d-flex mx-auto mb-5 text-left">
+      <div class="card-body px-4">
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="fname">First Name:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="fname" id="fname" value="<%=officer_details.fname%>" <% if
+                (user.role> 1) { %> readonly
+              <% } %> required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="lname">Last Name:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="lname" id="lname" value="<%=officer_details.lname%>" <% if
+                (user.role> 1) { %> readonly
+              <% } %> required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="nric">NRIC:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="nric" id="nric" value="<%=nric%>" <% if (user.role> 1) {
+              %>
+              readonly
+              <% } %> required>
+            </div>
+          </div>
+        </div>
 
-    <div class="row justify-content-center">
-      <div class="col-sm-3">
-        Serial No: <input type="text" class="form-control" name="serial_no" value="<%=officer_details.serial_no%>"
-          <% if (user.role > 1) { %> readonly <% } %> required>
-      </div>
-      <div class="col-sm-3">
-        Designation: <input type="text" class="form-control" name="designation" value="<%=officer_details.designation%>"
-          <% if (user.role > 1) { %> readonly <% } %> required>
-      </div>
-      <div class="col-sm-3">
-        Rank: <input type="text" class="form-control" name="rank" value="<%=officer_details.rank%>" <% if (user.role > 1) { %> readonly <% } %> required> <br>
-      </div>
-    </div>
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="dob">D.O.B.:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="dob" id="dob" value="<%=officer_details.dob%>"
+                required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="gender">Gender:</label><br />
+            <div class="input-group mb-3">
+              <% if (officer_details.gender == "0") { } %>
+              <select class="custom-select" id="gender" name="gender" <% if (user.role> 1) { %> readonly
+                <% } %> required>
+                <option value="0" <% if (officer_details.gender=="0" ) {%> selected
+                  <% } %>>Male</option>
+                <option value="1" <% if (officer_details.gender=="1" ) {%> selected
+                  <% } %>>Female</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="cert_card_no">Certification Card No.:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="cert_card_no" id="cert_card_no" value="<%=officer_details.cert_card_no%>"
+                <% if (user.role> 1) { %> readonly
+              <% } %> required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="organisation">Organisation:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="organisation" id="organisation" value="<%=officer_details.organisation%>"
+                <% if (user.role> 1) { %> readonly
+              <% } %> required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="serial_no">Serial No.:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="serial_no" id="serial_no" value="<%=officer_details.serial_no%>"
+                <% if (user.role> 1) { %> readonly
+              <% } %> required>
+            </div>
+          </div>
+        </div>
 
-    <div class="row justify-content-center">
-      <div class="col-sm-9">
-        Remarks: <textarea class="form-control" name="remarks" <% if (user.role > 1) { %> readonly <% } %> required><%=officer_details.remarks%></textarea>
-      </div>
-    </div>
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="designation">Designation:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="designation" id="designation" value="<%=officer_details.designation%>"
+                <% if (user.role> 1) { %> readonly
+              <% } %> required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="ranks">Ranks:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="ranks" id="ranks" value="<%=officer_details.rank%>" <% if
+                (user.role> 1) { %> readonly
+              <% } %> required>
+            </div>
+          </div>
+        </div>
 
-    <hr>
-    <h4 align="center">Certified On:</h4>
+        <div class="row mb-2">
+          <div class="col-12">
+            <label class="font-weight-bold mb-0" for="remarks">Remarks:</label><br />
+            <div class="input-group mb-3">
+              <textarea class="form-control" name="remarks" id="remarks" <% if (user.role> 1) { %> readonly <% } %> required><%=officer_details.remarks%></textarea>
+            </div>
+          </div>
+        </div>
 
-    <div class="row justify-content-center">
-      <div class="col-sm-3">
-        General Screener: <input type="text" class="form-control" name="general_screener" value="<%=UNIXConverter(gs_date)%>" readonly>
-      </div>
-      <div class="col-sm-3">
-        Access Control: <input type="text" class="form-control" name="access_control" value="<%=UNIXConverter(ac_date)%>" readonly>
-      </div>
-    </div>
+        <hr>
+        <h5 class="card-title text-center my-3">Certified On:</h5>
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="general_screener">General Screener:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="general_screener" id="general_screener" value="<%=UNIXConverter(gs_date)%>"
+                <% if (user.role> 1) { %> readonly
+              <% } %> required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="access_control">Access Control:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="access_control" id="access_control" value="<%=UNIXConverter(ac_date)%>"
+                <% if (user.role> 1) { %> readonly
+              <% } %> required>
+            </div>
+          </div>
+        </div>
 
-    <div class="row justify-content-center">
-      <div class="col-sm-3">
-        X-Ray HBS: <input type="text" class="form-control" name="xray_hbs" value="<%=UNIXConverter(xray_hbs_date)%>" readonly>
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="xray_hbs">Xray HBS:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="xray_hbs" id="xray_hbs" value="<%=UNIXConverter(xray_hbs_date)%>"
+                <% if (user.role> 1) { %> readonly
+              <% } %> required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="xray_pb">Xray PB:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="xray_pb" id="xray_pb" value="<%=UNIXConverter(xray_pb_date)%>"
+                <% if (user.role> 1) { %> readonly
+              <% } %> required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="xray_cargo">Xray Cargo:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="xray_cargo" id="xray_cargo" value="<%=UNIXConverter(xray_cargo_date)%>"
+                <% if (user.role> 1) { %> readonly
+              <% } %> required>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="col-sm-3">
-        X-Ray Pre-Board: <input type="text" class="form-control" name="xray_pb" value="<%=UNIXConverter(xray_pb_date)%>" readonly>
-      </div>
-      <div class="col-sm-3">
-        X-Ray Cargo: <input type="text" class="form-control" name="xray_cargo" value="<%=UNIXConverter(xray_cargo_date)%>" readonly>
-      </div>
-    </div>
 
-    <!---<div class="row justify-content-center">
-      <div class="col-sm-3">
-        X-Ray Cargo: <input type="text" class="form-control datepicker" name="xray_cargo" value="<%=UNIXConverter(xray_cargo_date)%>">
-      </div>
-    </div>-->
-
-    <br>
-    <div class="row justify-content-center">
       <% if (user.role == 1) { %>
-      <input type="submit" class="btn btn-outline-dark col-9" value="Update" name="update_btn"> <br>
-      <input type="submit" class="col-9 btn btn-danger" value="Delete" name="delete_btn" id="delete_btn">
+      <div class="card-footer">
+        <button type="submit" class="btn btn-primary btn-block" name="update_btn">Update</button>
+        <button type="submit" class="btn btn-danger btn-block" name="delete_btn">Delete</button>
+      </div>
       <% } %>
     </div>
   </form>
 </div>
+
 
 <% include partials/footer %>

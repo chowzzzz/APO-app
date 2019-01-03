@@ -18,64 +18,120 @@ var message;
 %>
 <link href="css/main.css" rel="stylesheet">
 
-    <div class="container-fluid">
-      <div class="row">
-        &nbsp;
-      </div>
-      <h3><% if (message != null) { %>Message: <%=message%><% } %></h3>
-      <center><h4>Create New Officer</h4></center>
-    </br>
-      <form action='/officers/new/' method="POST">
-        <div class="row">
-          <div class="col-3">
-            NRIC: <input type="text" class="form-control" name="nric" id="nric_textbox" maxlength="9" size="9" required>
+<div class="container-fluid">
+  <h3 class="my-4">
+    <% if (message != null) { %>Message:
+    <%=message%>
+    <% } %>
+  </h3>
+  <h4 class="my-4">Add New Officer</h4>
+  <hr>
+
+  <form action='/officers/new/' method="POST">
+    <div class="card d-flex mx-auto mb-5 text-left">
+      <div class="card-body px-4">
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="fname">First Name:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="fname" id="fname" value="" required>
+            </div>
           </div>
-          <div class="col-3">
-            First Name: <input type="text" class="form-control" name="fname" required>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="lname">Last Name:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="lname" id="lname" value="" required>
+            </div>
           </div>
-          <div class="col-3">
-            Last Name: <input type="text" class="form-control" name="lname" required>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="nric">NRIC:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="nric" id="nric" value="" required>
+            </div>
           </div>
         </div>
-      </br>
-      Email: <input type="text" class="form-control col-9" name="email" required>
-      </br>
-      <div class="row">
-        <div class="col-3">
-          Certification Card No.: <input type="text" class="form-control" name="cert_card_no" required>
+
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="dob">D.O.B.:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="dob" id="dob" value="" required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="gender">Gender:</label><br />
+            <div class="input-group mb-3">
+              <select class="custom-select" id="gender">
+                <option selected>Select</option>
+                <option value="0">Male</option>
+                <option value="1">Female</option>
+              </select>
+            </div>
+          </div>
         </div>
-        <div class="col-3">
-          Organisation: <input type="text" class="form-control" name="organisation" required>
+        <hr>
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="cert_card_no">Certification Card No.:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="cert_card_no" id="cert_card_no" value=""
+                required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="organisation">Organisation:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="organisation" id="organisation" value=""
+                required>
+            </div>
+          </div>
+
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="serial_no">Serial No.:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="serial_no" id="serial_no" value="" required>
+            </div>
+          </div>
         </div>
-        <div class="col-3">
-          Gender: <select class="form-control" name="gender" required><option value="0">Male</option><option value="1">Female</option></select>
+
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="designation">Designation:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="designation" id="designation" value="" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="ranks">Ranks:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="ranks" id="ranks" value="" required>
+            </div>
+          </div>
         </div>
-      </div>
-      </br>
-      <div class="row">
-        <div class="col-3">
-          Serial No: <input type="text" class="form-control" name="serial_no" required>
-        </div>
-        <div class="col-3">
-          Designation: <input type="text" class="form-control" name="designation" required>
-        </div>
-        <div class="col-3">
-          Rank: <input type="text" class="form-control" name="rank" required>
+
+        <div class="row mb-2">
+          <div class="col-12">
+            <label class="font-weight-bold mb-0" for="remarks">Remarks:</label><br />
+            <div class="input-group mb-3">
+              <textarea class="form-control" name="remarks" id="remarks" required></textarea>
+            </div>
+          </div>
         </div>
       </div>
       </br>
       Remarks: <textarea class="form-control col-9" name="remarks" required></textarea> <br>
 
-      <!--<h4>Certified On:</h4>
-      General Screener: <input type="text" class="form-control datepicker" name="general_screener" > <br>
-      Access Control: <input type="text" class="form-control datepicker" name="access_control" > <br>
-      ETD: <input type="text" class="form-control datepicker" name="etd" > <br>
-      Front Loader: <input type="text" class="form-control datepicker" name="front_loader" > <br>
-      X-Ray HBS: <input type="text" class="form-control datepicker" name="xray_hbs" > <br>
-      X-Ray Pre-Board: <input type="text" class="form-control datepicker" name="xray_pb" > <br>
-      X-Ray Cargo: <input type="text" class="form-control datepicker" name="xray_cargo" > <br>-->
-      <button type="submit" class="btn btn-lg btn-primary btn-block col-9">Create</button>
-      </form>
+      <% if (user.role == 1) { %>
+      <div class="card-footer">
+        <button type="submit" class="btn btn-primary btn-block" name="add_btn">Add</button>
+      </div>
+      <% } %>
     </div>
+  </form>
+</div>
+
 
 <% include partials/footer %>
