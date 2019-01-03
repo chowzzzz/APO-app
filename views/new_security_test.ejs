@@ -1,0 +1,121 @@
+<% include partials/header %>
+<% include partials/nav %>
+<head>
+</head>
+<%
+function UNIXConverter(UNIX_timestamp){
+  try {
+    if (UNIX_timestamp == 0) {
+      return "";
+    }
+    var a = new Date(UNIX_timestamp * 1000);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = a.getFullYear();
+    var month = a.getMonth() + 1;
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    var sec = a.getSeconds();
+    var time = date + '/' + month + '/' + year;
+    return time;
+  } catch (error) {
+    return "";
+  }
+}
+%>
+    <div class="container-fluid">
+      <div class="row">
+        &nbsp;
+      </div>
+      <h4>Add New Security Test Record</h4>
+      <hr>
+      <b>Status:</b> <input type="radio" value="1" name="overall_status"> Pass <input type="radio" value="0" name="overall_status"> Fail <br>
+      <input type="text" class="form-control datepicker" name="st_date" />
+      <hr>
+      <form action='/security_test/new/<%=officer_details.nric%>/' method="POST">
+        <b>Name:</b> <%=officer_details.fname%> <%=officer_details.lname%> <br>
+        <b>NRIC:</b> <%=officer_details.nric%> <br>
+        <b>Status:</b> <input type="radio" value="1" name="overall_status"> Pass <input type="radio" value="0" name="overall_status"> Fail <br>
+        <b> Test Name:</b> <input type="text" class="form-control" name="st_name" required>
+        <div class="row"> <!-- 1st Row -->
+          <div class="col-3">
+            Date: <input type="text" class="form-control datepicker" name="st_date" value="" required>
+          </div>
+          <div class="col-3">
+            Time: <input type="text" class="form-control" name="st_time" required>
+          </div>
+          <div class="col-3">
+            Location: <input type="text" class="form-control" name="st_location" required>
+          </div>
+        </div>
+        </br>
+        <div class="row"> <!-- 2nd Row -->
+          <div class="col-3">
+            APO/AvSO: <input type="text" class="form-control" name="st_AvSOAPO" required>
+          </div>
+          <div class="col-3">
+            Cert Expiration: <input type="text" class="form-control" name="st_certExp" required>
+          </div>
+          <div class="col-3">
+            Year(s) of Service: <input type="text" class="form-control" name="st_svrYr" required>
+          </div>
+        </div>
+        <div class="row"> <!-- 3rd Row -->
+          <div class="col-3">
+            Mode: <input type="text" class="form-control" name="st_mode" required>
+          </div>
+          <div class="col-3">
+            Entity: <input type="text" class="form-control" name="st_entity" required>
+          </div>
+          <div class="col-3">
+            STO: <input type="text" class="form-control" name="st_sto" required>
+          </div>
+        </div>
+        <div class="row"> <!-- 4th Row -->
+          <div class="col-3">
+            EM: <input type="text" class="form-control" name="st_em" required>
+          </div>
+          <div class="col-3">
+            RT: <input type="text" class="form-control" name="st_rt" required>
+          </div>
+          <div class="col-3">
+            SO: <input type="text" class="form-control" name="st_so" required>
+          </div>
+        </div>
+        <div class="row"> <!-- 5th Row -->
+          <div class="col-3">
+            Cert Seized: <br>
+            <select type="text" class="form-control" name="st_certSeized" required>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div class="col-3">
+              Category: <br>
+              <select type="text" class="form-control" name="st_cat" required>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </div>
+          <div class="col-3">
+            Supervisor: <input type="text" class="form-control" name="st_supervisor" required>
+          </div>
+        </div>
+        <div class="row"> <!-- 6th Row -->
+          <div class="col-3">
+            Image: <input type="text" class="form-control" name="st_image" required>
+          </div>
+          <div class="col-3">
+            Remarks: <input type="text" class="form-control" name="st_remarks" required>
+          </div>
+        </div>
+
+        <% if (user.role == 1) { %>
+        <input type="submit" class="form-control" value="Add New Record"/>
+        <% } %>
+      </form>
+      <hr>
+    </div>
+
+<% include partials/footer %>

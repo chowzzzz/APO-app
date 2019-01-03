@@ -833,6 +833,144 @@ router.post('/xray_cargo/:nric/:xray_cargo_id', functions.verifyAdmin, function 
   }
 });
 
+//Security Test Section
+
+router.get('/security_test', functions.verifyAdmin, functions.getOfficers, function (req, res) {
+  res.render('main_security_test', { user: req.user, officer_details: req.officer_details });
+})
+
+router.get('security_test/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getSTRecords, function (req, res) {
+  res.render('security_test', { user: req.user, officer_details: req.officer_details, st_details: req.st_details });
+})
+
+router.get('/security_test/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
+  var officer_id = req.params.id;
+  res.render('new_security_test', { user: req.user, officer_details: req.officer_details })
+})
+
+router.post('/security_test/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
+  var officer_id = req.params.nric;
+
+  var overall_status = req.body.overall_status;
+  var st_name = req.body.st_name;
+  var st_date = functions.dateToUNIX(req.body.st_date);
+  var st_time = req.body.st_time;
+  var st_location = req.body.st_location;
+  var st_AvSOAPO = req.body.st_AvSOAPO;
+  var st_certExp = req.body.st_certExp;
+  var st_svrYr = req.body.st_svrYr;
+  var st_mode = req.body.st_mode;
+  var st_entity = req.body.st_entity;
+  var st_sto = req.body.st_sto;
+  var st_em = req.body.st_em;
+  var st_rt = req.body.st_rt;
+  var st_so = req.body.st_so;
+  var st_certSeized = req.body.st_certSeized;
+  var st_cat = req.body.st_cat;
+  var st_supervisor = req.body.st_supervisor;
+  var st_image = req.body.st_image;
+  var st_remarks = req.body.st_remarks;
+
+
+  var data = {
+    overall_status: overall_status,
+    st_name: st_name,
+    st_date: st_date,
+    st_time: st_time,
+    st_location: st_location,
+    st_AvSOAPO: st_AvSOAPO,
+    st_certExp: st_certExp,
+    st_svrYr: st_svrYr,
+    st_mode: st_mode,
+    st_entity: st_entity,
+    st_sto: st_sto,
+    st_em: st_em,
+    st_rt: st_rt,
+    st_so: st_so,
+    st_certSeized: st_certSeized,
+    st_cat: st_cat,
+    st_supervisor: st_supervisor,
+    st_image: st_image,
+    st_remarks: st_remarks
+  }
+
+  var insertData = firebase.db.ref("officers/" + officer_id + "/security_records/security_test/").push(data, function (error) {
+    if (!error) {
+      var dataId = insertData.key;
+      res.redirect('/security_test/' + officer_id + '/' + dataId);
+    }
+  });
+})
+
+router.get('/security_test/:nric/:st_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachSTRecord, function (req, res) {
+  res.render('view_security_test', { user: req.user, officer_details: req.officer_details, st_id: req.params.st_id, st_details: req.st_details });
+});
+
+router.post('/security_test/:nric/:st_id', functions.verifyAdmin, function (req, res) {
+  var officer_id = req.params.nric;
+  var st_id = req.params.st_id;
+
+  var editBtn = req.body.edit_btn;
+  var deleteBtn = req.body.delete_btn;
+
+  if (deleteBtn != null) { // IF DELETE BUTTON PRESSED
+    firebase.db.ref("officers/" + officer_id + "/security_records/security_test/" + st_id).set(null, function (error) {
+      if (!error) {
+        res.redirect('/security_test/' + officer_id);
+      }
+    });
+  } else if (editBtn != null) {
+    var overall_status = req.body.overall_status;
+    var st_name = req.body.st_name;
+    var st_date = functions.dateToUNIX(req.body.st_date);
+    var st_time = req.body.st_time;
+    var st_location = req.body.st_location;
+    var st_AvSOAPO = req.body.st_AvSOAPO;
+    var st_certExp = req.body.st_certExp;
+    var st_svrYr = req.body.st_svrYr;
+    var st_mode = req.body.st_mode;
+    var st_entity = req.body.st_entity;
+    var st_sto = req.body.st_sto;
+    var st_em = req.body.st_em;
+    var st_rt = req.body.st_rt;
+    var st_so = req.body.st_so;
+    var st_certSeized = req.body.st_certSeized;
+    var st_cat = req.body.st_cat;
+    var st_supervisor = req.body.st_supervisor;
+    var st_image = req.body.st_image;
+    var st_remarks = req.body.st_remarks;
+
+
+    var data = {
+      overall_status: overall_status,
+      st_name: st_name,
+      st_date: st_date,
+      st_time: st_time,
+      st_location: st_location,
+      st_AvSOAPO: st_AvSOAPO,
+      st_certExp: st_certExp,
+      st_svrYr: st_svrYr,
+      st_mode: st_mode,
+      st_entity: st_entity,
+      st_sto: st_sto,
+      st_em: st_em,
+      st_rt: st_rt,
+      st_so: st_so,
+      st_certSeized: st_certSeized,
+      st_cat: st_cat,
+      st_supervisor: st_supervisor,
+      st_image: st_image,
+      st_remarks: st_remarks
+    }
+
+    firebase.db.ref("officers/" + officer_id + "/security_records/security_test/" + st_id).update(data, function (error) {
+      if (!error) {
+        res.redirect('/security_test/' + officer_id + '/' + st_id);
+      }
+    });
+  }
+});
+
 //Admin Section
 
 router.get('/admin', functions.verifyAdmin, functions.getAllAdmin, function (req, res) {
