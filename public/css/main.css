@@ -48,6 +48,10 @@ html, body {
   background: url(/res/Preloader_3.gif) center no-repeat #fff;
 }
 
+/* navbar */
+.navbar {
+  background-color: #888B8D;
+}
 
 /* index */
 .index-container {

@@ -1,4 +1,4 @@
-<nav class="navbar navbar-dark navbar-expand-lg border-bottom shadow-sm" style="background-color: #888B8D">
+<nav class="navbar navbar-dark navbar-expand-lg shadow-sm">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navBar" aria-controls="navBar"
     aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -6,40 +6,30 @@
 
   <div class="collapse navbar-collapse" id="navBar">
     <ul class="navbar-nav mr-auto">
-      <li>
-        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+      <li class="nav-item">
+        <a class="nav-link" href="/">Home</span></a>
       </li>
-      <li>
+      <li class="nav-item">
         <a class="nav-link" href="/officers/">Officers</a>
       </li>
-      <li>
+      <li class="nav-item">
         <a class="nav-link" href="/access_control/">Access Control</a>
       </li>
-      <li>
+      <li class="nav-item">
         <a class="nav-link" href="/general_screener/">General Screener</a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+        <a class="nav-link dropdown-toggle" href="#" id="xrayDropdown" role="button" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
-          Dropdown
+          Xray
         </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
+        <div class="dropdown-menu" aria-labelledby="xrayDropdown">
+          <a class="dropdown-item" href="/xray_hbs/">Xray HBS</a>
+          <a class="dropdown-item" href="/xray_pb/">Xray PB</a>
+          <a class="dropdown-item" href="/xray_cargo/">Xray Cargo</a>
         </div>
       </li>
-      <li>
-        <a class="nav-link" href="/xray_hbs/">Xray HBS</a>
-      </li>
-      <li>
-        <a class="nav-link" href="/xray_pb/">Xray PB</a>
-      </li>
-      <li>
-        <a class="nav-link" href="/xray_cargo/">Xray Cargo</a>
-      </li>
-      <li>
+      <li class="nav-item">
         <a class="nav-link" href="/admin/">Admin</a>
       </li>
     </ul>
