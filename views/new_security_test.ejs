@@ -1,7 +1,5 @@
 <% include partials/header %>
 <% include partials/nav %>
-<head>
-</head>
 <%
 function UNIXConverter(UNIX_timestamp){
   try {
@@ -23,99 +21,214 @@ function UNIXConverter(UNIX_timestamp){
   }
 }
 %>
-    <div class="container-fluid">
-      <div class="row">
-        &nbsp;
+<div class="container-fluid">
+
+  <h4 class="mt-4">Add New Security Test Record</h4>
+  <hr>
+
+  <form action='/security_test/new/<%=officer_details.nric%>/' method="POST">
+    <div class="card d-flex mx-auto mb-5">
+      <div class="card-header text-left">
+        <div class="d-sm-flex flex-sm-row">
+          <div class="mr-auto">
+            <h6 class="mb-2 font-weight-bold">Name:
+              <%=officer_details.fname%>
+              <%=officer_details.lname%>
+            </h6>
+            <p class="mb-2">NRIC:
+              <%=officer_details.nric%>
+            </p>
+
+            <div class="mb-2">
+              Status:&nbsp;
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="overall_status" id="passStatus" value="1">
+                <label class="form-check-label" for="passStatus">Pass</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="overall_status" id="failStatus" value="0">
+                <label class="form-check-label" for="failStatus">Fail</label>
+              </div>
+            </div>
+          </div>
+
+          <div>
+
+            <div>
+              <label for="st_certified_date" class="font-weight-bold">Test Name:</label>
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" name="st_name" id="st_name" value="" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
-      <h4>Add New Security Test Record</h4>
-      <hr>
-      <b>Status:</b> <input type="radio" value="1" name="overall_status"> Pass <input type="radio" value="0" name="overall_status"> Fail <br>
-      <input type="text" class="form-control datepicker" name="st_date" />
-      <hr>
-      <form action='/security_test/new/<%=officer_details.nric%>/' method="POST">
-        <b>Name:</b> <%=officer_details.fname%> <%=officer_details.lname%> <br>
-        <b>NRIC:</b> <%=officer_details.nric%> <br>
-        <b>Status:</b> <input type="radio" value="1" name="overall_status"> Pass <input type="radio" value="0" name="overall_status"> Fail <br>
-        <b> Test Name:</b> <input type="text" class="form-control" name="st_name" required>
-        <div class="row"> <!-- 1st Row -->
-          <div class="col-3">
-            Date: <input type="text" class="form-control datepicker" name="st_date" value="" required>
+      <div class="card-body text-left">
+
+
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_date">Date:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="st_date" id="st_date" value="" required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
           </div>
-          <div class="col-3">
-            Time: <input type="text" class="form-control" name="st_time" required>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_time">Time:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control timepicker" name="st_time" id="st_time" value="" required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-clock"></i></span>
+              </div>
+            </div>
           </div>
-          <div class="col-3">
-            Location: <input type="text" class="form-control" name="st_location" required>
-          </div>
-        </div>
-        </br>
-        <div class="row"> <!-- 2nd Row -->
-          <div class="col-3">
-            APO/AvSO: <input type="text" class="form-control" name="st_AvSOAPO" required>
-          </div>
-          <div class="col-3">
-            Cert Expiration: <input type="text" class="form-control" name="st_certExp" required>
-          </div>
-          <div class="col-3">
-            Year(s) of Service: <input type="text" class="form-control" name="st_svrYr" required>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_location">Location:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="st_location" id="st_location" value="" required>
+            </div>
           </div>
         </div>
-        <div class="row"> <!-- 3rd Row -->
-          <div class="col-3">
-            Mode: <input type="text" class="form-control" name="st_mode" required>
+
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_AvSOAPO">APO/AvSO:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="st_AvSOAPO" id="st_AvSOAPO" value="" required>
+            </div>
           </div>
-          <div class="col-3">
-            Entity: <input type="text" class="form-control" name="st_entity" required>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_certExp">Cert Expiration:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="st_certExp" id="st_certExp" value="" required>
+            </div>
           </div>
-          <div class="col-3">
-            STO: <input type="text" class="form-control" name="st_sto" required>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_svrYr">Year(s) of Service:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="st_svrYr" id="st_svrYr" value="" required>
+            </div>
           </div>
         </div>
-        <div class="row"> <!-- 4th Row -->
-          <div class="col-3">
-            EM: <input type="text" class="form-control" name="st_em" required>
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_mode">Mode:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="st_mode" id="st_mode" value="" required>
+            </div>
           </div>
-          <div class="col-3">
-            RT: <input type="text" class="form-control" name="st_rt" required>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_entity">Entity:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="st_entity" id="st_entity" value="" required>
+            </div>
           </div>
-          <div class="col-3">
-            SO: <input type="text" class="form-control" name="st_so" required>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_sto">STO:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="st_sto" id="st_sto" value="" required>
+            </div>
           </div>
         </div>
-        <div class="row"> <!-- 5th Row -->
-          <div class="col-3">
-            Cert Seized: <br>
-            <select type="text" class="form-control" name="st_certSeized" required>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-            </select>
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_mode">Mode:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="st_mode" id="st_mode" value="" required>
+            </div>
           </div>
-          <div class="col-3">
-              Category: <br>
-              <select type="text" class="form-control" name="st_cat" required>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_entity">Entity:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="st_entity" id="st_entity" value="" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_sto">STO:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="st_sto" id="st_sto" value="" required>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_em">EM:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="st_em" id="st_em" value="" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_rt">RT:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="st_rt" id="st_rt" value="" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_so">SO:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="st_so" id="st_so" value="" required>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_certSeized">Cert Seized:</label><br />
+            <div class="input-group mb-3">
+              <select class="custom-select" id="st_certSeized" required>
+                <option selected></option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_entity">Category:</label><br />
+            <div class="input-group mb-3">
+              <select class="custom-select" id="st_entity" required>
+                <option selected></option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
               </select>
             </div>
-          <div class="col-3">
-            Supervisor: <input type="text" class="form-control" name="st_supervisor" required>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="st_supervisor">Supervisor:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="st_supervisor" id="st_supervisor" value="" required>
+            </div>
           </div>
         </div>
-        <div class="row"> <!-- 6th Row -->
-          <div class="col-3">
-            Image: <input type="text" class="form-control" name="st_image" required>
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <label class="font-weight-bold mb-0" for="st_image">Image:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="st_image" id="st_image" value="" required>
+            </div>
           </div>
-          <div class="col-3">
-            Remarks: <input type="text" class="form-control" name="st_remarks" required>
+          <div class="col-sm-6">
+            <label class="font-weight-bold mb-0" for="st_remarks">Remarks:</label><br />
+            <div class="input-group mb-3">
+              <textarea class="form-control" name="st_remarks" id="st_remarks" required></textarea>
+            </div>
           </div>
         </div>
 
-        <% if (user.role == 1) { %>
-        <input type="submit" class="form-control" value="Add New Record"/>
-        <% } %>
-      </form>
-      <hr>
+      </div>
+
+      <% if (user.role == 1) { %>
+      <div class="card-footer">
+        <button type="submit" class="btn btn-primary btn-block" name="add_btn">Add</button>
+      </div>
+      <% } %>
     </div>
+
+
+  </form>
+</div>
 
 <% include partials/footer %>

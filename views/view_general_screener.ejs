@@ -1,80 +1,56 @@
 <% include partials/header %>
 <% include partials/nav %>
-<%
-function UNIXConverter(UNIX_timestamp){
-  try {
-    if (UNIX_timestamp == 0) {
-      return "";
-    }
-    var a = new Date(UNIX_timestamp * 1000);
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var year = a.getFullYear();
-    var month = a.getMonth() + 1;
-    var date = a.getDate();
-    var hour = a.getHours();
-    var min = a.getMinutes();
-    var sec = a.getSeconds();
-    var time = date + '/' + month + '/' + year;
-    return time;
-  } catch (error) {
-    return "";
-  }
-}
-%>
-
-<head>
-  <script>
-    function UNIXConverter(UNIX_timestamp) {
-      try {
-        if (UNIX_timestamp == 0) {
-          return "";
-        }
-        var a = new Date(UNIX_timestamp * 1000);
-        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        var year = a.getFullYear();
-        var month = a.getMonth() + 1;
-        var date = a.getDate();
-        var hour = a.getHours();
-        var min = a.getMinutes();
-        var sec = a.getSeconds();
-        var time = date + '/' + month + '/' + year;
-        return time;
-      } catch (error) {
+<script>
+  function UNIXConverter(UNIX_timestamp) {
+    try {
+      if (UNIX_timestamp == 0) {
         return "";
       }
+      var a = new Date(UNIX_timestamp * 1000);
+      var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      var year = a.getFullYear();
+      var month = a.getMonth() + 1;
+      var date = a.getDate();
+      var hour = a.getHours();
+      var min = a.getMinutes();
+      var sec = a.getSeconds();
+      var time = date + '/' + month + '/' + year;
+      return time;
+    } catch (error) {
+      return "";
     }
+  }
 
-    $(document).ready(function () { // the whole function below sets the value of the general screener (from firebase) to the various textboxes. this is a neater way to do it as compared to doing it in the value fields.
-      $('input[name=overall_status][value=' +<%=gs_details.overall_status %> +']').attr('checked', 'checked');
-      $('input[name=gs_theory_status][value=' +<%=gs_details.theory.status %> +']').attr('checked', 'checked');
-      $('input[name=gs_hhmd_status][value=' +<%=gs_details.hhmd.status %> +']').attr('checked', 'checked');
-      $('input[name=gs_pds_status][value=' +<%=gs_details.pds.status %> +']').attr('checked', 'checked');
-      $('input[name=gs_wtmd_status][value=' +<%=gs_details.wtmd.status %> +']').attr('checked', 'checked');
-      $('input[name=gs_fl_status][value=' +<%=gs_details.fl.status %> +']').attr('checked', 'checked');
-      $('input[name=gs_etd_status][value=' +<%=gs_details.etd.status %> +']').attr('checked', 'checked');
-      $('input[name=gs_mbs_status][value=' +<%=gs_details.mbs.status %> +']').attr('checked', 'checked');
+  $(document).ready(function () { // the whole function below sets the value of the general screener (from firebase) to the various textboxes. this is a neater way to do it as compared to doing it in the value fields.
+    $('input[name=overall_status][value=' +<%=gs_details.overall_status %> +']').attr('checked', 'checked');
+    $('input[name=gs_theory_status][value=' +<%=gs_details.theory.status %> +']').attr('checked', 'checked');
+    $('input[name=gs_hhmd_status][value=' +<%=gs_details.hhmd.status %> +']').attr('checked', 'checked');
+    $('input[name=gs_pds_status][value=' +<%=gs_details.pds.status %> +']').attr('checked', 'checked');
+    $('input[name=gs_wtmd_status][value=' +<%=gs_details.wtmd.status %> +']').attr('checked', 'checked');
+    $('input[name=gs_fl_status][value=' +<%=gs_details.fl.status %> +']').attr('checked', 'checked');
+    $('input[name=gs_etd_status][value=' +<%=gs_details.etd.status %> +']').attr('checked', 'checked');
+    $('input[name=gs_mbs_status][value=' +<%=gs_details.mbs.status %> +']').attr('checked', 'checked');
 
-      $('input[name=certified_date]').val(UNIXConverter(<%=gs_details.certified_date %>));
-      $('input[name=gs_theory]').val(UNIXConverter(<%=gs_details.theory.date %>));
-      $('input[name=gs_hhmd]').val(UNIXConverter(<%=gs_details.hhmd.date %>));
-      $('input[name=gs_pds]').val(UNIXConverter(<%=gs_details.pds.date %>));
-      $('input[name=gs_wtmd]').val(UNIXConverter(<%=gs_details.wtmd.date %>));
-      $('input[name=gs_fl]').val(UNIXConverter(<%=gs_details.fl.date %>));
-      $('input[name=gs_etd]').val(UNIXConverter(<%=gs_details.etd.date %>));
-      $('input[name=gs_mbs]').val(UNIXConverter(<%=gs_details.mbs.date %>));
+    $('input[name=certified_date]').val(UNIXConverter(<%=gs_details.certified_date %>));
+    $('input[name=gs_theory]').val(UNIXConverter(<%=gs_details.theory.date %>));
+    $('input[name=gs_hhmd]').val(UNIXConverter(<%=gs_details.hhmd.date %>));
+    $('input[name=gs_pds]').val(UNIXConverter(<%=gs_details.pds.date %>));
+    $('input[name=gs_wtmd]').val(UNIXConverter(<%=gs_details.wtmd.date %>));
+    $('input[name=gs_fl]').val(UNIXConverter(<%=gs_details.fl.date %>));
+    $('input[name=gs_etd]').val(UNIXConverter(<%=gs_details.etd.date %>));
+    $('input[name=gs_mbs]').val(UNIXConverter(<%=gs_details.mbs.date %>));
 
-      $("#ACForm").on("submit", function (e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
-        var alert = confirm("Are you sure you want to edit/delete the General Screener?");
-        if (alert == true) {
-          return true;
-        } else {
-          e.preventDefault();
-          return false;
-        }
-      });
+    $("#ACForm").on("submit", function (e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
+      var alert = confirm("Are you sure you want to edit/delete the General Screener?");
+      if (alert == true) {
+        return true;
+      } else {
+        e.preventDefault();
+        return false;
+      }
     });
-  </script>
-</head>
+  });
+</script>
 <div class="container-fluid">
   <h4 class="mt-4">General Screener Record</h4>
   <hr>

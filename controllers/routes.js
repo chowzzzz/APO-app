@@ -839,7 +839,8 @@ router.get('/security_test', functions.verifyAdmin, functions.getOfficers, funct
   res.render('main_security_test', { user: req.user, officer_details: req.officer_details });
 })
 
-router.get('security_test/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getSTRecords, function (req, res) {
+router.get('/security_test/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getSTRecords, function (req, res) {
+  console.log("hello")
   res.render('security_test', { user: req.user, officer_details: req.officer_details, st_details: req.st_details });
 })
 

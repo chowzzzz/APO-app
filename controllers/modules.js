@@ -42,7 +42,7 @@ module.exports.checkNRIC = function (req, res, next) {
   firebase.db.ref("admin/").once('value').then(function (snapshot) {
     var admin_details = snapshot.val();
     var exist_NRIC = false;
-    var counter=0; // need to use this because for loop is async
+    var counter = 0; // need to use this because for loop is async
     var arr_length = Object.keys(admin_details).length;
 
     for (var id in admin_details) {
@@ -86,8 +86,8 @@ module.exports.checkAdminCount = function (req, res, next) {
   firebase.db.ref("admin/").once('value').then(function (snapshot) {
     var admin_details = snapshot.val();
     var exist_NRIC = false;
-    var counter=0; // need to use this because for loop is async
-    var admin_count=0;
+    var counter = 0; // need to use this because for loop is async
+    var admin_count = 0;
     var arr_length = Object.keys(admin_details).length;
 
     for (var id in admin_details) {
