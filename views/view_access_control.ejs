@@ -1,81 +1,57 @@
 <% include partials/header %>
 <% include partials/nav %>
-<%
-function UNIXConverter(UNIX_timestamp){
-  try {
-    if (UNIX_timestamp == 0) {
-      return "";
-    }
-    var a = new Date(UNIX_timestamp * 1000);
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var year = a.getFullYear();
-    var month = a.getMonth() + 1;
-    var date = a.getDate();
-    var hour = a.getHours();
-    var min = a.getMinutes();
-    var sec = a.getSeconds();
-    var time = date + '/' + month + '/' + year;
-    return time;
-  } catch (error) {
-    return "";
-  }
-}
-%>
-
-<head>
-  <script>
-    function UNIXConverter(UNIX_timestamp) {
-      try {
-        if (UNIX_timestamp == 0) {
-          return "";
-        }
-        var a = new Date(UNIX_timestamp * 1000);
-        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        var year = a.getFullYear();
-        var month = a.getMonth() + 1;
-        var date = a.getDate();
-        var hour = a.getHours();
-        var min = a.getMinutes();
-        var sec = a.getSeconds();
-        var time = date + '/' + month + '/' + year;
-        return time;
-      } catch (error) {
+<script>
+  function UNIXConverter(UNIX_timestamp) {
+    try {
+      if (UNIX_timestamp == 0) {
         return "";
       }
+      var a = new Date(UNIX_timestamp * 1000);
+      var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      var year = a.getFullYear();
+      var month = a.getMonth() + 1;
+      var date = a.getDate();
+      var hour = a.getHours();
+      var min = a.getMinutes();
+      var sec = a.getSeconds();
+      var time = date + '/' + month + '/' + year;
+      return time;
+    } catch (error) {
+      return "";
     }
+  }
 
-    $(document).ready(function () { // sets the value grabbed from firebase to the textboxes.
-      $('input[name=overall_status][value=' +<%=ac_details.overall_status %> +']').attr('checked', 'checked');
-      $('input[name=ac_theory_status][value=' +<%=ac_details.theory.status %> +']').attr('checked', 'checked');
-      $('input[name=ac_hhmd_status][value=' +<%=ac_details.hhmd.status %> +']').attr('checked', 'checked');
-      $('input[name=ac_pds_status][value=' +<%=ac_details.pds.status %> +']').attr('checked', 'checked');
-      $('input[name=ac_wtmd_status][value=' +<%=ac_details.wtmd.status %> +']').attr('checked', 'checked');
-      $('input[name=ac_etd_status][value=' +<%=ac_details.etd.status %> +']').attr('checked', 'checked');
-      $('input[name=ac_mbs_status][value=' +<%=ac_details.mbs.status %> +']').attr('checked', 'checked');
-      $('input[name=ac_vs_status][value=' +<%=ac_details.vs.status %> +']').attr('checked', 'checked');
+  $(document).ready(function () { // sets the value grabbed from firebase to the textboxes.
+    $('input[name=overall_status][value=' +<%=ac_details.overall_status %> +']').attr('checked', 'checked');
+    $('input[name=ac_theory_status][value=' +<%=ac_details.theory.status %> +']').attr('checked', 'checked');
+    $('input[name=ac_hhmd_status][value=' +<%=ac_details.hhmd.status %> +']').attr('checked', 'checked');
+    $('input[name=ac_pds_status][value=' +<%=ac_details.pds.status %> +']').attr('checked', 'checked');
+    $('input[name=ac_wtmd_status][value=' +<%=ac_details.wtmd.status %> +']').attr('checked', 'checked');
+    $('input[name=ac_etd_status][value=' +<%=ac_details.etd.status %> +']').attr('checked', 'checked');
+    $('input[name=ac_mbs_status][value=' +<%=ac_details.mbs.status %> +']').attr('checked', 'checked');
+    $('input[name=ac_vs_status][value=' +<%=ac_details.vs.status %> +']').attr('checked', 'checked');
 
-      $('input[name=certified_date]').val(UNIXConverter(<%=ac_details.certified_date %>));
-      $('input[name=ac_theory]').val(UNIXConverter(<%=ac_details.theory.date %>));
-      $('input[name=ac_hhmd]').val(UNIXConverter(<%=ac_details.hhmd.date %>));
-      $('input[name=ac_pds]').val(UNIXConverter(<%=ac_details.pds.date %>));
-      $('input[name=ac_wtmd]').val(UNIXConverter(<%=ac_details.wtmd.date %>));
-      $('input[name=ac_etd]').val(UNIXConverter(<%=ac_details.etd.date %>));
-      $('input[name=ac_mbs]').val(UNIXConverter(<%=ac_details.mbs.date %>));
-      $('input[name=ac_vs]').val(UNIXConverter(<%=ac_details.vs.date %>));
+    $('input[name=certified_date]').val(UNIXConverter(<%=ac_details.certified_date %>));
+    $('input[name=ac_theory]').val(UNIXConverter(<%=ac_details.theory.date %>));
+    $('input[name=ac_hhmd]').val(UNIXConverter(<%=ac_details.hhmd.date %>));
+    $('input[name=ac_pds]').val(UNIXConverter(<%=ac_details.pds.date %>));
+    $('input[name=ac_wtmd]').val(UNIXConverter(<%=ac_details.wtmd.date %>));
+    $('input[name=ac_etd]').val(UNIXConverter(<%=ac_details.etd.date %>));
+    $('input[name=ac_mbs]').val(UNIXConverter(<%=ac_details.mbs.date %>));
+    $('input[name=ac_vs]').val(UNIXConverter(<%=ac_details.vs.date %>));
 
-      $("#ACForm").on("submit", function (e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
-        var alert = confirm("Are you sure you want to edit/delete the Access Control?");
-        if (alert == true) {
-          return true;
-        } else {
-          e.preventDefault();
-          return false;
-        }
-      });
+    $("#ACForm").on("submit", function (e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
+      var alert = confirm("Are you sure you want to edit/delete the Access Control?");
+      if (alert == true) {
+        return true;
+      } else {
+        e.preventDefault();
+        return false;
+      }
     });
+  });
 
-  </script>
-</head>
+</script>
 <div class="container-fluid">
   <h4 class="mt-4">Access Control Record</h4>
   <hr>

@@ -47,16 +47,16 @@ function UNIXConverter(UNIX_timestamp){
       <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
         aria-expanded="false">ST & SB</a>
       <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">Security Test</a>
-        <a class="dropdown-item" href="#">Security Breach</a>
+        <a class="dropdown-item" href="/security_test/<%=officer_details.nric%>">Security Test</a>
+        <a class="dropdown-item" href="/security_breach/<%=officer_details.nric%>">Security Breach</a>
       </div>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">Others</a>
+      <a class="nav-link" href="/others/<%=officer_details.nric%>">Others</a>
     </li>
   </ul>
 
-  <table class="table table-hover table-bordered table-striped table-responsive-sm col-sm-10 mx-auto pl-0 mb-4">
+  <table class="table table-hover table-bordered table-striped table-responsive-sm col-sm-10 mx-auto p-0 mb-4">
     <thead class="thead-light">
       <tr>
         <th>#</th>

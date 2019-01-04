@@ -42,7 +42,7 @@ module.exports.checkNRIC = function (req, res, next) {
   firebase.db.ref("admin/").once('value').then(function (snapshot) {
     var admin_details = snapshot.val();
     var exist_NRIC = false;
-    var counter=0; // need to use this because for loop is async
+    var counter = 0; // need to use this because for loop is async
     var arr_length = Object.keys(admin_details).length;
 
     for (var id in admin_details) {
@@ -86,8 +86,8 @@ module.exports.checkAdminCount = function (req, res, next) {
   firebase.db.ref("admin/").once('value').then(function (snapshot) {
     var admin_details = snapshot.val();
     var exist_NRIC = false;
-    var counter=0; // need to use this because for loop is async
-    var admin_count=0;
+    var counter = 0; // need to use this because for loop is async
+    var admin_count = 0;
     var arr_length = Object.keys(admin_details).length;
 
     for (var id in admin_details) {
@@ -238,6 +238,28 @@ module.exports.getLatestXrayCargoRecord = function (req, res, next) {
 module.exports.getEachXrayCargoRecord = function (req, res, next) {
   firebase.db.ref("officers/" + req.params.nric + "/certification/xray_cargo/" + req.params.xray_cargo_id).once('value').then(function (snapshot) {
     req.xray_cargo_details = snapshot.val();
+    next();
+  });
+}
+
+// Security Test 
+module.exports.getSTRecords = function (req, res, next) {
+  firebase.db.ref("officers/" + req.params.nric).once('value').then(function (snapshot) {
+    req.security_test_details = snapshot.val();
+    next();
+  });
+}
+
+module.exports.getLatestSTRecord = function (req, res, next) {
+  firebase.db.ref("officers/" + req.params.nric).orderByKey().limitToLast(1).once('value').then(function (snapshot) {
+    req.security_test_details = snapshot.val();
+    next();
+  });
+}
+
+module.exports.getEachSTRecord = function (req, res, next) {
+  firebase.db.ref("officers/" + req.params.nric + req.params.security_test_id).once('value').then(function (snapshot) {
+    req.security_test_details = snapshot.val();
     next();
   });
 }
