@@ -101,7 +101,7 @@ router.post('/officers/new', functions.isAdminPage, function (req, res, next) {
   var nric = req.body.nric;
   var fname = req.body.fname;
   var lname = req.body.lname;
-  var email = req.body.email;
+  var dob = req.body.dob;
   var cert_card_no = req.body.cert_card_no;
   var organisation = req.body.organisation;
   var gender = req.body.gender;
@@ -122,7 +122,7 @@ router.post('/officers/new', functions.isAdminPage, function (req, res, next) {
     nric: nric,
     fname: fname,
     lname: lname,
-    email: email,
+    dob: dob,
     cert_card_no: cert_card_no,
     organisation: organisation,
     gender: gender,

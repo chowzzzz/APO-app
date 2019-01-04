@@ -22,23 +22,23 @@
   }
 
   $(document).ready(function () { // the whole function below sets the value of the general screener (from firebase) to the various textboxes. this is a neater way to do it as compared to doing it in the value fields.
-    $('input[name=overall_status][value=' +<%=gs_details.overall_status %> +']').attr('checked', 'checked');
-    $('input[name=gs_theory_status][value=' +<%=gs_details.theory.status %> +']').attr('checked', 'checked');
-    $('input[name=gs_hhmd_status][value=' +<%=gs_details.hhmd.status %> +']').attr('checked', 'checked');
-    $('input[name=gs_pds_status][value=' +<%=gs_details.pds.status %> +']').attr('checked', 'checked');
-    $('input[name=gs_wtmd_status][value=' +<%=gs_details.wtmd.status %> +']').attr('checked', 'checked');
-    $('input[name=gs_fl_status][value=' +<%=gs_details.fl.status %> +']').attr('checked', 'checked');
-    $('input[name=gs_etd_status][value=' +<%=gs_details.etd.status %> +']').attr('checked', 'checked');
-    $('input[name=gs_mbs_status][value=' +<%=gs_details.mbs.status %> +']').attr('checked', 'checked');
+    $('input[name=overall_status][value=' +<%=st_details.overall_status %> +']').attr('checked', 'checked');
 
-    $('input[name=certified_date]').val(UNIXConverter(<%=gs_details.certified_date %>));
-    $('input[name=gs_theory]').val(UNIXConverter(<%=gs_details.theory.date %>));
-    $('input[name=gs_hhmd]').val(UNIXConverter(<%=gs_details.hhmd.date %>));
-    $('input[name=gs_pds]').val(UNIXConverter(<%=gs_details.pds.date %>));
-    $('input[name=gs_wtmd]').val(UNIXConverter(<%=gs_details.wtmd.date %>));
-    $('input[name=gs_fl]').val(UNIXConverter(<%=gs_details.fl.date %>));
-    $('input[name=gs_etd]').val(UNIXConverter(<%=gs_details.etd.date %>));
-    $('input[name=gs_mbs]').val(UNIXConverter(<%=gs_details.mbs.date %>));
+    $('input[name=st_date]').val(UNIXConverter(<%=st_details.st_date %>));
+    $('input[name=st_time]').val(<%=st_details.st_time %>);
+    $('input[name=st_location]').val(<%=st_details.st_location %>);
+    $('input[name=st_AvSOAPO]').val(<%=st_details.st_AvSOAPO %>);
+    $('input[name=st_certExp]').val(<%=st_details.st_certExp %>);
+    $('input[name=st_svrYr]').val(<%=st_details.st_svrYr %>);
+    $('input[name=st_mode]').val(<%=st_details.st_mode %>);
+    $('input[name=st_entity]').val(<%=st_details.st_entity %>);
+    $('input[name=st_sto]').val(<%=st_details.st_sto %>);
+    $('input[name=st_em]').val(<%=st_details.st_em %>);
+    $('input[name=st_rt]').val(<%=st_details.st_rt %>);
+    $('input[name=st_so]').val(<%=st_details.st_so %>);
+    $('input[name=st_supervisor]').val(<%=st_details.st_supervisor %>);
+    $('input[name=st_image]').val(<%=st_details.st_image %>);
+    $('textarea[name=st_remarks]').val(<%=st_details.st_remarks %>);
 
     $("#ACForm").on("submit", function (e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
       var alert = confirm("Are you sure you want to edit/delete the General Screener?");
@@ -62,7 +62,7 @@
         <div class="d-sm-flex flex-sm-row">
           <div class="mr-auto">
             <h6 class="mb-2 font-weight-bold">Test Name:
-              <%=officer_details.fname%>
+              <%=st_details.st_name%>
             </h6>
             <h6 class="mb-2 font-weight-bold">Name:
               <%=officer_details.fname%>
@@ -85,162 +85,153 @@
             </div>
           </div>
 
-          <div>
+        </div>
+        <div class="card-body text-left">
 
-            <div>
-              <label for="gs_certified_date" class="font-weight-bold">Certified Date:</label>
+
+          <div class="row mb-2">
+            <div class="col-sm-4">
+              <label class="font-weight-bold mb-0" for="st_date">Date:</label><br />
               <div class="input-group mb-3">
-                <input type="text" class="form-control datepicker" name="certified_date" id="gs_certified_date" value=""
-                  required>
+                <input type="text" class="form-control datepicker" name="st_date" id="st_date" value="" required>
                 <div class="input-group-append">
                   <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                 </div>
               </div>
             </div>
+            <div class="col-sm-4">
+              <label class="font-weight-bold mb-0" for="st_time">Time:</label><br />
+              <div class="input-group mb-3">
+                <input type="text" class="form-control timepicker" name="st_time" id="st_time" value="" required>
+                <div class="input-group-append">
+                  <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <label class="font-weight-bold mb-0" for="st_location">Location:</label><br />
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" name="st_location" id="st_location" value="" required>
+              </div>
+            </div>
           </div>
+
+          <div class="row mb-2">
+            <div class="col-sm-4">
+              <label class="font-weight-bold mb-0" for="st_AvSOAPO">APO/AvSO:</label><br />
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" name="st_AvSOAPO" id="st_AvSOAPO" value="" required>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <label class="font-weight-bold mb-0" for="st_certExp">Cert Expiration:</label><br />
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" name="st_certExp" id="st_certExp" value="" required>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <label class="font-weight-bold mb-0" for="st_svrYr">Year(s) of Service:</label><br />
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" name="st_svrYr" id="st_svrYr" value="" required>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-sm-4">
+              <label class="font-weight-bold mb-0" for="st_mode">Mode:</label><br />
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" name="st_mode" id="st_mode" value="" required>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <label class="font-weight-bold mb-0" for="st_entity">Entity:</label><br />
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" name="st_entity" id="st_entity" value="" required>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <label class="font-weight-bold mb-0" for="st_sto">STO:</label><br />
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" name="st_sto" id="st_sto" value="" required>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-sm-4">
+              <label class="font-weight-bold mb-0" for="st_em">EM:</label><br />
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" name="st_em" id="st_em" value="" required>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <label class="font-weight-bold mb-0" for="st_rt">RT:</label><br />
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" name="st_rt" id="st_rt" value="" required>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <label class="font-weight-bold mb-0" for="st_so">SO:</label><br />
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" name="st_so" id="st_so" value="" required>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-sm-4">
+              <label class="font-weight-bold mb-0" for="st_certSeized">Cert Seized:</label><br />
+              <div class="input-group mb-3">
+                <select class="custom-select" id="st_certSeized" name="st_certSeized" required>
+                  <option value="1" <% if (st_details.st_certSeized=="1" ) {%> selected
+                    <% } %>>Yes</option>
+                  <option value="0" <% if (st_details.st_certSeized=="0" ) {%> selected
+                    <% } %>>No</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <label class="font-weight-bold mb-0" for="st_cat">Category:</label><br />
+              <div class="input-group mb-3">
+                <select class="custom-select" id="st_cat" name="st_cat" required>
+                  <option value="1" <% if (st_details.st_certSeized=="1" ) {%> selected
+                    <% } %>>1</option>
+                  <option value="2" <% if (st_details.st_certSeized=="1" ) {%> selected
+                    <% } %>>2</option>
+                  <option value="3" <% if (st_details.st_certSeized=="1" ) {%> selected
+                    <% } %>>3</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <label class="font-weight-bold mb-0" for="st_supervisor">Supervisor:</label><br />
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" name="st_supervisor" id="st_supervisor" value="" required>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <label class="font-weight-bold mb-0" for="st_image">Image:</label><br />
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" name="st_image" id="st_image" value="" required>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <label class="font-weight-bold mb-0" for="st_remarks">Remarks:</label><br />
+              <div class="input-group mb-3">
+                <textarea class="form-control" name="st_remarks" id="st_remarks" required></textarea>
+              </div>
+            </div>
+          </div>
+
         </div>
 
+        <% if (user.role == 1) { %>
+        <div class="card-footer">
+          <button type="submit" class="btn btn-primary btn-block" name="edit_btn">Update</button>
+          <button type="submit" class="btn btn-danger btn-block" name="delete_btn">Delete</button>
+        </div>
+        <% } %>
       </div>
-      <div class="card-body">
-
-        <div class="row mb-2 justify-content-center">
-          <div class="col-sm-4">
-            <label class="font-weight-bold" for="gs_theory">Theory:&nbsp;</label>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gs_theory_status" id="gs_theory_pass" value="1">
-              <label class="form-check-label" for="gs_theory_pass">Pass</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gs_theory_status" id="gs_theory_fail" value="0">
-              <label class="form-check-label" for="gs_theory_fail">Fail</label>
-            </div>
-            <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="gs_theory" id="gs_theory" value="" required>
-              <div class="input-group-append">
-                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <label class="font-weight-bold" for="gs_hhmd">HHMD:&nbsp;</label>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gs_hhmd_status" id="gs_hhmd_pass" value="1">
-              <label class="form-check-label" for="gs_hhmd_pass">Pass</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gs_hhmd_status" id="gs_hhmd_fail" value="0">
-              <label class="form-check-label" for="gs_hhmd_fail">Fail</label>
-            </div>
-            <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="gs_hhmd" id="gs_hhmd" value="" required>
-              <div class="input-group-append">
-                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <label class="font-weight-bold" for="gs_pds">PDS:&nbsp;</label>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gs_pds_status" id="gs_pds_pass" value="1">
-              <label class="form-check-label" for="gs_pds_pass">Pass</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gs_pds_status" id="gs_pds_fail" value="0">
-              <label class="form-check-label" for="gs_pds_fail">Fail</label>
-            </div>
-            <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="gs_pds" id="gs_pds" value="" required>
-              <div class="input-group-append">
-                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row mb-2 justify-content-center">
-          <div class="col-sm-4">
-            <label class="font-weight-bold" for="gs_wtmd">WTMD:&nbsp;</label>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gs_wtmd_status" id="gs_wtmd_pass" value="1">
-              <label class="form-check-label" for="gs_wtmd_pass">Pass</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gs_wtmd_status" id="gs_wtmd_fail" value="0">
-              <label class="form-check-label" for="gs_wtmd_fail">Fail</label>
-            </div>
-            <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="gs_wtmd" id="gs_wtmd" value="" required>
-              <div class="input-group-append">
-                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <label class="font-weight-bold" for="gs_fl">FL:&nbsp;</label>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gs_fl_status" id="gs_fl_pass" value="1">
-              <label class="form-check-label" for="gs_fl_pass">Pass</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gs_fl_status" id="gs_fl_fail" value="0">
-              <label class="form-check-label" for="gs_fl_fail">Fail</label>
-            </div>
-            <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="gs_fl" id="gs_fl" value="" required>
-              <div class="input-group-append">
-                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <label class="font-weight-bold" for="gs_etd">ETD:&nbsp;</label>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gs_etd_status" id="gs_etd_pass" value="1">
-              <label class="form-check-label" for="gs_etd_pass">Pass</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gs_etd_status" id="gs_etd_fail" value="0">
-              <label class="form-check-label" for="gs_etd_fail">Fail</label>
-            </div>
-            <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="gs_etd" id="gs_etd" value="" required>
-              <div class="input-group-append">
-                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-        <div class="row mb-2">
-          <div class="col-sm-4">
-            <label class="font-weight-bold" for="gs_mbs">MBS:&nbsp;</label>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gs_mbs_status" id="gs_mbs_pass" value="1">
-              <label class="form-check-label" for="gs_mbs_pass">Pass</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gs_mbs_status" id="gs_mbs_fail" value="0">
-              <label class="form-check-label" for="gs_mbs_fail">Fail</label>
-            </div>
-            <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="gs_mbs" id="gs_mbs" value="" required>
-              <div class="input-group-append">
-                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-      <% if (user.role == 1) { %>
-      <div class="card-footer">
-        <button type="submit" class="btn btn-primary btn-block" name="edit_btn">Update</button>
-        <button type="submit" class="btn btn-danger btn-block" name="delete_btn">Delete</button>
-      </div>
-      <% } %>
-    </div>
 
 
   </form>
