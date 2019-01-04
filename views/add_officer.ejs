@@ -77,14 +77,14 @@ var message;
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="cert_card_no">Certification Card No.:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="cert_card_no" id="cert_card_no" value=""
+              <input type="text" class="form-control" name="cert_card_no" id="cert_card_no" value=""
                 required>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="organisation">Organisation:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="organisation" id="organisation" value=""
+              <input type="text" class="form-control" name="organisation" id="organisation" value=""
                 required>
             </div>
           </div>
@@ -122,7 +122,6 @@ var message;
         </div>
       </div>
       </br>
-      Remarks: <textarea class="form-control col-9" name="remarks" required></textarea> <br>
 
       <% if (user.role == 1) { %>
       <div class="card-footer">

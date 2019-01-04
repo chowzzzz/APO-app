@@ -244,21 +244,21 @@ module.exports.getEachXrayCargoRecord = function (req, res, next) {
 
 // Security Test 
 module.exports.getSTRecords = function (req, res, next) {
-  firebase.db.ref("officers/" + req.params.nric).once('value').then(function (snapshot) {
+  firebase.db.ref("officers/" + req.params.nric + "/security_records/security_test/").once('value').then(function (snapshot) {
     req.security_test_details = snapshot.val();
     next();
   });
 }
 
 module.exports.getLatestSTRecord = function (req, res, next) {
-  firebase.db.ref("officers/" + req.params.nric).orderByKey().limitToLast(1).once('value').then(function (snapshot) {
+  firebase.db.ref("officers/" + req.params.nric + "/security_records/security_test/").orderByKey().limitToLast(1).once('value').then(function (snapshot) {
     req.security_test_details = snapshot.val();
     next();
   });
 }
 
 module.exports.getEachSTRecord = function (req, res, next) {
-  firebase.db.ref("officers/" + req.params.nric + req.params.security_test_id).once('value').then(function (snapshot) {
+  firebase.db.ref("officers/" + req.params.nric + "/security_records/security_test/" + req.params.security_test_id).once('value').then(function (snapshot) {
     req.security_test_details = snapshot.val();
     next();
   });

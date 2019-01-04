@@ -136,26 +136,6 @@ function UNIXConverter(UNIX_timestamp){
         </div>
         <div class="row mb-2">
           <div class="col-sm-4">
-            <label class="font-weight-bold mb-0" for="st_mode">Mode:</label><br />
-            <div class="input-group mb-3">
-              <input type="text" class="form-control" name="st_mode" id="st_mode" value="" required>
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <label class="font-weight-bold mb-0" for="st_entity">Entity:</label><br />
-            <div class="input-group mb-3">
-              <input type="text" class="form-control" name="st_entity" id="st_entity" value="" required>
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <label class="font-weight-bold mb-0" for="st_sto">STO:</label><br />
-            <div class="input-group mb-3">
-              <input type="text" class="form-control" name="st_sto" id="st_sto" value="" required>
-            </div>
-          </div>
-        </div>
-        <div class="row mb-2">
-          <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="st_em">EM:</label><br />
             <div class="input-group mb-3">
               <input type="text" class="form-control" name="st_em" id="st_em" value="" required>
@@ -180,15 +160,15 @@ function UNIXConverter(UNIX_timestamp){
             <div class="input-group mb-3">
               <select class="custom-select" id="st_certSeized" required>
                 <option selected></option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
+                <option value="1">Yes</option>
+                <option value="0">No</option>
               </select>
             </div>
           </div>
           <div class="col-sm-4">
-            <label class="font-weight-bold mb-0" for="st_entity">Category:</label><br />
+            <label class="font-weight-bold mb-0" for="st_category">Category:</label><br />
             <div class="input-group mb-3">
-              <select class="custom-select" id="st_entity" required>
+              <select class="custom-select" id="st_category" required>
                 <option selected></option>
                 <option value="1">1</option>
                 <option value="2">2</option>

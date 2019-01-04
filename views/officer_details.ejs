@@ -137,7 +137,7 @@ if (officer_details.certification !== undefined) {
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="cert_card_no">Certification Card No.:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="cert_card_no" id="cert_card_no" value="<%=officer_details.cert_card_no%>"
+              <input type="text" class="form-control" name="cert_card_no" id="cert_card_no" value="<%=officer_details.cert_card_no%>"
                 <% if (user.role> 1) { %> readonly
               <% } %> required>
             </div>
@@ -145,7 +145,7 @@ if (officer_details.certification !== undefined) {
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="organisation">Organisation:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="organisation" id="organisation" value="<%=officer_details.organisation%>"
+              <input type="text" class="form-control" name="organisation" id="organisation" value="<%=officer_details.organisation%>"
                 <% if (user.role> 1) { %> readonly
               <% } %> required>
             </div>
@@ -194,7 +194,7 @@ if (officer_details.certification !== undefined) {
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="general_screener">General Screener:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="general_screener" id="general_screener" value="<%=UNIXConverter(gs_date)%>"
+              <input type="text" class="form-control datepicker" name="general_screener" id="general_screener" value="<%=UNIXConverter(gs_date)%>" readonly
                 <% if (user.role> 1) { %> readonly
               <% } %> required>
             </div>
@@ -202,7 +202,7 @@ if (officer_details.certification !== undefined) {
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="access_control">Access Control:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="access_control" id="access_control" value="<%=UNIXConverter(ac_date)%>"
+              <input type="text" class="form-control datepicker" name="access_control" id="access_control" value="<%=UNIXConverter(ac_date)%>" readonly
                 <% if (user.role> 1) { %> readonly
               <% } %> required>
             </div>
@@ -213,7 +213,7 @@ if (officer_details.certification !== undefined) {
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="xray_hbs">Xray HBS:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control" name="xray_hbs" id="xray_hbs" value="<%=UNIXConverter(xray_hbs_date)%>"
+              <input type="text" class="form-control" name="xray_hbs" id="xray_hbs" value="<%=UNIXConverter(xray_hbs_date)%>" readonly
                 <% if (user.role> 1) { %> readonly
               <% } %> required>
             </div>
@@ -221,7 +221,7 @@ if (officer_details.certification !== undefined) {
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="xray_pb">Xray PB:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="xray_pb" id="xray_pb" value="<%=UNIXConverter(xray_pb_date)%>"
+              <input type="text" class="form-control datepicker" name="xray_pb" id="xray_pb" value="<%=UNIXConverter(xray_pb_date)%>" readonly
                 <% if (user.role> 1) { %> readonly
               <% } %> required>
             </div>
@@ -229,7 +229,7 @@ if (officer_details.certification !== undefined) {
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="xray_cargo">Xray Cargo:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="xray_cargo" id="xray_cargo" value="<%=UNIXConverter(xray_cargo_date)%>"
+              <input type="text" class="form-control datepicker" name="xray_cargo" id="xray_cargo" value="<%=UNIXConverter(xray_cargo_date)%>" readonly
                 <% if (user.role> 1) { %> readonly
               <% } %> required>
             </div>

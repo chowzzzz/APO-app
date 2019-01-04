@@ -101,7 +101,7 @@ router.post('/officers/new', functions.isAdminPage, function (req, res, next) {
   var nric = req.body.nric;
   var fname = req.body.fname;
   var lname = req.body.lname;
-  var email = req.body.email;
+  var dob = req.body.dob;
   var cert_card_no = req.body.cert_card_no;
   var organisation = req.body.organisation;
   var gender = req.body.gender;
@@ -122,7 +122,7 @@ router.post('/officers/new', functions.isAdminPage, function (req, res, next) {
     nric: nric,
     fname: fname,
     lname: lname,
-    email: email,
+    dob: dob,
     cert_card_no: cert_card_no,
     organisation: organisation,
     gender: gender,
@@ -840,7 +840,6 @@ router.get('/security_test', functions.verifyAdmin, functions.getOfficers, funct
 })
 
 router.get('/security_test/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getSTRecords, function (req, res) {
-  console.log("hello")
   res.render('security_test', { user: req.user, officer_details: req.officer_details, st_details: req.st_details });
 })
 
