@@ -25,33 +25,39 @@ function UNIXConverter(UNIX_timestamp){
   }
 }
 %>
-    <div class="container-fluid">
-      <div class="row">
-        &nbsp;
-      </div>
-      <h4>Administration</h4>
-      <hr>
-        <table class="table table-hover">
-          <thead>
-            <th>Name</th>
-            <th>NRIC</th>
-            <th>Role</th>
-          </thead>
-          <tbody>
-            <% for (var admin_id in admin_details) { %>
-              <tr class='clickable-row' data-href='/admin/view/<%=admin_id%>'>
-                <td><%=admin_details[admin_id].fname%> <%=admin_details[admin_id].lname%></td>
-                <td><%=admin_details[admin_id].nric%></td>
-                <td><%=roles[admin_details[admin_id].role - 1]%></td>
-              </tr>
-            <% } %>
-          </tbody>
-        </table>
-      <hr>
-      <% if (user.role == 1) { %>
-      <button class="form-control btn btn-primary" onclick="window.location.href='/admin/new'">Add New User</button>
-      <% } %>
+<div class="container-fluid">
 
-    </div>
+  <h4 class="mt-4">Administration</h4>
+  <hr>
+  <table class="table table-hover table-bordered table-striped table-responsive-sm col-sm-10 mx-auto pl-0">
+    <thead class="thead-light">
+      <tr>
+        <th>Name</th>
+        <th>NRIC</th>
+        <th>Role</th>
+      </tr>
+    </thead>
+    <% for (var admin_id in admin_details) { %>
+    <tr class='clickable-row' data-href='/admin/view/<%=admin_id%>'>
+      <td>
+        <%=admin_details[admin_id].fname%>
+        <%=admin_details[admin_id].lname%>
+      </td>
+      <td>
+        <%=admin_details[admin_id].nric%>
+      </td>
+      <td>
+        <%=roles[admin_details[admin_id].role - 1]%>
+      </td>
+    </tr>
+    <% } %>
+  </table>
 
-<% include partials/footer %>
+  <div class="mb-4 col-11 mx-auto">
+    <% if (user.role == 1) { %>
+    <a href="/admin/new/" class="btn btn-primary col-sm-6">Add New User</a>
+    <% } %>
+
+  </div>
+
+  <% include partials/footer %>
