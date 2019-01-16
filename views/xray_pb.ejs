@@ -20,6 +20,10 @@ function UNIXConverter(UNIX_timestamp){
     return "";
   }
 }
+
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
+}
 %>
 <div class="container-fluid">
 
@@ -69,17 +73,31 @@ function UNIXConverter(UNIX_timestamp){
     <tr>
       <td class="mx-auto text-danger" colspan="3">Officer does not have any existing certificates.</td>
     </tr>
-    <% } %>
+    <% } else { %>
+
+    <%
+    var keys=[];
+
+    var sorted_xray_pb_details = Object.keys(xray_pb_details).sort(function(a,b) {
+      return xray_pb_details[b].certified_date - xray_pb_details[a].certified_date;
+    }).map(function(category) {
+      var key = getKeyByValue(xray_pb_details, xray_pb_details[category]);
+      keys.push(key);
+      return xray_pb_details[category];
+    });
+    console.log(keys);
+    console.log(sorted_xray_pb_details);
+    %>
 
     <% var i = 1 %>
-    <% for (var xray_pb_id in xray_pb_details) { %>
+    <% for (var xray_pb_index in sorted_xray_pb_details) { %>
     <% var status; %>
-    <tr class='clickable-row' data-href='/xray_pb/<%=officer_details.nric%>/<%=xray_pb_id%>'>
+    <tr class='clickable-row' data-href='/xray_pb/<%=officer_details.nric%>/<%=keys[xray_pb_index]%>'>
       <td>
         <%=i%>
         <% i++ %>
       </td>
-      <% if (xray_pb_details[xray_pb_id].overall_status == "1") { %>
+      <% if (sorted_xray_pb_details[xray_pb_index].overall_status == "1") { %>
       <td>
         PASS
       </td>
@@ -89,10 +107,11 @@ function UNIXConverter(UNIX_timestamp){
       </td>
       <% } %>
       <td>
-        <%=UNIXConverter(xray_pb_details[xray_pb_id].certified_date)%>
+        <%=UNIXConverter(sorted_xray_pb_details[xray_pb_index].certified_date)%>
       </td>
     </tr>
     <% } %>
+    <% } //CLOSE BRACKET FOR ELSE STATEMENT%>
   </table>
 
   <div class="mb-4 col-11 mx-auto">

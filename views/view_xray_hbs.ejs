@@ -32,7 +32,7 @@
     $('input[name=xray_hbs_etd]').val(UNIXConverter(<%=xray_hbs_details.etd.date %>));
     $('input[name=xray_hbs_iit]').val(UNIXConverter(<%=xray_hbs_details.iit.date %>));
 
-    $("#ACForm").on("submit", function (e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
+    $("#HBSForm").on("submit", function (e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
       var alert = confirm("Are you sure you want to edit/delete the Xray HBS?");
       if (alert == true) {
         return true;

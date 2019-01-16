@@ -20,6 +20,10 @@ function UNIXConverter(UNIX_timestamp){
     return "";
   }
 }
+
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
+}
 %>
 <div class="container-fluid">
   <h4 class="mt-4">General Screener -
@@ -68,17 +72,34 @@ function UNIXConverter(UNIX_timestamp){
     <tr>
       <td class="mx-auto text-danger" colspan="3">Officer does not have any existing certificates.</td>
     </tr>
-    <% } %>
+    <% } else { %>
+
+    <%
+    var keys=[];
+
+
+    var sorted_gs_details = Object.keys(gs_details).sort(function(a,b) {
+      return gs_details[b].certified_date - gs_details[a].certified_date;
+    }).map(function(category) {
+      var key = getKeyByValue(gs_details, gs_details[category]);
+      keys.push(key);
+      return gs_details[category];
+    });
+    console.log('keys');
+    console.log(keys);
+    console.log('sorted_gs_details');
+    console.log(sorted_gs_details);
+    %>
 
     <% var i = 1 %>
-    <% for (var general_screener_id in gs_details) { %>
+    <% for (var general_screener_index in sorted_gs_details) { %>
     <% var status; %>
-    <tr class='clickable-row' data-href='/general_screener/<%=officer_details.nric%>/<%=general_screener_id%>'>
+    <tr class='clickable-row' data-href='/general_screener/<%=officer_details.nric%>/<%=keys[general_screener_index]%>'>
       <td>
         <%=i%>
         <% i++ %>
       </td>
-      <% if (gs_details[general_screener_id].overall_status == "1") { %>
+      <% if (sorted_gs_details[general_screener_index].overall_status == "1") { %>
       <td>
         PASS
       </td>
@@ -88,10 +109,11 @@ function UNIXConverter(UNIX_timestamp){
       </td>
       <% } %>
       <td>
-        <%=UNIXConverter(gs_details[general_screener_id].certified_date)%>
+        <%=UNIXConverter(sorted_gs_details[general_screener_index].certified_date)%>
       </td>
     </tr>
     <% } %>
+    <% } //CLOSE BRACKET FOR ELSE STATEMENT%>
   </table>
 
   <div class="mb-4 col-11 mx-auto">

@@ -156,7 +156,8 @@ module.exports.getEachACRecord = function (req, res, next) {
 
 // General Screener
 module.exports.getGSRecords = function (req, res, next) {
-  firebase.db.ref("officers/" + req.params.nric + "/certification/general_screener/").once('value').then(function (snapshot) {
+  var gs_details = new Map();
+  firebase.db.ref("officers/" + req.params.nric + "/certification/general_screener/").orderByChild('certified_date').once('value').then(function (snapshot) {
     req.gs_details = snapshot.val();
     next();
   });
@@ -242,9 +243,9 @@ module.exports.getEachXrayCargoRecord = function (req, res, next) {
   });
 }
 
-// Security Test 
+// Security Test
 module.exports.getSTRecords = function (req, res, next) {
-  firebase.db.ref("officers/" + req.params.nric + "/security_records/security_test/").once('value').then(function (snapshot) {
+  firebase.db.ref("officers/" + req.params.nric + "/security_records/security_test/").orderByChild('certified_date').once('value').then(function (snapshot) {
     req.security_test_details = snapshot.val();
     next();
   });
@@ -258,11 +259,65 @@ module.exports.getLatestSTRecord = function (req, res, next) {
 }
 
 module.exports.getEachSTRecord = function (req, res, next) {
-  firebase.db.ref("officers/" + req.params.nric + "/security_records/security_test/" + req.params.security_test_id).once('value').then(function (snapshot) {
+  firebase.db.ref("officers/" + req.params.nric + "/security_records/security_test/" + req.params.st_id).once('value').then(function (snapshot) {
     req.security_test_details = snapshot.val();
+
+      console.log('req.security_test_details')
+      console.log(req.security_test_details)
     next();
   });
 }
+
+// Security Breach
+module.exports.getSBRecords = function (req, res, next) {
+  firebase.db.ref("officers/" + req.params.nric + "/security_records/security_breach/").orderByChild('certified_date').once('value').then(function (snapshot) {
+    req.security_breach_details = snapshot.val();
+    next();
+  });
+}
+
+module.exports.getLatestSBRecord = function (req, res, next) {
+  firebase.db.ref("officers/" + req.params.nric + "/security_records/security_breach/").orderByKey().limitToLast(1).once('value').then(function (snapshot) {
+    req.security_breach_details = snapshot.val();
+    next();
+  });
+}
+
+module.exports.getEachSBRecord = function (req, res, next) {
+  firebase.db.ref("officers/" + req.params.nric + "/security_records/security_breach/" + req.params.sb_id).once('value').then(function (snapshot) {
+    req.security_breach_details = snapshot.val();
+
+      console.log('req.security_breach_details')
+      console.log(req.security_breach_details)
+    next();
+  });
+}
+
+// Others
+module.exports.getOTHERSRecords = function (req, res, next) {
+  firebase.db.ref("officers/" + req.params.nric + "/others_records/others/").orderByChild('certified_date').once('value').then(function (snapshot) {
+    req.others_details = snapshot.val();
+    next();
+  });
+}
+
+module.exports.getLatestOTHERSRecord = function (req, res, next) {
+  firebase.db.ref("officers/" + req.params.nric + "/others_records/others/").orderByKey().limitToLast(1).once('value').then(function (snapshot) {
+    req.others_details = snapshot.val();
+    next();
+  });
+}
+
+module.exports.getEachOTHERSRecord = function (req, res, next) {
+  firebase.db.ref("officers/" + req.params.nric + "/others_records/others/" + req.params.others_id).once('value').then(function (snapshot) {
+    req.others_details = snapshot.val();
+
+      console.log('req.others_details')
+      console.log(req.others_details)
+    next();
+  });
+}
+
 
 // Date
 module.exports.dateToUNIX = function (textDate) {

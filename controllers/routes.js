@@ -159,14 +159,32 @@ router.post('/officers/new', functions.isAdminPage, function (req, res, next) {
   });
 });
 
-router.get('/officers/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getLatestACRecord, functions.getLatestGSRecord, functions.getLatestXrayHBSRecord, functions.getLatestXrayPBRecord, functions.getLatestXrayCargoRecord, function (req, res) {
+router.get('/officers/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getACRecords, functions.getGSRecords, functions.getXrayHBSRecords, functions.getXrayPBRecords, functions.getXrayCargoRecords, function (req, res) {
+  console.log('req.gs_details');
+  console.log(req.gs_details);
+
+  console.log('req.ac_details');
   console.log(req.ac_details);
+
+  console.log('req.xray_hbs_details');
+  console.log(req.xray_hbs_details);
+
+  console.log('req.xray_pb_details');
+  console.log(req.xray_pb_details);
+
+  console.log('req.xray_cargo_details');
+  console.log(req.xray_cargo_details);
   res.render('officer_details', { user: req.user, officer_details: req.officer_details, ac_details: req.ac_details, gs_details: req.gs_details, xray_hbs_details: req.xray_hbs_details, xray_pb_details: req.xray_pb_details, xray_cargo_details: req.xray_cargo_details, nric: req.params.nric });
 });
 
 router.post('/officers/:nric', functions.verifyAdmin, function (req, res, next) {
 
   if (req.body.update_btn != null) {
+
+    var fname = req.body.fname;
+    var lname = req.body.lname;
+    var dob = req.body.dob;
+    var nric = req.body.nric;
 
     var cert_card_no = req.body.cert_card_no;
     var organisation = req.body.organisation;
@@ -185,6 +203,10 @@ router.post('/officers/:nric', functions.verifyAdmin, function (req, res, next) 
     var xray_cargo = req.body.xray_cargo || 0;*/
 
     var update_user = {
+      fname: fname,
+      lname: lname,
+      nric: nric,
+      dob: dob,
       cert_card_no: cert_card_no,
       organisation: organisation,
       gender: gender,
@@ -224,7 +246,7 @@ router.post('/officers/:nric', functions.verifyAdmin, function (req, res, next) 
   }
   //console.log(req.officer_details);
   //res.render('officer_details', {user: req.user, officer_details: req.officer_details, nric: req.params.id});
-}, functions.getEachOfficers, function (req, res) {
+}, functions.getEachOfficers, functions.getEachOfficers, functions.getLatestACRecord, functions.getLatestGSRecord, functions.getLatestXrayHBSRecord, functions.getLatestXrayPBRecord, functions.getLatestXrayCargoRecord, function (req, res) {
   console.log(req.officer_details);
   res.render('officer_details', { user: req.user, officer_details: req.officer_details, ac_details: req.ac_details, gs_details: req.gs_details, xray_hbs_details: req.xray_hbs_details, xray_pb_details: req.xray_pb_details, xray_cargo_details: req.xray_cargo_details, nric: req.params.nric });
 });
@@ -840,7 +862,9 @@ router.get('/security_test', functions.verifyAdmin, functions.getOfficers, funct
 })
 
 router.get('/security_test/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getSTRecords, function (req, res) {
-  res.render('security_test', { user: req.user, officer_details: req.officer_details, st_details: req.st_details });
+  console.log('req.st_details')
+  console.log(req.st_details)
+  res.render('security_test', { user: req.user, officer_details: req.officer_details, st_details: req.security_test_details });
 })
 
 router.get('/security_test/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
@@ -849,6 +873,14 @@ router.get('/security_test/new/:nric', functions.isAdminPage, functions.verifyAd
 })
 
 router.post('/security_test/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
+  var upload = req.files;
+  var isUploaded = false;
+  var uploadFileName = '';
+
+  if(upload && upload.st_image){
+    upload.st_image.mv('./uploads/'  + upload.st_image.name, function(err) {
+    });
+  }
   var officer_id = req.params.nric;
 
   var overall_status = req.body.overall_status;
@@ -868,7 +900,10 @@ router.post('/security_test/new/:nric', functions.isAdminPage, functions.verifyA
   var st_certSeized = req.body.st_certSeized;
   var st_cat = req.body.st_cat;
   var st_supervisor = req.body.st_supervisor;
-  var st_image = req.body.st_image;
+  var st_image = '';
+  if(upload && upload.st_image){
+    st_image = upload.st_image.name;
+  }
   var st_remarks = req.body.st_remarks;
 
 
@@ -893,8 +928,10 @@ router.post('/security_test/new/:nric', functions.isAdminPage, functions.verifyA
     st_image: st_image,
     st_remarks: st_remarks
   }
-
-  var insertData = firebase.db.ref("officers/" + officer_id + "/security_records/security_test/").push(data, function (error) {
+  console.log('insert data')
+  console.log(data)
+  console.log(JSON.parse(JSON.stringify(data)))
+  var insertData = firebase.db.ref("officers/" + officer_id + "/security_records/security_test/").push(JSON.parse(JSON.stringify(data)), function (error) {
     if (!error) {
       var dataId = insertData.key;
       res.redirect('/security_test/' + officer_id + '/' + dataId);
@@ -903,7 +940,9 @@ router.post('/security_test/new/:nric', functions.isAdminPage, functions.verifyA
 })
 
 router.get('/security_test/:nric/:st_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachSTRecord, function (req, res) {
-  res.render('view_security_test', { user: req.user, officer_details: req.officer_details, st_id: req.params.st_id, st_details: req.st_details });
+  console.log('req.req.params')
+  console.log(req.params)
+  res.render('view_security_test', { user: req.user, officer_details: req.officer_details, st_id: req.params.st_id, st_details: req.security_test_details });
 });
 
 router.post('/security_test/:nric/:st_id', functions.verifyAdmin, function (req, res) {
@@ -963,9 +1002,248 @@ router.post('/security_test/:nric/:st_id', functions.verifyAdmin, function (req,
       st_remarks: st_remarks
     }
 
-    firebase.db.ref("officers/" + officer_id + "/security_records/security_test/" + st_id).update(data, function (error) {
+    firebase.db.ref("officers/" + officer_id + "/security_records/security_test/" + st_id).update(JSON.parse(JSON.stringify(data)), function (error) {
       if (!error) {
         res.redirect('/security_test/' + officer_id + '/' + st_id);
+      }
+    });
+  }
+});
+
+//Security Breach Section
+
+router.get('/security_breach', functions.verifyAdmin, functions.getOfficers, function (req, res) {
+  res.render('main_security_breach', { user: req.user, officer_details: req.officer_details });
+})
+
+router.get('/security_breach/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getSBRecords, function (req, res) {
+  console.log('req.sb_details')
+  console.log(req.sb_details)
+  res.render('security_breach', { user: req.user, officer_details: req.officer_details, sb_details: req.security_breach_details });
+})
+
+router.get('/security_breach/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
+  var officer_id = req.params.id;
+  res.render('new_security_breach', { user: req.user, officer_details: req.officer_details })
+})
+
+router.post('/security_breach/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
+  var upload = req.files;
+  var isUploaded = false;
+  var uploadFileName = '';
+
+  if(upload && upload.sb_image){
+    upload.sb_image.mv('./uploads/'  + upload.sb_image.name, function(err) {
+    });
+  }
+  var officer_id = req.params.nric;
+
+  var sb_name = req.body.sb_name;
+  var sb_date = functions.dateToUNIX(req.body.sb_date);
+  var sb_time = req.body.sb_time;
+  var sb_location = req.body.sb_location;
+  var sb_breachOff = req.body.sb_breachOff;
+  var sb_personInv = req.body.sb_personInv;
+  var sb_supervisor = req.body.sb_supervisor;
+  var sb_contact = req.body.sb_contact;
+  var sb_entity = req.body.sb_entity;
+  var sb_certExpOrAPno = req.body.sb_certExpOrAPno;
+  var sb_detect = req.body.sb_detect;
+  var sb_certSeized = req.body.sb_certSeized;
+  var sb_cat = req.body.sb_cat;
+  var sb_image = '';
+  if(upload && upload.sb_image){
+    sb_image = upload.sb_image.name;
+  }
+  var sb_remarks = req.body.sb_remarks;
+
+
+  var data = {
+    sb_name: sb_name,
+    sb_date: sb_date,
+    sb_time: sb_time,
+    sb_location: sb_location,
+    sb_breachOff: sb_breachOff,
+    sb_personInv: sb_personInv,
+    sb_supervisor: sb_supervisor,
+    sb_contact: sb_contact,
+    sb_entity: sb_entity,
+    sb_certExpOrAPno: sb_certExpOrAPno,
+    sb_detect: sb_detect,
+    sb_certSeized: sb_certSeized,
+    sb_cat: sb_cat,
+    sb_image: sb_image,
+    sb_remarks: sb_remarks
+  }
+  console.log('insert data')
+  console.log(data)
+  console.log(JSON.parse(JSON.stringify(data)))
+  var insertData = firebase.db.ref("officers/" + officer_id + "/security_records/security_breach/").push(JSON.parse(JSON.stringify(data)), function (error) {
+    if (!error) {
+      var dataId = insertData.key;
+      res.redirect('/security_breach/' + officer_id + '/' + dataId);
+    }
+  });
+})
+
+router.get('/security_breach/:nric/:sb_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachSBRecord, function (req, res) {
+  console.log('req.req.params')
+  console.log(req.params)
+  res.render('view_security_breach', { user: req.user, officer_details: req.officer_details, sb_id: req.params.sb_id, sb_details: req.security_breach_details });
+});
+
+router.post('/security_breach/:nric/:sb_id', functions.verifyAdmin, function (req, res) {
+  var officer_id = req.params.nric;
+  var sb_id = req.params.sb_id;
+
+  var editBtn = req.body.edit_btn;
+  var deleteBtn = req.body.delete_btn;
+
+  if (deleteBtn != null) { // IF DELETE BUTTON PRESSED
+    firebase.db.ref("officers/" + officer_id + "/security_records/security_breach/" + sb_id).set(null, function (error) {
+      if (!error) {
+        res.redirect('/security_breach/' + officer_id);
+      }
+    });
+  } else if (editBtn != null) {
+    var sb_name = req.body.sb_name;
+    var sb_date = functions.dateToUNIX(req.body.sb_date);
+    var sb_time = req.body.sb_time;
+    var sb_location = req.body.sb_location;
+    var sb_breachOff = req.body.sb_breachOff;
+    var sb_personInv = req.body.sb_personInv;
+    var sb_supervisor = req.body.sb_supervisor;
+    var sb_contact = req.body.sb_contact;
+    var sb_entity = req.body.sb_entity;
+    var sb_certExpOrAPno = req.body.sb_certExpOrAPno;
+    var sb_detect = req.body.sb_detect;
+    var sb_certSeized = req.body.sb_certSeized;
+    var sb_cat = req.body.sb_cat;
+    var sb_image = req.body.sb_image;
+    var sb_remarks = req.body.sb_remarks;
+
+
+    var data = {
+      sb_name: sb_name,
+      sb_date: sb_date,
+      sb_time: sb_time,
+      sb_location: sb_location,
+      sb_breachOff: sb_breachOff,
+      sb_personInv: sb_personInv,
+      sb_supervisor: sb_supervisor,
+      sb_contact: sb_contact,
+      sb_entity: sb_entity,
+      sb_certExpOrAPno: sb_certExpOrAPno,
+      sb_detect: sb_detect,
+      sb_certSeized: sb_certSeized,
+      sb_cat: sb_cat,
+      sb_image: sb_image,
+      sb_remarks: sb_remarks
+    }
+
+    firebase.db.ref("officers/" + officer_id + "/security_records/security_breach/" + sb_id).update(JSON.parse(JSON.stringify(data)), function (error) {
+      if (!error) {
+        res.redirect('/security_breach/' + officer_id + '/' + sb_id);
+      }
+    });
+  }
+});
+
+//Others Section
+
+router.get('/others', functions.verifyAdmin, functions.getOfficers, function (req, res) {
+  res.render('main_others', { user: req.user, officer_details: req.officer_details });
+})
+
+router.get('/others/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getOTHERSRecords, function (req, res) {
+  console.log('req.others_details')
+  console.log(req.others_details)
+  res.render('others', { user: req.user, officer_details: req.officer_details, others_details: req.others_details });
+})
+
+router.get('/others/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
+  var officer_id = req.params.id;
+  res.render('new_others', { user: req.user, officer_details: req.officer_details })
+})
+
+router.post('/others/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
+  var officer_id = req.params.nric;
+
+  var others_name = req.body.others_name;
+  var others_cardSeized = functions.dateToUNIX(req.body.others_cardSeized);
+  var others_certCardNo = req.body.others_certCardNo;
+  var others_cardReturned = functions.dateToUNIX(req.body.others_cardReturned);
+  var others_exEmployer = req.body.others_exEmployer;
+  var others_serviceNo = req.body.others_serviceNo;
+  var others_reason = req.body.others_reason;
+  var others_remarks = req.body.others_remarks;
+
+
+  var data = {
+    others_name: others_name,
+    others_cardSeized: others_cardSeized,
+    others_certCardNo: others_certCardNo,
+    others_cardReturned: others_cardReturned,
+    others_exEmployer: others_exEmployer,
+    others_serviceNo: others_serviceNo,
+    others_reason: others_reason,
+    others_remarks: others_remarks
+  }
+  console.log('insert data')
+  console.log(data)
+  console.log(JSON.parse(JSON.stringify(data)))
+  var insertData = firebase.db.ref("officers/" + officer_id + "/others_records/others/").push(JSON.parse(JSON.stringify(data)), function (error) {
+    if (!error) {
+      var dataId = insertData.key;
+      res.redirect('/others/' + officer_id + '/' + dataId);
+    }
+  });
+})
+
+router.get('/others/:nric/:others_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachOTHERSRecord, function (req, res) {
+  console.log('req.req.params')
+  console.log(req.params)
+  res.render('view_others', { user: req.user, officer_details: req.officer_details, others_id: req.params.others_id, others_details: req.others_details });
+});
+
+router.post('/others/:nric/:others_id', functions.verifyAdmin, function (req, res) {
+  var officer_id = req.params.nric;
+  var others_id = req.params.others_id;
+
+  var editBtn = req.body.edit_btn;
+  var deleteBtn = req.body.delete_btn;
+
+  if (deleteBtn != null) { // IF DELETE BUTTON PRESSED
+    firebase.db.ref("officers/" + officer_id + "/others_records/others/" + others_id).set(null, function (error) {
+      if (!error) {
+        res.redirect('/others/' + officer_id);
+      }
+    });
+  } else if (editBtn != null) {
+    var others_name = req.body.others_name;
+    var others_cardSeized = functions.dateToUNIX(req.body.others_cardSeized);
+    var others_certCardNo = req.body.others_certCardNo;
+    var others_cardReturned = functions.dateToUNIX(req.body.others_cardReturned);
+    var others_exEmployer = req.body.others_exEmployer;
+    var others_serviceNo = req.body.others_serviceNo;
+    var others_reason = req.body.others_reason;
+    var others_remarks = req.body.others_remarks;
+
+
+    var data = {
+      others_name: others_name,
+      others_cardSeized: others_cardSeized,
+      others_certCardNo: others_certCardNo,
+      others_cardReturned: others_cardReturned,
+      others_exEmployer: others_exEmployer,
+      others_serviceNo: others_serviceNo,
+      others_reason: others_reason,
+      others_remarks: others_remarks
+    }
+
+    firebase.db.ref("officers/" + officer_id + "/others_records/others/" + others_id).update(JSON.parse(JSON.stringify(data)), function (error) {
+      if (!error) {
+        res.redirect('/others/' + officer_id + '/' + others_id);
       }
     });
   }

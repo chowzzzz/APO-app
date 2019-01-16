@@ -26,7 +26,7 @@ function UNIXConverter(UNIX_timestamp){
   <h4 class="mt-4">Add New Security Test Record</h4>
   <hr>
 
-  <form action='/security_test/new/<%=officer_details.nric%>/' method="POST">
+  <form action='/security_test/new/<%=officer_details.nric%>/' method="POST" enctype="multipart/form-data">
     <div class="card d-flex mx-auto mb-5">
       <div class="card-header text-left">
         <div class="d-sm-flex flex-sm-row">
@@ -158,34 +158,18 @@ function UNIXConverter(UNIX_timestamp){
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="st_certSeized">Cert Seized:</label><br />
             <div class="input-group mb-3">
-<<<<<<< .mine
-              <select class="custom-select" id="st_certSeized" required>
-                <option selected></option>
-                <option value="1">Yes</option>
-                <option value="0">No</option>
-=======
               <select class="custom-select" id="st_certSeized" name="st_certSeized" required>
                 <option selected>Select</option>
                 <option value="1">Yes</option>
                 <option value="0">No</option>
->>>>>>> .theirs
               </select>
             </div>
           </div>
           <div class="col-sm-4">
-<<<<<<< .mine
-            <label class="font-weight-bold mb-0" for="st_category">Category:</label><br />
-=======
             <label class="font-weight-bold mb-0" for="st_cat">Category:</label><br />
->>>>>>> .theirs
             <div class="input-group mb-3">
-<<<<<<< .mine
-              <select class="custom-select" id="st_category" required>
-                <option selected></option>
-=======
               <select class="custom-select" id="st_cat" name="st_cat" required>
                 <option selected>Select</option>
->>>>>>> .theirs
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -203,7 +187,7 @@ function UNIXConverter(UNIX_timestamp){
           <div class="col-sm-6">
             <label class="font-weight-bold mb-0" for="st_image">Image:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control" name="st_image" id="st_image" value="" required>
+              <input type="file" name="st_image" />
             </div>
           </div>
           <div class="col-sm-6">

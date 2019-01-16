@@ -25,23 +25,23 @@
     $('input[name=overall_status][value=' +<%=st_details.overall_status %> +']').attr('checked', 'checked');
 
     $('input[name=st_date]').val(UNIXConverter(<%=st_details.st_date %>));
-    $('input[name=st_time]').val(<%=st_details.st_time %>);
-    $('input[name=st_location]').val(<%=st_details.st_location %>);
-    $('input[name=st_AvSOAPO]').val(<%=st_details.st_AvSOAPO %>);
-    $('input[name=st_certExp]').val(<%=st_details.st_certExp %>);
-    $('input[name=st_svrYr]').val(<%=st_details.st_svrYr %>);
-    $('input[name=st_mode]').val(<%=st_details.st_mode %>);
-    $('input[name=st_entity]').val(<%=st_details.st_entity %>);
-    $('input[name=st_sto]').val(<%=st_details.st_sto %>);
-    $('input[name=st_em]').val(<%=st_details.st_em %>);
-    $('input[name=st_rt]').val(<%=st_details.st_rt %>);
-    $('input[name=st_so]').val(<%=st_details.st_so %>);
-    $('input[name=st_supervisor]').val(<%=st_details.st_supervisor %>);
-    $('input[name=st_image]').val(<%=st_details.st_image %>);
-    $('textarea[name=st_remarks]').val(<%=st_details.st_remarks %>);
+    $('input[name=st_time]').val('<%=st_details.st_time %>');
+    $('input[name=st_location]').val('<%=st_details.st_location %>');
+    $('input[name=st_AvSOAPO]').val('<%=st_details.st_AvSOAPO %>');
+    $('input[name=st_certExp]').val('<%=st_details.st_certExp %>');
+    $('input[name=st_svrYr]').val('<%=st_details.st_svrYr %>');
+    $('input[name=st_mode]').val('<%=st_details.st_mode %>');
+    $('input[name=st_entity]').val('<%=st_details.st_entity %>');
+    $('input[name=st_sto]').val('<%=st_details.st_sto %>');
+    $('input[name=st_em]').val('<%=st_details.st_em %>');
+    $('input[name=st_rt]').val('<%=st_details.st_rt %>');
+    $('input[name=st_so]').val('<%=st_details.st_so %>');
+    $('input[name=st_supervisor]').val('<%=st_details.st_supervisor %>');
+    $('input[name=st_image]').val('<%=st_details.st_image %>');
+    $('textarea[name=st_remarks]').val('<%=st_details.st_remarks %>');
 
-    $("#ACForm").on("submit", function (e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
-      var alert = confirm("Are you sure you want to edit/delete the General Screener?");
+    $("#STForm").on("submit", function (e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
+      var alert = confirm("Are you sure you want to edit/delete the Security Test?");
       if (alert == true) {
         return true;
       } else {
@@ -56,7 +56,7 @@
   <hr>
 
 
-  <form action='/security_test/<%=officer_details.nric%>/<%=security_test_id%>' method="POST" id="STForm">
+  <form action='/security_test/<%=officer_details.nric%>/<%=st_id%>' method="POST" id="STForm">
     <div class="card d-flex mx-auto mb-5">
       <div class="card-header text-left">
         <div class="d-sm-flex flex-sm-row">
@@ -75,11 +75,13 @@
             <div class="mb-2">
               Status:&nbsp;
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="overall_status" id="passStatus" value="1">
+                <input class="form-check-input" type="radio" name="overall_status" id="passStatus" value="1" <% if (st_details.overall_status=="1" ) {%> checked
+                  <% } %>>
                 <label class="form-check-label" for="passStatus">Pass</label>
               </div>
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="overall_status" id="failStatus" value="0">
+                <input class="form-check-input" type="radio" name="overall_status" id="failStatus" value="0" <% if (st_details.overall_status=="0" ) {%> checked
+                  <% } %>>
                 <label class="form-check-label" for="failStatus">Fail</label>
               </div>
             </div>
@@ -212,7 +214,11 @@
             <div class="col-sm-6">
               <label class="font-weight-bold mb-0" for="st_image">Image:</label><br />
               <div class="input-group mb-3">
-                <input type="text" class="form-control" name="st_image" id="st_image" value="" required>
+                <% if (st_details.st_image != '') { %>
+                <img src="/uploads/<%=st_details.st_image %>">
+                <% }else{ %>
+                <input type="file" name="st_image" />
+                <% } %>
               </div>
             </div>
             <div class="col-sm-6">

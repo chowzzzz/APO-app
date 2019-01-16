@@ -32,7 +32,7 @@
     $('input[name=xray_cargo_etd]').val(UNIXConverter(<%=xray_cargo_details.etd.date %>));
     $('input[name=xray_cargo_iit]').val(UNIXConverter(<%=xray_cargo_details.iit.date %>));
 
-    $("#ACForm").on("submit", function (e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
+    $("#CARGOForm").on("submit", function (e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
       var alert = confirm("Are you sure you want to edit/delete the Xray Cargo?");
       if (alert == true) {
         return true;

@@ -6,7 +6,7 @@ var passport = require('passport'), LocalStrategy = require('passport-local').St
 // var extend = require("jquery-extend");
 var path = require('path');
 var flash = require('connect-flash');
-
+var fileUpload = require('express-fileupload');
 var routes = require('./controllers/routes');
 var firebase = require('./controllers/firebase');
 
@@ -14,7 +14,7 @@ var app = express();
 
 // flash
 app.use(flash());
-
+app.use(fileUpload());
 //var ocrfunct = require("./ocrfunctions.js");
 
 //VIEW ENGINE
@@ -27,6 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // SET STATIC PATH
 app.use(express.static(path.join(__dirname, 'public')));
+app.use("/uploads", express.static(__dirname + "/uploads"));
 
 // EXPRESS VALIDATOR
 app.use(expressValidator());

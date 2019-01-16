@@ -21,6 +21,10 @@ function UNIXConverter(UNIX_timestamp){
     return "";
   }
 }
+
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
+}
 %>
 <div class="container-fluid">
   <h4 class="mt-4">Access Control -
@@ -69,17 +73,29 @@ function UNIXConverter(UNIX_timestamp){
     <tr>
       <td class="mx-auto text-danger" colspan="3">Officer does not have any existing certificates.</td>
     </tr>
-    <% } %>
+    <% } else { %>
 
-    <% var i = 1 %>
-    <% for (var access_control_id in ac_details) { %>
-    <% var status; %>
-    <tr class='clickable-row' data-href='/access_control/<%=officer_details.nric%>/<%=access_control_id%>'>
+    <%
+    var keys=[];
+
+    var sorted_ac_details = Object.keys(ac_details).sort(function(a,b) {
+      return ac_details[b].certified_date - ac_details[a].certified_date;
+    }).map(function(category) {
+      var key = getKeyByValue(ac_details, ac_details[category]);
+      keys.push(key);
+      return ac_details[category];
+    });
+    console.log(keys);
+    console.log(sorted_ac_details);
+    %>
+    <%
+    var i = 1;
+    for (var access_control_index in sorted_ac_details) { %>
+    <tr class='clickable-row' data-href='/access_control/<%=officer_details.nric%>/<%=keys[access_control_index]%>'>
       <td>
-        <%=i%>
-        <% i++ %>
+          <%=i%>
       </td>
-      <% if (ac_details[access_control_id].overall_status == "1") { %>
+      <% if (sorted_ac_details[access_control_index].overall_status == "1") { %>
       <td>
         PASS
       </td>
@@ -89,10 +105,15 @@ function UNIXConverter(UNIX_timestamp){
       </td>
       <% } %>
       <td>
-        <%=UNIXConverter(ac_details[access_control_id].certified_date)%>
+        <%=UNIXConverter(sorted_ac_details[access_control_index].certified_date)%>
       </td>
     </tr>
-    <% } %>
+
+    <%
+        i++;
+    }
+    %>
+    <% } //CLOSE BRACKET FOR ELSE STATEMENT%>
   </table>
 
   <div class="mb-4 col-11 mx-auto">

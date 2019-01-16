@@ -30,7 +30,7 @@
     $('input[name=xray_pb_theory]').val(UNIXConverter(<%=xray_pb_details.theory.date %>));
     $('input[name=xray_pb_iit]').val(UNIXConverter(<%=xray_pb_details.iit.date %>));
 
-    $("#ACForm").on("submit", function (e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
+    $("#PBForm").on("submit", function (e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
       var alert = confirm("Are you sure you want to edit/delete the Xray PB?");
       if (alert == true) {
         return true;

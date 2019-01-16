@@ -23,41 +23,113 @@ function UNIXConverter(UNIX_timestamp){
 
 
 //iterate through the certification details to get that particular record.
-var dob = 0;
-var gs_date=0;
-var ac_date=0;
-var xray_hbs_date = 0;
-var xray_pb_date = 0;
-var xray_cargo_date = 0;
+var dob = '-';
+var gs_date= '-';
+var ac_date= '-';
+var xray_hbs_date = '-';
+var xray_pb_date = '-'
+var xray_cargo_date = '-';
 
 if (gs_details != null) {
-  for (var id in gs_details) { // since you're not sure of the latest ID, iterate to get the ID.
-    gs_date = gs_details[id].certified_date;
+  gsDetailSortedKey = Object.keys(gs_details).sort(function(a,b){return gs_details[b]['certified_date']-gs_details[a]['certified_date']});
+  gsDetail = gs_details[gsDetailSortedKey[0]];
+
+  if(gsDetail){
+    var overall_status = gsDetail.overall_status;
+
+    if (overall_status == 1) {
+      gs_date = gsDetail.certified_date;
+    }
   }
+  // for (var id in gs_details) { // since you're not sure of the latest ID, iterate to get the ID.
+  //   var overall_status = gs_details[id].overall_status;
+  //
+  //   if (overall_status == 1) {
+  //     gs_date = gs_details[id].certified_date;
+  //   }
+  // }
 }
 
 if (ac_details != null) {
-  for (var id in ac_details) { // since you're not sure of the latest ID, iterate to get the ID.
-    ac_date = ac_details[id].certified_date;
+  acDetailSortedKey = Object.keys(ac_details).sort(function(a,b){return ac_details[b]['certified_date']-ac_details[a]['certified_date']});
+  acDetail = ac_details[acDetailSortedKey[0]];
+
+  if(acDetail){
+    var overall_status = acDetail.overall_status;
+
+    if (overall_status == 1) {
+      ac_date = acDetail.certified_date;
+    }
   }
+
+  // for (var id in ac_details) { // since you're not sure of the latest ID, iterate to get the ID.
+  //   var overall_status = ac_details[id].overall_status;
+  //
+  //   if (overall_status == 1) {
+  //     ac_date = ac_details[id].certified_date;
+  //   }
+  // }
 }
 
 if (xray_hbs_details != null) {
-  for (var id in xray_hbs_details) { // since you're not sure of the latest ID, iterate to get the ID.
-    xray_hbs_date = xray_hbs_details[id].certified_date;
+  xrHbDetailSortedKey = Object.keys(xray_hbs_details).sort(function(a,b){return xray_hbs_details[b]['certified_date']-xray_hbs_details[a]['certified_date']});
+  xrHbDetail = xray_hbs_details[xrHbDetailSortedKey[0]];
+
+  if(xrHbDetail){
+    var overall_status = xrHbDetail.overall_status;
+
+    if (overall_status == 1) {
+      xray_hbs_date = xrHbDetail.certified_date;
+    }
   }
+
+  // for (var id in xray_hbs_details) { // since you're not sure of the latest ID, iterate to get the ID.
+  //   var overall_status = xray_hbs_details[id].overall_status;
+  //
+  //   if (overall_status == 1) {
+  //     xray_hbs_date = xray_hbs_details[id].certified_date;
+  //   }
+  // }
 }
 
 if (xray_pb_details != null) {
-  for (var id in xray_pb_details) { // since you're not sure of the latest ID, iterate to get the ID.
-    xray_pb_date = xray_pb_details[id].certified_date;
+  xrPbDetailSortedKey = Object.keys(xray_pb_details).sort(function(a,b){return xray_pb_details[b]['certified_date']-xray_pb_details[a]['certified_date']});
+  xrPbDetail = xray_pb_details[xrPbDetailSortedKey[0]];
+
+  if(xrPbDetail){
+    var overall_status = xrPbDetail.overall_status;
+
+    if (overall_status == 1) {
+      xray_pb_date = xrPbDetail.certified_date;
+    }
   }
+  // for (var id in xray_pb_details) { // since you're not sure of the latest ID, iterate to get the ID.
+  //   var overall_status = xray_pb_details[id].overall_status;
+  //
+  //   if (overall_status == 1) {
+  //     xray_pb_date = xray_pb_details[id].certified_date;
+  //   }
+  // }
 }
 
 if (xray_cargo_details != null) {
-  for (var id in xray_cargo_details) { // since you're not sure of the latest ID, iterate to get the ID.
-    xray_cargo_date = xray_cargo_details[id].certified_date;
+  xrCgDetailSortedKey = Object.keys(xray_cargo_details).sort(function(a,b){return xray_cargo_details[b]['certified_date']-xray_cargo_details[a]['certified_date']});
+  xrCgDetail = xray_cargo_details[xrCgDetailSortedKey[0]];
+
+  if(xrCgDetail){
+    var overall_status = xrCgDetail.overall_status;
+
+    if (overall_status == 1) {
+      xray_cargo_date = xrCgDetail.certified_date;
+    }
   }
+  // for (var id in xray_cargo_details) { // since you're not sure of the latest ID, iterate to get the ID.
+  //   var overall_status = xray_cargo_details[id].overall_status;
+  //
+  //   if (overall_status == 1) {
+  //     xray_cargo_date = xray_cargo_details[id].certified_date;
+  //   }
+  // }
 }
 
 // in some cases, there will not be any XRAY fields upon creation of officers, therefore this is used as a safe check.
@@ -68,7 +140,7 @@ var front_loader_date=0;
 if (officer_details.certification !== undefined) {
   if (officer_details.certification.etd != null) { etd_date = officer_details.certification.etd; }
   if (officer_details.certification.front_loader != null) { front_loader_date = officer_details.certification.front_loader; }
-  
+
   dob = officer_details.dob;
 }*/
 
@@ -114,7 +186,7 @@ if (officer_details.certification !== undefined) {
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="dob">D.O.B.:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="dob" id="dob" value="<%=UNIXConverter(dob)%>"
+              <input type="text" class="form-control datepicker" name="dob" id="dob" value="<%=officer_details.dob%>"
                 required>
               <div class="input-group-append">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
@@ -216,11 +288,7 @@ if (officer_details.certification !== undefined) {
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="xray_hbs">Xray HBS:</label><br />
             <div class="input-group mb-3">
-<<<<<<< .mine
-              <input type="text" class="form-control" name="xray_hbs" id="xray_hbs" value="<%=UNIXConverter(xray_hbs_date)%>" readonly
-=======
               <input type="text" class="form-control datepicker" name="xray_hbs" id="xray_hbs" value="<%=UNIXConverter(xray_hbs_date)%>"
->>>>>>> .theirs
                 <% if (user.role> 1) { %> readonly
               <% } %> disabled>
             </div>
