@@ -318,7 +318,6 @@ module.exports.getEachOTHERSRecord = function (req, res, next) {
   });
 }
 
-
 // Date
 module.exports.dateToUNIX = function (textDate) {
   try {

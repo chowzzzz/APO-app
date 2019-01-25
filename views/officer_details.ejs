@@ -144,6 +144,22 @@ if (officer_details.certification !== undefined) {
   dob = officer_details.dob;
 }*/
 
+// if(alertArr.ac){
+//   alert('Officer\'s Access Control Certificate expiring soon!')
+// }
+// if(alertArr.gs){
+//   alert('Officer\'s General Access Certificate expiring soon!');
+// }
+// if(alertArr.xray_cargo){
+//   alert('Officer\'s Xray-Cargo Certificate expiring soon!');
+// }
+//
+// if(alertArr.xray_hbs){
+//   alert('Officer\'s Xray-HBS Certificate expiring soon!');
+// }
+// if(alertArr.xray_pb){
+//   alert('Officer\'s Xray-PB Certificate expiring soon!');
+// }
 %>
 <div class="container-fluid">
   <h4 class="mt-4">
@@ -322,5 +338,27 @@ if (officer_details.certification !== undefined) {
   </form>
 </div>
 
+<% if('undefined'!==typeof alertArr || alertArr!=='' || alertArr!==null) { %>
+  <% if
+  (alertArr.ac) { %>
+    <script>alert('Officer\'s Access Control Certificate expiring soon!')</script>
+  <% } %>
+  <% if
+  (alertArr.gs) { %>
+    <script>alert('Officer\'s General Access Certificate expiring soon!');</script>
+  <% } %>
+  <% if
+  (alertArr.xray_cargo) { %>
+    <script>alert('Officer\'s Xray-Cargo Certificate expiring soon!');</script>
+  <% } %>
+  <% if
+  (alertArr.xray_hbs) { %>
+    <script>alert('Officer\'s Xray-HBS Certificate expiring soon!');</script>
+  <% } %>
 
+  <% if
+  (alertArr.xray_pb) { %>
+    <script>alert('Officer\'s Xray-PB Certificate expiring soon!');</script>
+  <% } %>
+<% } %>
 <% include partials/footer %>

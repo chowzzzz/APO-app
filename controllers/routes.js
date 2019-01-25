@@ -3,6 +3,7 @@ var passport = require('passport')
 
 var router = express.Router();
 
+var moment = require('moment');
 var functions = require('./modules');
 var firebase = require('./firebase');
 
@@ -174,11 +175,147 @@ router.get('/officers/:nric', functions.verifyAdmin, functions.getEachOfficers, 
 
   console.log('req.xray_cargo_details');
   console.log(req.xray_cargo_details);
-  res.render('officer_details', { user: req.user, officer_details: req.officer_details, ac_details: req.ac_details, gs_details: req.gs_details, xray_hbs_details: req.xray_hbs_details, xray_pb_details: req.xray_pb_details, xray_cargo_details: req.xray_cargo_details, nric: req.params.nric });
+
+  var alertArr = [];
+  alertArr.gs = false;
+  alertArr.ac = false;
+  alertArr.xray_hbs = false;
+  alertArr.xray_pb = false;
+  alertArr.xray_cargo = false;
+  var curDate = moment().format("YYYYMMDD");
+  if(req.gs_details!=null){
+    var cert = req.gs_details;
+
+    gsDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    gsDetail = cert[gsDetailSortedKey[0]];
+
+    if(gsDetail){
+      var overall_status = gsDetail.overall_status;
+
+      if (overall_status == 1) {
+        gs_date = gsDetail.certified_date;
+      }
+    }
+    if('undefined'!==typeof gs_date) {
+      var certDate = moment(gs_date),
+          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+          certDateIncr = moment(certDateFormat).add(11, 'M'),
+          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+      if (diffDate >0 && diffDate<1) {
+        alertArr.gs = true;
+      }
+    }
+  }
+  if(req.ac_details!=null){
+    var cert = req.ac_details;
+
+    acDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    acDetail = cert[acDetailSortedKey[0]];
+
+    if(acDetail){
+      var overall_status = acDetail.overall_status;
+
+      if (overall_status == 1) {
+        ac_date = acDetail.certified_date;
+      }
+    }
+
+    if('undefined'!==typeof ac_date) {
+      var certDate = moment(ac_date),
+          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+          certDateIncr = moment(certDateFormat).add(11, 'M'),
+          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+          //diffDate = moment(curDate).diff(moment(certDateIncr), 'days');
+          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+
+      if (diffDate >0 && diffDate<1) {
+        alertArr.ac = true;
+      }
+    }
+  }
+  if(req.xray_hbs_details!=null){
+    var cert = req.xray_hbs_details;
+
+    xrHbDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    xrHbDetail = cert[xrHbDetailSortedKey[0]];
+
+    if(xrHbDetail){
+      var overall_status = xrHbDetail.overall_status;
+
+      if (overall_status == 1) {
+        xray_hbs_date = xrHbDetail.certified_date;
+      }
+    }
+    if('undefined'!==typeof xray_hbs_date) {
+      var certDate = moment(xray_hbs_date),
+          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+          certDateIncr = moment(certDateFormat).add(11, 'M'),
+          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+      console.log('xr hbd: ' + diffDate);
+      if (diffDate >0 && diffDate<1) {
+        alertArr.xray_hbs = true;
+      }
+    }
+  }
+  if(req.xray_pb_details!=null){
+    var cert = req.xray_pb_details;
+
+    xrPbDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    xrPbDetail = cert[xrPbDetailSortedKey[0]];
+  console.log('xrPbDetail')
+    console.log(xrPbDetail)
+    if(xrPbDetail){
+      var overall_status = xrPbDetail.overall_status;
+
+      if (overall_status == 1) {
+        xray_pb_date = xrPbDetail.certified_date;
+      }
+    }
+    if('undefined'!==typeof xray_pb_date){
+      console.log('moment(xray_pb_date)')
+      console.log(moment(xray_pb_date))
+      var certDate = moment(xray_pb_date),
+          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+          certDateIncr = moment(certDateFormat).add(11,'M'),
+          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+      if (diffDate >0 && diffDate<1) {
+        alertArr.xray_pb = true;
+      }
+    }
+  }
+  if(req.xray_cargo_details!=null){
+    var cert = req.xray_cargo_details;
+
+    xrCgDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    xrCgDetail = cert[xrCgDetailSortedKey[0]];
+
+    if(xrCgDetail){
+      var overall_status = xrCgDetail.overall_status;
+
+      if (overall_status == 1) {
+        xray_cargo_date = xrCgDetail.certified_date;
+      }
+    }
+    if('undefined'!==typeof xray_cargo_date){
+      var certDate = moment(xray_cargo_date),
+          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+          certDateIncr = moment(certDateFormat).add(11,'M'),
+          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+      if (diffDate >0 && diffDate<1) {
+        alertArr.xray_cargo = true;
+      }
+    }
+  }
+  console.log('Arr')
+  console.log(alertArr)
+  res.render('officer_details', { user: req.user, officer_details: req.officer_details, ac_details: req.ac_details, gs_details: req.gs_details, xray_hbs_details: req.xray_hbs_details, xray_pb_details: req.xray_pb_details, xray_cargo_details: req.xray_cargo_details, nric: req.params.nric, alertArr: alertArr });
 });
 
 router.post('/officers/:nric', functions.verifyAdmin, function (req, res, next) {
-
   if (req.body.update_btn != null) {
 
     var fname = req.body.fname;
@@ -248,7 +385,142 @@ router.post('/officers/:nric', functions.verifyAdmin, function (req, res, next) 
   //res.render('officer_details', {user: req.user, officer_details: req.officer_details, nric: req.params.id});
 }, functions.getEachOfficers, functions.getEachOfficers, functions.getLatestACRecord, functions.getLatestGSRecord, functions.getLatestXrayHBSRecord, functions.getLatestXrayPBRecord, functions.getLatestXrayCargoRecord, function (req, res) {
   console.log(req.officer_details);
-  res.render('officer_details', { user: req.user, officer_details: req.officer_details, ac_details: req.ac_details, gs_details: req.gs_details, xray_hbs_details: req.xray_hbs_details, xray_pb_details: req.xray_pb_details, xray_cargo_details: req.xray_cargo_details, nric: req.params.nric });
+
+  var alertArr = [];
+  alertArr.gs = false;
+  alertArr.ac = false;
+  alertArr.xray_hbs = false;
+  alertArr.xray_pb = false;
+  alertArr.xray_cargo = false;
+  var curDate = moment().format("YYYYMMDD");
+  if(req.gs_details!=null){
+    var cert = req.gs_details;
+
+    gsDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    gsDetail = cert[gsDetailSortedKey[0]];
+
+    if(gsDetail){
+      var overall_status = gsDetail.overall_status;
+
+      if (overall_status == 1) {
+        gs_date = gsDetail.certified_date;
+      }
+    }
+    if('undefined'!==typeof gs_date) {
+      var certDate = moment(gs_date),
+          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+          certDateIncr = moment(certDateFormat).add(11, 'M'),
+          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+      if (diffDate >0 && diffDate<1) {
+        alertArr.gs = true;
+      }
+    }
+  }
+  if(req.ac_details!=null){
+    var cert = req.ac_details;
+
+    acDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    acDetail = cert[acDetailSortedKey[0]];
+
+    if(acDetail){
+      var overall_status = acDetail.overall_status;
+
+      if (overall_status == 1) {
+        ac_date = acDetail.certified_date;
+      }
+    }
+
+    if('undefined'!==typeof ac_date) {
+      var certDate = moment(ac_date),
+          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+          certDateIncr = moment(certDateFormat).add(11, 'M'),
+          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+      console.log(diffDate)
+      if (diffDate >0 && diffDate<1) {
+        alertArr.ac = true;
+      }
+    }
+  }
+  if(req.xray_hbs_details!=null){
+    var cert = req.xray_hbs_details;
+
+    xrHbDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    xrHbDetail = cert[xrHbDetailSortedKey[0]];
+
+    if(xrHbDetail){
+      var overall_status = xrHbDetail.overall_status;
+
+      if (overall_status == 1) {
+        xray_hbs_date = xrHbDetail.certified_date;
+      }
+    }
+    if('undefined'!==typeof xray_hbs_date) {
+      var certDate = moment(xray_hbs_date),
+          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+          certDateIncr = moment(certDateFormat).add(11, 'M'),
+          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+      if (diffDate >0 && diffDate<1) {
+        alertArr.xray_hbs = true;
+      }
+    }
+  }
+  if(req.xray_pb_details!=null){
+    var cert = req.xray_pb_details;
+
+    xrPbDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    xrPbDetail = cert[xrPbDetailSortedKey[0]];
+    console.log('xrPbDetail')
+    console.log(xrPbDetail)
+    if(xrPbDetail){
+      var overall_status = xrPbDetail.overall_status;
+
+      if (overall_status == 1) {
+        xray_pb_date = xrPbDetail.certified_date;
+      }
+    }
+    if('undefined'!==typeof xray_pb_date){
+      console.log('moment(xray_pb_date)')
+      console.log(moment(xray_pb_date))
+      var certDate = moment(xray_pb_date),
+          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+          certDateIncr = moment(certDateFormat).add(11,'M'),
+          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+      if (diffDate >0 && diffDate<1) {
+        alertArr.xray_pb = true;
+      }
+    }
+  }
+  if(req.xray_cargo_details!=null){
+    var cert = req.xray_cargo_details;
+
+    xrCgDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    xrCgDetail = cert[xrCgDetailSortedKey[0]];
+
+    if(xrCgDetail){
+      var overall_status = xrCgDetail.overall_status;
+
+      if (overall_status == 1) {
+        xray_cargo_date = xrCgDetail.certified_date;
+      }
+    }
+    if('undefined'!==typeof xray_cargo_date){
+      var certDate = moment(xray_cargo_date),
+          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+          certDateIncr = moment(certDateFormat).add(11,'M'),
+          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+      if (diffDate >0 && diffDate<1) {
+        alertArr.xray_cargo = true;
+      }
+    }
+  }
+  console.log('Arr')
+  console.log(alertArr)
+  res.render('officer_details', { user: req.user, officer_details: req.officer_details, ac_details: req.ac_details, gs_details: req.gs_details, xray_hbs_details: req.xray_hbs_details, xray_pb_details: req.xray_pb_details, xray_cargo_details: req.xray_cargo_details, nric: req.params.nric, alertArr: alertArr });
 });
 
 //Access Control Section
@@ -1189,9 +1461,9 @@ router.post('/others/new/:nric', functions.isAdminPage, functions.verifyAdmin, f
     others_reason: others_reason,
     others_remarks: others_remarks
   }
-  console.log('insert data')
-  console.log(data)
-  console.log(JSON.parse(JSON.stringify(data)))
+  // console.log('insert data')
+  // console.log(data)
+  // console.log(JSON.parse(JSON.stringify(data)))
   var insertData = firebase.db.ref("officers/" + officer_id + "/others_records/others/").push(JSON.parse(JSON.stringify(data)), function (error) {
     if (!error) {
       var dataId = insertData.key;
@@ -1201,8 +1473,8 @@ router.post('/others/new/:nric', functions.isAdminPage, functions.verifyAdmin, f
 })
 
 router.get('/others/:nric/:others_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachOTHERSRecord, function (req, res) {
-  console.log('req.req.params')
-  console.log(req.params)
+  // console.log('req.req.params')
+  // console.log(req.params)
   res.render('view_others', { user: req.user, officer_details: req.officer_details, others_id: req.params.others_id, others_details: req.others_details });
 });
 
@@ -1355,5 +1627,360 @@ router.get('/logout', function (req, res) {
   req.logout();
   res.redirect('/');
 });
+
+/*
+officers
+{ '09AB123':
+   { cert_card_no: 'CertCard',
+     certification:
+      { xray_cargo: [Object], xray_hbs: [Object], xray_pb: [Object] },
+     designation: 'desg',
+     dob: '01/01/2000',
+     fname: 'Canh',
+     gender: '0',
+     lname: 'Nguyen',
+     nric: '09AB123',
+     organisation: 'Org',
+     rank: 'Ranks1',
+     remarks: 'Rem1',
+     serial_no: 'Serial1' },
+  '09AB124':
+   { cert_card_no: 'CertCard2',
+     certification: { access_control: [Object], general_screener: [Object] },
+     designation: 'desg2',
+     dob: '02/01/1999',
+     fname: 'Dem1',
+     gender: '1',
+     lname: 'Last dem1',
+     nric: '09AB124',
+     organisation: 'org2',
+     rank: 'Ranks2',
+     remarks: 'Rem2',
+     serial_no: 'Serial2' } }
+ */
+router.get('/expiring', functions.verifyAdmin, functions.getOfficers, function (req, res) {
+  var officers = req.officer_details;
+  // console.log('officers')
+  // console.log(officers);
+  // console.log(officers.length)
+
+  var officersToExpire = [];
+  if(officers!==null){
+    for(var id in officers){
+      var officerId = officers[id];
+      if(officerId && officerId.certification){
+        var officerCert = officerId.certification;
+        if(officerCert){
+          if(officerCert.access_control){
+            var officerAc = officerCert.access_control;
+            for(var accCrtId in officerAc){
+              //console.log(officerAc[accCrtId]);
+              var cert = officerAc[accCrtId];
+              if(cert){
+                var curDate = moment().format("YYYYMMDD");
+                //console.log(curDate)
+                var certDate = moment(cert.certified_date),
+                    certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+                    certDateIncr = moment(certDateFormat).add(11,'M'),
+                    certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+                    diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+                // console.log('diffDate')
+                // console.log(certDateFormat)
+                // console.log(diffDate)
+                if (diffDate >0 && diffDate<1) {
+                  var offc = [];
+                  offc.expiringDate = moment(certDateFormat).format("DD-MM-YYYY");
+                  offc.name = officerId.fname;
+                  offc.nric = id;
+                  offc.certCardNo = officerId.cert_card_no;
+                  officersToExpire.push(offc)
+                }
+
+                // var certDate = moment(cert.certified_date),
+                //     certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+                //     certDateIncr = moment(certDateFormat).add(11,'M'),
+                //     certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+                //     //diffDate = moment(curDate).diff(moment(certDateIncr), 'days');
+                //     diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+                // console.log('diffDate')
+                // console.log(certDateFormat)
+                // console.log(diffDate)
+                // if (diffDate >0 && diffDate<1) {
+                //   var offc = [];
+                //   offc.expiringDate = certDateIncr;
+                //   offc.name = officerId.fname;
+                //   offc.nric = id;
+                //   offc.certCardNo = officerId.cert_card_no;
+                //   officersToExpire.push(offc)
+                // }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  res.render('expiring_ac', { user: req.user, officersToExpire: officersToExpire})
+});
+
+
+router.get('/expiring_gs', functions.verifyAdmin, functions.getOfficers, function (req, res) {
+  var officers = req.officer_details;
+  // console.log('officers')
+  // console.log(officers);
+  // console.log(officers.length)
+
+  var officersToExpire = [];
+  if(officers!==null){
+    for(var id in officers){
+      var officerId = officers[id];
+      if(officerId && officerId.certification){
+        var officerCert = officerId.certification;
+        if(officerCert){
+          if(officerCert.general_screener){
+            var officerAc = officerCert.general_screener;
+            for(var accCrtId in officerAc){
+              //console.log(officerAc[accCrtId]);
+              var cert = officerAc[accCrtId];
+              if(cert){
+                var curDate = moment().format("YYYYMMDD");
+                //console.log(curDate)
+                var certDate = moment(cert.certified_date),
+                    certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+                    certDateIncr = moment(certDateFormat).add(11,'M'),
+                    certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+                    diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+                if (diffDate >0 && diffDate<1) {
+                  var offc = [];
+                  offc.expiringDate = moment(certDateFormat).format("DD-MM-YYYY");
+                  offc.name = officerId.fname;
+                  offc.nric = id;
+                  offc.certCardNo = officerId.cert_card_no;
+                  officersToExpire.push(offc)
+                }
+
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  res.render('expiring_gs', { user: req.user, officersToExpire: officersToExpire})
+});
+
+router.get('/expiring_xrpb', functions.verifyAdmin, functions.getOfficers, function (req, res) {
+  var officers = req.officer_details;
+  // console.log('officers')
+  // console.log(officers);
+  // console.log(officers.length)
+
+  var officersToExpire = [];
+  if(officers!==null){
+    for(var id in officers){
+      var officerId = officers[id];
+      if(officerId && officerId.certification){
+        var officerCert = officerId.certification;
+        if(officerCert){
+          if(officerCert.xray_pb){
+            var officerAc = officerCert.xray_pb;
+            for(var accCrtId in officerAc){
+              //console.log(officerAc[accCrtId]);
+              var cert = officerAc[accCrtId];
+              if(cert){
+                var curDate = moment().format("YYYYMMDD");
+                //console.log(curDate)
+                var certDate = moment(cert.certified_date),
+                    certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+                    certDateIncr = moment(certDateFormat).add(11,'M'),
+                    certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+                    diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+                if (diffDate >0 && diffDate<1) {
+                  var offc = [];
+                  offc.expiringDate = moment(certDateFormat).format("DD-MM-YYYY");
+                  offc.name = officerId.fname;
+                  offc.nric = id;
+                  offc.certCardNo = officerId.cert_card_no;
+                  officersToExpire.push(offc)
+                }
+
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  res.render('expiring_xrpb', { user: req.user, officersToExpire: officersToExpire})
+});
+
+router.get('/expiring_xrhbs', functions.verifyAdmin, functions.getOfficers, function (req, res) {
+  var officers = req.officer_details;
+  // console.log('officers')
+  // console.log(officers);
+  // console.log(officers.length)
+
+  var officersToExpire = [];
+  if(officers!==null){
+    for(var id in officers){
+      var officerId = officers[id];
+      if(officerId && officerId.certification){
+        var officerCert = officerId.certification;
+        if(officerCert){
+          if(officerCert.xray_hbs){
+            var officerAc = officerCert.xray_hbs;
+            for(var accCrtId in officerAc){
+              //console.log(officerAc[accCrtId]);
+              var cert = officerAc[accCrtId];
+              if(cert){
+                var curDate = moment().format("YYYYMMDD");
+                //console.log(curDate)
+                var certDate = moment(cert.certified_date),
+                    certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+                    certDateIncr = moment(certDateFormat).add(11,'M'),
+                    certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+                    diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+                if (diffDate >0 && diffDate<1) {
+                  var offc = [];
+                  offc.expiringDate = moment(certDateFormat).format("DD-MM-YYYY");
+                  offc.name = officerId.fname;
+                  offc.nric = id;
+                  offc.certCardNo = officerId.cert_card_no;
+                  officersToExpire.push(offc)
+                }
+
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  res.render('expiring_xrhbs', { user: req.user, officersToExpire: officersToExpire})
+});
+
+router.get('/expiring_xrcg', functions.verifyAdmin, functions.getOfficers, function (req, res) {
+  var officers = req.officer_details;
+  // console.log('officers')
+  // console.log(officers);
+  // console.log(officers.length)
+
+  var officersToExpire = [];
+  if(officers!==null){
+    for(var id in officers){
+      var officerId = officers[id];
+      if(officerId && officerId.certification){
+        var officerCert = officerId.certification;
+        if(officerCert){
+          if(officerCert.xray_cargo){
+            var officerAc = officerCert.xray_cargo;
+            for(var accCrtId in officerAc){
+              //console.log(officerAc[accCrtId]);
+              var cert = officerAc[accCrtId];
+              if(cert){
+                var curDate = moment().format("YYYYMMDD");
+                //console.log(curDate)
+                var certDate = moment(cert.certified_date),
+                    certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+                    certDateIncr = moment(certDateFormat).add(11,'M'),
+                    certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+                    diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+                if (diffDate >0 && diffDate<1) {
+                  var offc = [];
+                  offc.expiringDate = moment(certDateFormat).format("DD-MM-YYYY");
+                  offc.name = officerId.fname;
+                  offc.nric = id;
+                  offc.certCardNo = officerId.cert_card_no;
+                  officersToExpire.push(offc)
+                }
+
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  res.render('expiring_xrcg', { user: req.user, officersToExpire: officersToExpire})
+});
+
+
+router.get('/securitytestfailure', functions.verifyAdmin, functions.getOfficers, function (req, res) {
+  var officers = req.officer_details;
+  // console.log('officers')
+  // console.log(officers);
+  // console.log(officers.length)
+
+  var officersSec = [];
+  if(officers!==null){
+    for(var id in officers){
+      var officerId = officers[id];
+      if(officerId && officerId.security_records){
+        var officerSecRec = officerId.security_records;
+        if(officerSecRec){
+          if(officerSecRec.security_test){
+            var officerSecT = officerSecRec.security_test;
+            for(var accCrtId in officerSecT){
+              //console.log(officerAc[accCrtId]);
+              var secR = officerSecT[accCrtId];
+              if(secR){
+                if(secR.overall_status==0){
+                  var offc = [];
+                  offc.stId = accCrtId;
+                  offc.stName = secR.st_name;
+                  offc.name = officerId.fname;
+                  offc.nric = id;
+                  offc.location = secR.st_location;
+                  offc.mode = secR.st_mode;
+                  officersSec.push(offc)
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  res.render('securitytestfailure', { user: req.user, officersSec: officersSec})
+});
+
+
+router.get('/securitybreach', functions.verifyAdmin, functions.getOfficers, function (req, res) {
+  var officers = req.officer_details;
+  // console.log('officers')
+  // console.log(officers);
+  // console.log(officers.length)
+
+  var officersSec = [];
+  if(officers!==null){
+    for(var id in officers){
+      var officerId = officers[id];
+      if(officerId && officerId.security_records){
+        var officerSecRec = officerId.security_records;
+        if(officerSecRec){
+          if(officerSecRec.security_breach){
+            var officerSecT = officerSecRec.security_breach;
+            for(var accCrtId in officerSecT){
+              //console.log(officerAc[accCrtId]);
+              var secR = officerSecT[accCrtId];
+              if(secR){
+                  var offc = [];
+                  offc.sbId = accCrtId;
+                  offc.sbName = secR.sb_name;
+                  offc.name = officerId.fname;
+                  offc.nric = id;
+                  offc.location = secR.sb_location;
+                  offc.mode = secR.sb_mode;
+                  officersSec.push(offc)
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  res.render('securitybreach', { user: req.user, officersSec: officersSec})
+});
+
 
 module.exports = router;
