@@ -3,17 +3,19 @@
 <%
 function UNIXConverter(UNIX_timestamp){
   try {
-    if (UNIX_timestamp == 0) {
-      return "";
+    if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
+      return "-";
     }
     var a = new Date(UNIX_timestamp * 1000);
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     var year = a.getFullYear();
     var month = a.getMonth() + 1;
     var date = a.getDate();
-    var hour = a.getHours();
-    var min = a.getMinutes();
-    var sec = a.getSeconds();
+    if (month < 10) {
+      month = "0" + month;
+    }
+    if (date < 10) {
+      date = "0" + date;
+    }
     var time = date + '/' + month + '/' + year;
     return time;
   } catch (error) {

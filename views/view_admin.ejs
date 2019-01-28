@@ -4,17 +4,19 @@
 <script>
   function UNIXConverter(UNIX_timestamp) {
     try {
-      if (UNIX_timestamp == 0) {
-        return "";
+      if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
+        return "-";
       }
       var a = new Date(UNIX_timestamp * 1000);
-      var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       var year = a.getFullYear();
       var month = a.getMonth() + 1;
       var date = a.getDate();
-      var hour = a.getHours();
-      var min = a.getMinutes();
-      var sec = a.getSeconds();
+      if (month < 10) {
+        month = "0" + month;
+      }
+      if (date < 10) {
+        date = "0" + date;
+      }
       var time = date + '/' + month + '/' + year;
       return time;
     } catch (error) {
@@ -32,11 +34,9 @@
   });
 </script>
 <div class="container-fluid">
-  <div class="row">
-    &nbsp;
-  </div>
-  <h4>
-    <%=admin_details.username%>: View/Edit Admin</h4>
+  <h4 class="mt-4">
+    <%=admin_details.username%>
+  </h4>
   <hr>
   <% if (error) { %>
   <div class="alert alert-danger" role="alert">
@@ -44,27 +44,61 @@
   </div>
   <hr>
   <% } %>
-  <form method="POST" action="/admin/view/<%=admin_details.username%>">
-    First Name: <input type="text" class="form-control" name="fname" /> <br>
-    Last Name: <input type="text" class="form-control" name="lname" /> <br>
-    NRIC: <input type="text" class="form-control" name="nric" /> <br>
-    Role: <select class="form-control" id="role" name="role">
-      <option value="1">Administrator</option>
-      <option value="2">User</option>
-      <option value="3">Read-only User</option>
-    </select> <br><br>
-    <% if ((user.role != 1 && user.username == admin_details.username) || user.role == 1 || (user.role == 2 && admin_details.role == 2)) { %>
-    <button type="button" class="btn btn-primary" onclick="window.location.href='/admin/changepw/<%=admin_details.username%>'">Change
-      Password</button> <br><br>
-    <% } %>
-    <% if (user.role == 1) { %>
-    <input type="submit" class="form-control btn btn-primary" name="edituser_btn" value="Edit User" /> <br><br>
-    <% if (admin_count > 1) { %>
-    <input type="submit" class="form-control btn btn-danger" name="deleteuser_btn" value="Delete User" />
-    <% } %>
-    <% } %>
+  <form action='/admin/view/<%=admin_details.username%>' method="POST">
+    <div class="card d-flex mx-auto mb-5 text-left">
+      <div class="card-body px-4">
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="fname">First Name:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="fname" id="fname" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="lname">Last Name:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="lname" id="lname" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="nric">NRIC:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="nric" id="nric" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="role">Role:</label><br />
+            <div class="input-group mb-3">
+              <select class="custom-select" id="role" name="role" required>
+                <option value="1">Administrator</option>
+                <option value="2">User</option>
+                <option value="3">Read-only User</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mx-auto">
+          <% if ((user.role != 1 && user.username == admin_details.username) || user.role == 1 || (user.role == 2 && admin_details.role == 2)) { %>
+          <a class="btn btn-primary col-12 text-center" href="/admin/changepw/<%=admin_details.username%>">Change
+            Password</a>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <% if (user.role == 1) { %>
+        <button type="submit" class="btn btn-primary btn-block" name="edituser_btn">Edit</button>
+        <% } %>
+        <% if (admin_count > 1) { %>
+        <button type="submit" class="btn btn-danger btn-block" name="deleteuser_btn">Delete</button>
+        <% } %>
+      </div>
+    </div>
   </form>
-  <hr>
 
 </div>
 

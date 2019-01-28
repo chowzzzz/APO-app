@@ -3,17 +3,19 @@
 <%
 function UNIXConverter(UNIX_timestamp){
   try {
-    if (UNIX_timestamp == 0) {
-      return "";
+    if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
+      return "-";
     }
     var a = new Date(UNIX_timestamp * 1000);
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     var year = a.getFullYear();
     var month = a.getMonth() + 1;
     var date = a.getDate();
-    var hour = a.getHours();
-    var min = a.getMinutes();
-    var sec = a.getSeconds();
+    if (month < 10) {
+      month = "0" + month;
+    }
+    if (date < 10) {
+      date = "0" + date;
+    }
     var time = date + '/' + month + '/' + year;
     return time;
   } catch (error) {
@@ -21,29 +23,78 @@ function UNIXConverter(UNIX_timestamp){
   }
 }
 %>
-    <div class="container-fluid">
-      <div class="row">
-        &nbsp;
-      </div>
-      <h4>Add New Admin</h4>
-      <hr>
-      <% if (error) { %>
-      <div class="alert alert-danger" role="alert">
-        <%=error%>
-      </div>
-      <hr>
-      <% } %>
-      <form method="POST" action="/admin/new">
-        First Name: <input type="text" class="form-control" name="fname" required /> <br>
-        Last Name: <input type="text" class="form-control" name="lname" required /> <br>
-        NRIC: <input type="text" class="form-control" name="nric" required /> <br>
-        Username: <input type="text" class="form-control" name="username" required /> <br>
-        Password: <input type="password" class="form-control" name="password" required /> <br>
-        Role: <select class="form-control" name="role" required><option value="1">Administrator</option><option value="2">User</option><option value="3">Read-only User</option></select> <br><br>
-        <input type="submit" class="form-control btn btn-primary" name="adduser_btn" />
-      </form>
-      <hr>
+<div class="container-fluid">
 
+  <h3 class="my-4">
+  </h3>
+  <h4 class="my-4">Add New Admin</h4>
+  <hr>
+  <% if (error) { %>
+  <div class="alert alert-danger" role="alert">
+    <%=error%>
+  </div>
+  <hr>
+  <% } %>
+
+  <form action='/admin/new/' method="POST">
+    <div class="card d-flex mx-auto mb-5 text-left">
+      <div class="card-body px-4">
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="fname">First Name:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="fname" id="fname" value="" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="lname">Last Name:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="lname" id="lname" value="" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="nric">NRIC:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="nric" id="nric" value="" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="username">Username:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="username" id="username" value="" required>
+            </div>
+          </div>
+
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="password">Password:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="password" id="password" value="" required>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="role">Role:</label><br />
+            <div class="input-group mb-3">
+              <select class="custom-select" id="role" name="role" required>
+                <option value="1">Administrator</option>
+                <option value="2">User</option>
+                <option value="3">Read-only User</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button type="submit" class="btn btn-primary btn-block" name="adduser_btn">Add</button>
+      </div>
     </div>
+  </form>
+
+</div>
 
 <% include partials/footer %>

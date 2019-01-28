@@ -7,13 +7,15 @@ function UNIXConverter(UNIX_timestamp){
       return "-";
     }
     var a = new Date(UNIX_timestamp * 1000);
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     var year = a.getFullYear();
     var month = a.getMonth() + 1;
     var date = a.getDate();
-    var hour = a.getHours();
-    var min = a.getMinutes();
-    var sec = a.getSeconds();
+    if (month < 10) {
+      month = "0" + month;
+    }
+    if (date < 10) {
+      date = "0" + date;
+    }
     var time = date + '/' + month + '/' + year;
     return time;
   } catch (error) {
@@ -285,16 +287,16 @@ if (officer_details.certification !== undefined) {
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="general_screener">General Screener:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="general_screener" id="general_screener" value="<%=UNIXConverter(gs_date)%>" readonly
-                <% if (user.role> 1) { %> readonly
+              <input type="text" class="form-control datepicker" name="general_screener" id="general_screener" value="<%=UNIXConverter(gs_date)%>"
+                readonly <% if (user.role> 1) { %> readonly
               <% } %> disabled>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="access_control">Access Control:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="access_control" id="access_control" value="<%=UNIXConverter(ac_date)%>" readonly
-                <% if (user.role> 1) { %> readonly
+              <input type="text" class="form-control datepicker" name="access_control" id="access_control" value="<%=UNIXConverter(ac_date)%>"
+                readonly <% if (user.role> 1) { %> readonly
               <% } %> disabled>
             </div>
           </div>
@@ -312,16 +314,16 @@ if (officer_details.certification !== undefined) {
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="xray_pb">Xray PB:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="xray_pb" id="xray_pb" value="<%=UNIXConverter(xray_pb_date)%>" readonly
-                <% if (user.role> 1) { %> readonly
+              <input type="text" class="form-control datepicker" name="xray_pb" id="xray_pb" value="<%=UNIXConverter(xray_pb_date)%>"
+                readonly <% if (user.role> 1) { %> readonly
               <% } %> disabled>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="xray_cargo">Xray Cargo:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="xray_cargo" id="xray_cargo" value="<%=UNIXConverter(xray_cargo_date)%>" readonly
-                <% if (user.role> 1) { %> readonly
+              <input type="text" class="form-control datepicker" name="xray_cargo" id="xray_cargo" value="<%=UNIXConverter(xray_cargo_date)%>"
+                readonly <% if (user.role> 1) { %> readonly
               <% } %> disabled>
             </div>
           </div>
@@ -339,26 +341,26 @@ if (officer_details.certification !== undefined) {
 </div>
 
 <% if('undefined'!==typeof alertArr || alertArr!=='' || alertArr!==null) { %>
-  <% if
+<% if
   (alertArr.ac) { %>
-    <script>alert('Officer\'s Access Control Certificate expiring soon!')</script>
-  <% } %>
-  <% if
+<script>alert('Officer\'s Access Control Certificate expiring soon!')</script>
+<% } %>
+<% if
   (alertArr.gs) { %>
-    <script>alert('Officer\'s General Access Certificate expiring soon!');</script>
-  <% } %>
-  <% if
+<script>alert('Officer\'s General Access Certificate expiring soon!');</script>
+<% } %>
+<% if
   (alertArr.xray_cargo) { %>
-    <script>alert('Officer\'s Xray-Cargo Certificate expiring soon!');</script>
-  <% } %>
-  <% if
+<script>alert('Officer\'s Xray-Cargo Certificate expiring soon!');</script>
+<% } %>
+<% if
   (alertArr.xray_hbs) { %>
-    <script>alert('Officer\'s Xray-HBS Certificate expiring soon!');</script>
-  <% } %>
+<script>alert('Officer\'s Xray-HBS Certificate expiring soon!');</script>
+<% } %>
 
-  <% if
+<% if
   (alertArr.xray_pb) { %>
-    <script>alert('Officer\'s Xray-PB Certificate expiring soon!');</script>
-  <% } %>
+<script>alert('Officer\'s Xray-PB Certificate expiring soon!');</script>
+<% } %>
 <% } %>
 <% include partials/footer %>

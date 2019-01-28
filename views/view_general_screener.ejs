@@ -3,17 +3,19 @@
 <script>
   function UNIXConverter(UNIX_timestamp) {
     try {
-      if (UNIX_timestamp == 0) {
-        return "";
+      if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
+        return "-";
       }
       var a = new Date(UNIX_timestamp * 1000);
-      var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       var year = a.getFullYear();
       var month = a.getMonth() + 1;
       var date = a.getDate();
-      var hour = a.getHours();
-      var min = a.getMinutes();
-      var sec = a.getSeconds();
+      if (month < 10) {
+        month = "0" + month;
+      }
+      if (date < 10) {
+        date = "0" + date;
+      }
       var time = date + '/' + month + '/' + year;
       return time;
     } catch (error) {
@@ -31,14 +33,14 @@
     $('input[name=gs_etd_status][value=' +<%=gs_details.etd.status %> +']').attr('checked', 'checked');
     $('input[name=gs_mbs_status][value=' +<%=gs_details.mbs.status %> +']').attr('checked', 'checked');
 
-    $('input[name=certified_date]').val(UNIXConverter(<%=gs_details.certified_date %>));
-    $('input[name=gs_theory]').val(UNIXConverter(<%=gs_details.theory.date %>));
-    $('input[name=gs_hhmd]').val(UNIXConverter(<%=gs_details.hhmd.date %>));
-    $('input[name=gs_pds]').val(UNIXConverter(<%=gs_details.pds.date %>));
-    $('input[name=gs_wtmd]').val(UNIXConverter(<%=gs_details.wtmd.date %>));
-    $('input[name=gs_fl]').val(UNIXConverter(<%=gs_details.fl.date %>));
-    $('input[name=gs_etd]').val(UNIXConverter(<%=gs_details.etd.date %>));
-    $('input[name=gs_mbs]').val(UNIXConverter(<%=gs_details.mbs.date %>));
+    $('input[name=certified_date]').datepicker("setDate", UNIXConverter(<%=gs_details.certified_date %>));
+    $('input[name=gs_theory]').datepicker("setDate", UNIXConverter(<%=gs_details.theory.date %>));
+    $('input[name=gs_hhmd]').datepicker("setDate", UNIXConverter(<%=gs_details.hhmd.date %>));
+    $('input[name=gs_pds]').datepicker("setDate", UNIXConverter(<%=gs_details.pds.date %>));
+    $('input[name=gs_wtmd]').datepicker("setDate", UNIXConverter(<%=gs_details.wtmd.date %>));
+    $('input[name=gs_fl]').datepicker("setDate", UNIXConverter(<%=gs_details.fl.date %>));
+    $('input[name=gs_etd]').datepicker("setDate", UNIXConverter(<%=gs_details.etd.date %>));
+    $('input[name=gs_mbs]').datepicker("setDate", UNIXConverter(<%=gs_details.mbs.date %>));
 
     $("#GSForm").on("submit", function (e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
       var alert = confirm("Are you sure you want to edit/delete the General Screener?");
@@ -69,7 +71,7 @@
               <%=officer_details.nric%>
             </p>
 
-            <div class="mb-2">
+            <div class="mb-0">
               Status:&nbsp;
               <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="overall_status" id="passStatus" value="1">
