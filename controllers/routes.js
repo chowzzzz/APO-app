@@ -1523,7 +1523,7 @@ router.post('/others/:nric/:others_id', functions.verifyAdmin, function (req, re
 
 //Admin Section
 
-router.get('/admin', functions.verifyAdmin, functions.getAllAdmin, function (req, res) {
+router.get('/admin', functions.verifyAdmin, functions.getAllAdmin, functions.isAdminPage, function (req, res) {
   res.render('administration', { user: req.user, admin_details: req.admin_details });
 });
 
@@ -1561,11 +1561,11 @@ router.post('/admin/new', functions.isAdminPage, functions.verifyAdmin, function
   }
 });
 
-router.get('/admin/view/:username', functions.verifyAdmin, functions.getEachAdmin, functions.checkAdminCount, function (req, res) {
+router.get('/admin/view/:username', functions.isAdminPage, functions.verifyAdmin, functions.getEachAdmin, functions.checkAdminCount, function (req, res) {
   res.render('view_admin', { user: req.user, admin_details: req.admin_details, admin_count: req.admin_count, error: null });
 });
 
-router.post('/admin/view/:username', functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
+router.post('/admin/view/:username', functions.isAdminPage, functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
   var fname = req.body.fname;
   var lname = req.body.lname;
   var username = req.params.username;
@@ -1597,11 +1597,11 @@ router.post('/admin/view/:username', functions.verifyAdmin, functions.getEachAdm
   }
 });
 
-router.get('/admin/changepw/:username', functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
+router.get('/admin/changepw/:username', functions.isAdminPage, functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
   res.render('change_admin', { user: req.user, admin_details: req.admin_details, notif: null })
 });
 
-router.post('/admin/changepw/:username', functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
+router.post('/admin/changepw/:username', functions.isAdminPage, functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
   var notif = null;
   var username = req.params.username;
   var password = req.body.password;

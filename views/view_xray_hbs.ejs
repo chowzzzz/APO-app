@@ -43,6 +43,12 @@
         return false;
       }
     });
+
+    var user_role = <%=user.role %>;
+    if (user_role > 1) {
+      $("input[type=text]").attr('readonly', true);
+      $("input[type=radio]").attr('disabled', true);
+    }
   });
 </script>
 <div class="container-fluid">

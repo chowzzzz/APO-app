@@ -51,6 +51,13 @@
         return false;
       }
     });
+
+    var user_role = <%=user.role %>;
+    if (user_role > 1) {
+      $("input[type=text]").attr('readonly', true);
+      $("input[type=radio]").attr('disabled', true);
+    }
+
   });
 
 </script>
@@ -75,11 +82,15 @@
             <div>
               Status:&nbsp;
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="overall_status" id="passStatus" value="1">
+                <input class="form-check-input" type="radio" name="overall_status" id="passStatus" value="1" <% if
+                  (user.role> 1) { %> disabled
+                <% } %> >
                 <label class="form-check-label" for="passStatus">Pass</label>
               </div>
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="overall_status" id="failStatus" value="0">
+                <input class="form-check-input" type="radio" name="overall_status" id="failStatus" value="0" <% if
+                  (user.role> 1) { %> disabled
+                <% } %> >
                 <label class="form-check-label" for="failStatus">Fail</label>
               </div>
             </div>
@@ -91,7 +102,9 @@
               <label for="ac_certified_date" class="font-weight-bold">Certified Date:</label>
               <div class="input-group mb-3">
                 <input type="text" class="form-control datepicker" name="certified_date" id="ac_certified_date" value=""
-                  required>
+                  <% if (user.role> 1) { %> readonly
+                <% } %>
+                required>
                 <div class="input-group-append">
                   <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                 </div>
@@ -107,15 +120,21 @@
           <div class="col-sm-4">
             <label class="font-weight-bold" for="ac_theory">Theory:&nbsp;</label>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="ac_theory_status" id="ac_theory_pass" value="1">
+              <input class="form-check-input" type="radio" name="ac_theory_status" id="ac_theory_pass" value="1" <% if
+                (user.role> 1) { %> disabled
+              <% } %> >
               <label class="form-check-label" for="ac_theory_pass">Pass</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="ac_theory_status" id="ac_theory_fail" value="0">
+              <input class="form-check-input" type="radio" name="ac_theory_status" id="ac_theory_fail" value="0" <% if
+                (user.role> 1) { %> disabled
+              <% } %> >
               <label class="form-check-label" for="ac_theory_fail">Fail</label>
             </div>
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="ac_theory" id="ac_theory" value="" required>
+              <input type="text" class="form-control datepicker" name="ac_theory" id="ac_theory" value="" <% if
+                (user.role> 1) { %> readonly
+              <% } %> required>
               <div class="input-group-append">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               </div>
@@ -124,7 +143,9 @@
           <div class="col-sm-4">
             <label class="font-weight-bold" for="ac_hhmd">HHMD:&nbsp;</label>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="ac_hhmd_status" id="ac_hhmd_pass" value="1">
+              <input class="form-check-input" type="radio" name="ac_hhmd_status" id="ac_hhmd_pass" value="1" <% if
+                (user.role> 1) { %> disabled
+              <% } %> >
               <label class="form-check-label" for="ac_hhmd_pass">Pass</label>
             </div>
             <div class="form-check form-check-inline">

@@ -47,8 +47,9 @@
     </form>
 
     <div class="col-md-6 mx-auto">
-
+      <% if (user.role < 3) { %>
       <a class="btn btn-primary col-6 col-md-5 text-center" href="/admin/">Administrators</a></br>
+      <% } %>
       <a class="btn btn-primary col-6 col-md-5 text-center" href="/officers/">Officers</a>
     </div>
   </div>

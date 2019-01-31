@@ -110,7 +110,7 @@ module.exports.getEachAdmin = function (req, res, next) {
 }
 
 module.exports.isAdminPage = function (req, res, next) {
-  if (req.user.role > 1) {
+  if (req.user.role > 2) {
     res.redirect('back');
   } else {
     next();
