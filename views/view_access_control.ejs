@@ -84,7 +84,7 @@
               <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="overall_status" id="passStatus" value="1" <% if
                   (user.role> 1) { %> disabled
-                <% } %> >
+                <% } %> required>
                 <label class="form-check-label" for="passStatus">Pass</label>
               </div>
               <div class="form-check form-check-inline">
@@ -122,7 +122,7 @@
             <div class="form-check form-check-inline">
               <input class="form-check-input" type="radio" name="ac_theory_status" id="ac_theory_pass" value="1" <% if
                 (user.role> 1) { %> disabled
-              <% } %> >
+              <% } %> required>
               <label class="form-check-label" for="ac_theory_pass">Pass</label>
             </div>
             <div class="form-check form-check-inline">
@@ -145,7 +145,7 @@
             <div class="form-check form-check-inline">
               <input class="form-check-input" type="radio" name="ac_hhmd_status" id="ac_hhmd_pass" value="1" <% if
                 (user.role> 1) { %> disabled
-              <% } %> >
+              <% } %> required>
               <label class="form-check-label" for="ac_hhmd_pass">Pass</label>
             </div>
             <div class="form-check form-check-inline">
@@ -162,7 +162,7 @@
           <div class="col-sm-4">
             <label class="font-weight-bold" for="ac_pds">PDS:&nbsp;</label>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="ac_pds_status" id="ac_pds_pass" value="1">
+              <input class="form-check-input" type="radio" name="ac_pds_status" id="ac_pds_pass" value="1" required>
               <label class="form-check-label" for="ac_pds_pass">Pass</label>
             </div>
             <div class="form-check form-check-inline">
@@ -182,7 +182,7 @@
           <div class="col-sm-4">
             <label class="font-weight-bold" for="ac_wtmd">WTMD:&nbsp;</label>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="ac_wtmd_status" id="ac_wtmd_pass" value="1">
+              <input class="form-check-input" type="radio" name="ac_wtmd_status" id="ac_wtmd_pass" value="1" required>
               <label class="form-check-label" for="ac_wtmd_pass">Pass</label>
             </div>
             <div class="form-check form-check-inline">
@@ -199,7 +199,7 @@
           <div class="col-sm-4">
             <label class="font-weight-bold" for="ac_etd">ETD:&nbsp;</label>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="ac_etd_status" id="ac_etd_pass" value="1">
+              <input class="form-check-input" type="radio" name="ac_etd_status" id="ac_etd_pass" value="1" required>
               <label class="form-check-label" for="ac_etd_pass">Pass</label>
             </div>
             <div class="form-check form-check-inline">
@@ -216,7 +216,7 @@
           <div class="col-sm-4">
             <label class="font-weight-bold" for="ac_mbs">MBS:&nbsp;</label>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="ac_mbs_status" id="ac_mbs_pass" value="1">
+              <input class="form-check-input" type="radio" name="ac_mbs_status" id="ac_mbs_pass" value="1" required>
               <label class="form-check-label" for="ac_mbs_pass">Pass</label>
             </div>
             <div class="form-check form-check-inline">
@@ -235,7 +235,7 @@
           <div class="col-sm-4">
             <label class="font-weight-bold" for="ac_vs">VS:&nbsp;</label>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="ac_vs_status" id="ac_vs_pass" value="1">
+              <input class="form-check-input" type="radio" name="ac_vs_status" id="ac_vs_pass" value="1" required>
               <label class="form-check-label" for="ac_vs_pass">Pass</label>
             </div>
             <div class="form-check form-check-inline">

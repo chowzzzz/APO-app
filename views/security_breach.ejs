@@ -24,6 +24,8 @@ function UNIXConverter(UNIX_timestamp){
   }
 }
 %>
+
+<% if (user.role == 1) { %>
 <div class="container-fluid">
   <h4 class="mt-4">Security Breach -
     <%=officer_details.nric%>
@@ -87,21 +89,71 @@ function UNIXConverter(UNIX_timestamp){
         <%=sb_details[security_breach_id].sb_location%>
       </td>
       <td>
-          <%=UNIXConverter(sb_details[security_breach_id].sb_date)%>
+        <%=UNIXConverter(sb_details[security_breach_id].sb_date)%>
       </td>
       <td>
-          <%=sb_details[security_breach_id].sb_time%>
+        <%=sb_details[security_breach_id].sb_time%>
       </td>
     </tr>
     <% } %>
   </table>
 
   <div class="mb-4 col-11 mx-auto">
-    <% if (user.role == 1) { %>
     <a href="/security_breach/new/<%=officer_details.nric%>" class="btn btn-primary col-sm-6">Add New Record</a>
-    <% } %>
 
   </div>
 </div>
+
+<% } else if (user.role == 2 || user.role == 3) { %>
+<div class="title">
+  <h4>
+    Security Breach -
+    <%=officer_details.nric%>
+  </h4>
+</div>
+<div class="container-fluid">
+  <% if (user.role == 2) { %>
+  <div class="col-11 mx-auto">
+    <a href="/security_breach/new/<%=officer_details.nric%>" class="btn btn-primary col-sm-6"><i class="fas fa-plus-circle"></i>
+      &nbsp;Add New Record</a>
+  </div>
+  <hr>
+  <% } %>
+
+
+  <% if (sb_details == null) { %>
+  <p class="text-danger">Officer does not have any existing security breach records.</p>
+  <% } %>
+
+  <% for (var security_breach_id in sb_details) { %>
+  <a href="/security_breach/<%=officer_details.nric%>/<%=security_breach_id%>" class="card bg-light mb-3 text-left mx-auto">
+    <div class="card-header font-weight-bold">
+      Test Name:
+      <%=sb_details[security_breach_id].sb_name%>
+    </div>
+    <div class="card-body py-2 px-3">
+
+      <div class="card-text">
+        <p class="mb-0">Breach Offense:
+          <%=sb_details[security_breach_id].sb_name%>
+        </p>
+        <p class="mb-0">Location:
+          <%=sb_details[security_breach_id].sb_location%>
+        </p>
+        <p class="mb-0">Date:
+          <%=UNIXConverter(sb_details[security_breach_id].sb_date)%>
+        </p>
+        <p class="mb-0">Time:
+          <%=sb_details[security_breach_id].sb_time%>
+        </p>
+
+      </div>
+    </div>
+  </a>
+
+  <% } %>
+
+</div>
+<% } %>
 
 <% include partials/footer %>

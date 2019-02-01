@@ -24,6 +24,8 @@ function UNIXConverter(UNIX_timestamp){
   }
 }
 %>
+
+<% if (user.role == 1) { %>
 <div class="container-fluid">
   <h4 class="mt-4">Security Test -
     <%=officer_details.nric%>
@@ -115,4 +117,63 @@ function UNIXConverter(UNIX_timestamp){
   </div>
 </div>
 
+<% } else if (user.role == 2 || user.role == 3) { %>
+<div class="title">
+  <h4>
+    Security Test -
+    <%=officer_details.nric%>
+  </h4>
+</div>
+<div class="container-fluid">
+  <% if (user.role == 2) { %>
+  <div class="col-11 mx-auto">
+    <a href="/security_test/new/<%=officer_details.nric%>" class="btn btn-primary col-sm-6"><i class="fas fa-plus-circle"></i>
+      &nbsp;Add New Record</a>
+  </div>
+  <hr>
+  <% } %>
+
+
+  <% if (st_details == null) { %>
+  <p class="text-danger">Officer does not have any existing security test records.</p>
+  <% } %>
+
+  <% for (var security_test_id in st_details) { %>
+  <% var status; %>
+  <a href="/security_test/<%=officer_details.nric%>/<%=security_test_id%>" class="card bg-light mb-3 text-left mx-auto">
+    <div class="card-header font-weight-bold d-flex">
+      <div class="mr-auto">
+        Test Name:
+        <%=st_details[security_test_id].st_name%>
+      </div>
+      <% if (st_details[security_test_id].overall_status == "1") { %>
+      <span class="badge badge-success pt-1">Pass</span>
+      <% } else { %>
+      <span class="badge badge-danger pt-1">Fail</span>
+      <% } %>
+    </div>
+    <div class="card-body py-2 px-3">
+
+      <div class="card-text">
+        <p class="mb-0">Location:
+          <%=st_details[security_test_id].st_location%>
+        </p>
+        <p class="mb-0">Date:
+          <%=UNIXConverter(st_details[security_test_id].st_date)%>
+        </p>
+        <p class="mb-0">Time:
+          <%=st_details[security_test_id].st_time%>
+        </p>
+        <p class="mb-0">Mode:
+          <%=st_details[security_test_id].st_mode%>
+        </p>
+
+      </div>
+    </div>
+  </a>
+
+  <% } %>
+
+</div>
+<% } %>
 <% include partials/footer %>

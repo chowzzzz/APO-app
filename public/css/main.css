@@ -3,11 +3,16 @@ html, body {
   height: 100%;
 }
 
-.navPills .active a,
-.navPills .active a:hover {
-  background-color: #00205B;
+.nav-pills > a.active {
+  color: white!important;
+  background-color: #00205B!important;
 }
 
+.nav-pills > a {
+  color: #00205B!important;
+  background-color: lightgray!important;
+  border-radius: 0!important;
+}
 
 .btn-danger,
 .btn-danger:active,
@@ -106,6 +111,9 @@ img.logoImg {
 
 /* index */
 .index-container {
+  height: 80%;
+}
+.mobile-container {
   height: 100%;
 }
 
@@ -128,8 +136,20 @@ img.logoImg {
   max-width: 80%;
 }
 
+/* mobile */
 @media only screen and (max-width: 768px) {
   .card {
     max-width: 100%;
   }
 } 
+
+.title {
+  background-color: lightgray;
+  padding: 20px 0 15px 0;
+  margin-bottom: 20px;
+}
+
+a.card {
+  text-decoration: none;
+  color: black;
+}

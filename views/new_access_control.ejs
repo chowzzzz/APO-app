@@ -62,7 +62,7 @@
       <h5 class="card-title">Set all as:</h5>
       <label class="font-weight-bold" for="setall">Status:&nbsp;</label>
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="setall_overall_status" id="setall_pass" value="1">
+        <input class="form-check-input" type="radio" name="setall_overall_status" id="setall_pass" value="1" required>
         <label class="form-check-label" for="setall_pass">Pass</label>
       </div>
       <div class="form-check form-check-inline">
@@ -70,7 +70,7 @@
         <label class="form-check-label" for="setall_fail">Fail</label>
       </div>
       <div class="input-group mb-3">
-        <input type="text" class="form-control datepicker" name="setall_date" id="setall" value="">
+        <input type="text" class="form-control datepicker" name="setall_date" id="setall" value="" required>
         <div class="input-group-append">
           <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
         </div>
@@ -97,7 +97,7 @@
             <div class="mb-2">
               Status:&nbsp;
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="overall_status" id="passStatus" value="1">
+                <input class="form-check-input" type="radio" name="overall_status" id="passStatus" value="1" required>
                 <label class="form-check-label" for="passStatus">Pass</label>
               </div>
               <div class="form-check form-check-inline">
@@ -112,7 +112,8 @@
             <div>
               <label for="ac_certified_date" class="font-weight-bold">Certified Date:</label>
               <div class="input-group mb-3">
-                <input type="text" class="form-control datepicker" name="certified_date" id="ac_certified_date" value="">
+                <input type="text" class="form-control datepicker" name="certified_date" id="ac_certified_date" value=""
+                  required>
                 <div class="input-group-append">
                   <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                 </div>
@@ -129,7 +130,8 @@
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="ac_theory">Theory:</label><br />
             <div class="form-check form-check-inline mb-1">
-              <input class="form-check-input" type="radio" name="ac_theory_status" id="ac_theory_pass" value="1">
+              <input class="form-check-input" type="radio" name="ac_theory_status" id="ac_theory_pass" value="1"
+                required>
               <label class="form-check-label" for="ac_theory_pass">Pass</label>
             </div>
             <div class="form-check form-check-inline">
@@ -137,7 +139,7 @@
               <label class="form-check-label" for="ac_theory_fail">Fail</label>
             </div>
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="ac_theory" id="ac_theory" value="">
+              <input type="text" class="form-control datepicker" name="ac_theory" id="ac_theory" value="" required>
               <div class="input-group-append">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               </div>
@@ -146,7 +148,7 @@
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="ac_hhmd">HHMD:</label><br />
             <div class="form-check form-check-inline mb-1">
-              <input class="form-check-input" type="radio" name="ac_hhmd_status" id="ac_hhmd_pass" value="1">
+              <input class="form-check-input" type="radio" name="ac_hhmd_status" id="ac_hhmd_pass" value="1" required>
               <label class="form-check-label" for="ac_hhmd_pass">Pass</label>
             </div>
             <div class="form-check form-check-inline">
@@ -154,7 +156,7 @@
               <label class="form-check-label" for="ac_hhmd_fail">Fail</label>
             </div>
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="ac_hhmd" id="ac_hhmd" value="">
+              <input type="text" class="form-control datepicker" name="ac_hhmd" id="ac_hhmd" value="" required>
               <div class="input-group-append">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               </div>
@@ -163,7 +165,7 @@
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="ac_pds">PDS:</label><br />
             <div class="form-check form-check-inline mb-1">
-              <input class="form-check-input" type="radio" name="ac_pds_status" id="ac_pds_pass" value="1">
+              <input class="form-check-input" type="radio" name="ac_pds_status" id="ac_pds_pass" value="1" required>
               <label class="form-check-label" for="ac_pds_pass">Pass</label>
             </div>
             <div class="form-check form-check-inline">
@@ -171,7 +173,7 @@
               <label class="form-check-label" for="ac_pds_fail">Fail</label>
             </div>
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="ac_pds" id="ac_pds" value="">
+              <input type="text" class="form-control datepicker" name="ac_pds" id="ac_pds" value="" required>
               <div class="input-group-append">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               </div>
@@ -183,7 +185,7 @@
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="ac_wtmd">WTMD:</label><br />
             <div class="form-check form-check-inline mb-1">
-              <input class="form-check-input" type="radio" name="ac_wtmd_status" id="ac_wtmd_pass" value="1">
+              <input class="form-check-input" type="radio" name="ac_wtmd_status" id="ac_wtmd_pass" value="1" required>
               <label class="form-check-label" for="ac_wtmd_pass">Pass</label>
             </div>
             <div class="form-check form-check-inline">
@@ -191,7 +193,7 @@
               <label class="form-check-label" for="ac_wtmd_fail">Fail</label>
             </div>
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="ac_wtmd" id="ac_wtmd" value="">
+              <input type="text" class="form-control datepicker" name="ac_wtmd" id="ac_wtmd" value="" required>
               <div class="input-group-append">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               </div>
@@ -200,7 +202,7 @@
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="ac_etd">ETD:</label><br />
             <div class="form-check form-check-inline mb-1">
-              <input class="form-check-input" type="radio" name="ac_etd_status" id="ac_etd_pass" value="1">
+              <input class="form-check-input" type="radio" name="ac_etd_status" id="ac_etd_pass" value="1" required>
               <label class="form-check-label" for="ac_etd_pass">Pass</label>
             </div>
             <div class="form-check form-check-inline">
@@ -208,7 +210,7 @@
               <label class="form-check-label" for="ac_etd_fail">Fail</label>
             </div>
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="ac_etd" id="ac_etd" value="">
+              <input type="text" class="form-control datepicker" name="ac_etd" id="ac_etd" value="" required>
               <div class="input-group-append">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               </div>
@@ -217,7 +219,7 @@
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="ac_mbs">MBS:</label><br />
             <div class="form-check form-check-inline mb-1">
-              <input class="form-check-input" type="radio" name="ac_mbs_status" id="ac_mbs_pass" value="1">
+              <input class="form-check-input" type="radio" name="ac_mbs_status" id="ac_mbs_pass" value="1" required>
               <label class="form-check-label" for="ac_mbs_pass">Pass</label>
             </div>
             <div class="form-check form-check-inline">
@@ -225,7 +227,7 @@
               <label class="form-check-label" for="ac_mbs_fail">Fail</label>
             </div>
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="ac_mbs" id="ac_mbs" value="">
+              <input type="text" class="form-control datepicker" name="ac_mbs" id="ac_mbs" value="" required>
               <div class="input-group-append">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               </div>
@@ -236,7 +238,7 @@
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="ac_vs">VS:</label><br />
             <div class="form-check form-check-inline mb-1">
-              <input class="form-check-input" type="radio" name="ac_vs_status" id="ac_vs_pass" value="1">
+              <input class="form-check-input" type="radio" name="ac_vs_status" id="ac_vs_pass" value="1" required>
               <label class="form-check-label" for="ac_vs_pass">Pass</label>
             </div>
             <div class="form-check form-check-inline">
@@ -244,7 +246,7 @@
               <label class="form-check-label" for="ac_vs_fail">Fail</label>
             </div>
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="ac_vs" id="ac_vs" value="">
+              <input type="text" class="form-control datepicker" name="ac_vs" id="ac_vs" value="" required>
               <div class="input-group-append">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               </div>

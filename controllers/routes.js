@@ -1631,6 +1631,38 @@ router.post('/admin/changepw/:username', functions.isAdminPage, functions.verify
   }
 });
 
+//Profile Section
+
+router.get('/profile', functions.verifyAdmin, functions.getAllAdmin, functions.isAdminPage, function (req, res) {
+  console.log(req.admin_details);
+  res.render('profile', { user: req.user, user_details: req.admin_details });
+});
+
+router.get('/user/changepw/:username', functions.isAdminPage, functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
+  res.render('change_admin', { user: req.user, admin_details: req.admin_details, notif: null })
+});
+
+router.post('/user/changepw/:username', functions.isAdminPage, functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
+  var notif = null;
+  var username = req.params.username;
+  var password = req.body.password;
+  var rpassword = req.body.rpassword;
+
+  var data = { password: password }
+
+  if (password == rpassword) {
+    firebase.db.ref("/admin/" + username).update(data, function (error) {
+      if (!error) {
+        notif = "Password has been changed successfully.";
+        res.render('profile', { user: req.user, admin_details: req.admin_details, notif: notif });
+      } else {
+        notif = "Unable to change password!";
+        res.render('change_admin', { user: req.user, admin_details: req.admin_details, notif: notif });
+      }
+    });
+  }
+});
+
 router.get('/logout', function (req, res) {
   console.log('[LOGOUT] User ' + req.user);
   req.logout();

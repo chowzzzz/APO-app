@@ -24,39 +24,43 @@
   <% } %>
 
 </nav>
-<% } %>
-
 <div class="index-container d-flex">
-  <div class="align-self-center w-100">
-    <div class="col-sm-6 mx-auto px-2">
-      <h4>Welcome,
-        <%=user.fname%>
-        <%=user.lname%>
-      </h4>
-      <hr id="index-hr">
-      <h6 id="index-h6">Who do you want to search for today?</h6>
+  <% } %>
 
-      <% if (error != null) { %>
-      <p class="errMsg">The NRIC does not exist</p>
-      <% } %>
-    </div>
-    <form action="/" method="POST">
-      <div class="row col-md-6 mx-auto">
-        <div class="input-group col-10 col-sm-7 mb-3 mx-auto">
-          <input type="text" class="form-control" placeholder="NRIC/FIN" name="search_nric" id="search_nric"
-            aria-describedby="search_nric" maxlength="9">
-          <div class="input-group-append">
-            <button class="btn btn-primary" type="submit" id="search_nric"><i class="fas fa-search"></i></button>
+  <% if (user.role == 2 || user.role == 3) { %>
+  <div class="mobile-container d-flex">
+    <% } %>
+    <div class="align-self-center w-100">
+      <div class="col-sm-6 mx-auto px-2">
+        <h4>Welcome,
+          <%=user.fname%>
+          <%=user.lname%>
+        </h4>
+        <hr id="index-hr">
+        <h6 id="index-h6">Who do you want to search for today?</h6>
+
+        <% if (error != null) { %>
+        <p class="errMsg">The NRIC does not exist</p>
+        <% } %>
+      </div>
+      <form action="/" method="POST">
+        <div class="row col-md-6 mx-auto">
+          <div class="input-group col-10 col-sm-7 mb-3 mx-auto">
+            <input type="text" class="form-control" placeholder="NRIC/FIN" name="search_nric" id="search_nric"
+              aria-describedby="search_nric" maxlength="9">
+            <div class="input-group-append">
+              <button class="btn btn-primary" type="submit" id="search_nric"><i class="fas fa-search"></i></button>
+            </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
 
-    <div class="col-md-6 mx-auto">
       <% if (user.role < 2) { %>
-      <a class="btn btn-primary col-6 col-md-5 text-center" href="/admin/">Administrators</a></br>
+      <div class="col-md-6 mx-auto">
+        <a class="btn btn-primary col-6 col-md-5 text-center" href="/admin/">Administrators</a></br>
+        <a class="btn btn-primary col-6 col-md-5 text-center" href="/officers/">Officers</a>
+      </div>
       <% } %>
-      <a class="btn btn-primary col-6 col-md-5 text-center" href="/officers/">Officers</a>
     </div>
   </div>
 

@@ -163,6 +163,7 @@ if (officer_details.certification !== undefined) {
 //   alert('Officer\'s X-Ray Pre-Board Certificate expiring soon!');
 // }
 %>
+<% if (user.role == 1) { %>
 <div class="container-fluid">
   <h4 class="mt-4">
     <%=officer_details.fname%>
@@ -176,26 +177,21 @@ if (officer_details.certification !== undefined) {
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="fname">First Name:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control" name="fname" id="fname" value="<%=officer_details.fname%>" <% if
-                (user.role> 1) { %> readonly
-              <% } %> required>
+              <input type="text" class="form-control" name="fname" id="fname" value="<%=officer_details.fname%>"
+                required>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="lname">Last Name:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control" name="lname" id="lname" value="<%=officer_details.lname%>" <% if
-                (user.role> 1) { %> readonly
-              <% } %> required>
+              <input type="text" class="form-control" name="lname" id="lname" value="<%=officer_details.lname%>"
+                required>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="nric">NRIC:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control" name="nric" id="nric" value="<%=nric%>" <% if (user.role> 1) {
-              %>
-              readonly
-              <% } %> required>
+              <input type="text" class="form-control" name="nric" id="nric" value="<%=nric%>" required>
             </div>
           </div>
         </div>
@@ -215,8 +211,7 @@ if (officer_details.certification !== undefined) {
             <label class="font-weight-bold mb-0" for="gender">Gender:</label><br />
             <div class="input-group mb-3">
               <% if (officer_details.gender == "0") { } %>
-              <select class="custom-select" id="gender" name="gender" <% if (user.role> 1) { %> readonly
-                <% } %> required>
+              <select class="custom-select" id="gender" name="gender" required>
                 <option value="0" <% if (officer_details.gender=="0" ) {%> selected
                   <% } %>>Male</option>
                 <option value="1" <% if (officer_details.gender=="1" ) {%> selected
@@ -231,24 +226,21 @@ if (officer_details.certification !== undefined) {
             <label class="font-weight-bold mb-0" for="cert_card_no">Certification Card No.:</label><br />
             <div class="input-group mb-3">
               <input type="text" class="form-control" name="cert_card_no" id="cert_card_no" value="<%=officer_details.cert_card_no%>"
-                <% if (user.role> 1) { %> readonly
-              <% } %> required>
+                required>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="organisation">Organisation:</label><br />
             <div class="input-group mb-3">
               <input type="text" class="form-control" name="organisation" id="organisation" value="<%=officer_details.organisation%>"
-                <% if (user.role> 1) { %> readonly
-              <% } %> required>
+                required>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="serial_no">Serial No.:</label><br />
             <div class="input-group mb-3">
               <input type="text" class="form-control" name="serial_no" id="serial_no" value="<%=officer_details.serial_no%>"
-                <% if (user.role> 1) { %> readonly
-              <% } %> required>
+                required>
             </div>
           </div>
         </div>
@@ -258,16 +250,13 @@ if (officer_details.certification !== undefined) {
             <label class="font-weight-bold mb-0" for="designation">Designation:</label><br />
             <div class="input-group mb-3">
               <input type="text" class="form-control" name="designation" id="designation" value="<%=officer_details.designation%>"
-                <% if (user.role> 1) { %> readonly
-              <% } %> required>
+                required>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="rank">Rank:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control" name="rank" id="rank" value="<%=officer_details.rank%>" <% if
-                (user.role> 1) { %> readonly
-              <% } %> required>
+              <input type="text" class="form-control" name="rank" id="rank" value="<%=officer_details.rank%>" required>
             </div>
           </div>
         </div>
@@ -276,7 +265,7 @@ if (officer_details.certification !== undefined) {
           <div class="col-12">
             <label class="font-weight-bold mb-0" for="remarks">Remarks:</label><br />
             <div class="input-group mb-3">
-              <textarea class="form-control" name="remarks" id="remarks" <% if (user.role> 1) { %> readonly <% } %>><%=officer_details.remarks%></textarea>
+              <textarea class="form-control" name="remarks" id="remarks"><%=officer_details.remarks%></textarea>
             </div>
           </div>
         </div>
@@ -288,16 +277,14 @@ if (officer_details.certification !== undefined) {
             <label class="font-weight-bold mb-0" for="general_screener">General Screener:</label><br />
             <div class="input-group mb-3">
               <input type="text" class="form-control datepicker" name="general_screener" id="general_screener" value="<%=UNIXConverter(gs_date)%>"
-                readonly <% if (user.role> 1) { %> readonly
-              <% } %> disabled>
+                readonly disabled>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="access_control">Access Control:</label><br />
             <div class="input-group mb-3">
               <input type="text" class="form-control datepicker" name="access_control" id="access_control" value="<%=UNIXConverter(ac_date)%>"
-                readonly <% if (user.role> 1) { %> readonly
-              <% } %> disabled>
+                disabled>
             </div>
           </div>
         </div>
@@ -307,35 +294,30 @@ if (officer_details.certification !== undefined) {
             <label class="font-weight-bold mb-0" for="xray_hbs">X-Ray HBS:</label><br />
             <div class="input-group mb-3">
               <input type="text" class="form-control datepicker" name="xray_hbs" id="xray_hbs" value="<%=UNIXConverter(xray_hbs_date)%>"
-                <% if (user.role> 1) { %> readonly
-              <% } %> disabled>
+                disabled>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="xray_pb">X-Ray Pre-Board:</label><br />
             <div class="input-group mb-3">
               <input type="text" class="form-control datepicker" name="xray_pb" id="xray_pb" value="<%=UNIXConverter(xray_pb_date)%>"
-                readonly <% if (user.role> 1) { %> readonly
-              <% } %> disabled>
+                disabled>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="xray_cargo">X-Ray Cargo:</label><br />
             <div class="input-group mb-3">
               <input type="text" class="form-control datepicker" name="xray_cargo" id="xray_cargo" value="<%=UNIXConverter(xray_cargo_date)%>"
-                readonly <% if (user.role> 1) { %> readonly
-              <% } %> disabled>
+                disabled>
             </div>
           </div>
         </div>
       </div>
 
-      <% if (user.role == 1) { %>
       <div class="card-footer">
         <button type="submit" class="btn btn-primary btn-block" name="update_btn">Update</button>
         <button type="submit" class="btn btn-danger btn-block" name="delete_btn">Delete</button>
       </div>
-      <% } %>
     </div>
   </form>
 </div>
@@ -363,4 +345,110 @@ if (officer_details.certification !== undefined) {
 <script>alert('Officer\'s X-Ray-Pre-Board Certificate expiring soon!');</script>
 <% } %>
 <% } %>
-<% include partials/footer %>
+
+<% } else if (user.role == 2 || user.role == 3) { %>
+<div class="title">
+  <h4>
+    <%=officer_details.fname%>
+    <%=officer_details.lname%>'s Profile</h4>
+</div>
+<div class="container-fluid">
+
+  <div class="card d-flex mx-auto text-left" style="margin-bottom: 90px">
+    <div class="card-header text-left">
+      <div class="d-sm-flex flex-sm-row">
+        <div class="mr-auto">
+          <p class="mb-0">NRIC:
+            <%=officer_details.nric%>
+          </p>
+          <p class="mb-0">DOB:
+            <%=officer_details.dob%>
+          </p>
+          <p class="mb-0">Gender:
+            <% if (officer_details.gender=="0" ) {%>
+            M
+            <% } %>
+            <% if (officer_details.gender=="1" ) {%>
+            F
+            <% } %>
+          </p>
+        </div>
+      </div>
+
+    </div>
+    <div class="card-body px-4 py-3">
+
+      <h5 class="card-title text-center">Certified On:</h5>
+      <div class="row mb-2">
+        <div class="col-sm-4">
+          <label class="font-weight-bold mb-0" for="general_screener">General Screener:</label><br />
+          <div class="input-group mb-3">
+            <input type="text" class="form-control datepicker" name="general_screener" id="general_screener" value="<%=UNIXConverter(gs_date)%>"
+              readonly>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <label class="font-weight-bold mb-0" for="access_control">Access Control:</label><br />
+          <div class="input-group mb-3">
+            <input type="text" class="form-control datepicker" name="access_control" id="access_control" value="<%=UNIXConverter(ac_date)%>"
+              readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-2">
+        <div class="col-sm-4">
+          <label class="font-weight-bold mb-0" for="xray_hbs">X-Ray HBS:</label><br />
+          <div class="input-group mb-3">
+            <input type="text" class="form-control datepicker" name="xray_hbs" id="xray_hbs" value="<%=UNIXConverter(xray_hbs_date)%>"
+              readonly>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <label class="font-weight-bold mb-0" for="xray_pb">X-Ray Pre-Board:</label><br />
+          <div class="input-group mb-3">
+            <input type="text" class="form-control datepicker" name="xray_pb" id="xray_pb" value="<%=UNIXConverter(xray_pb_date)%>"
+              readonly>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <label class="font-weight-bold mb-0" for="xray_cargo">X-Ray Cargo:</label><br />
+          <div class="input-group mb-0">
+            <input type="text" class="form-control datepicker" name="xray_cargo" id="xray_cargo" value="<%=UNIXConverter(xray_cargo_date)%>"
+              readonly>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="btn btn-primary btn-block" href="/security_test/<%=officer_details.nric%>">ST Records</a>
+      <a class="btn btn-primary btn-block" href="/security_breach/<%=officer_details.nric%>">SB Records</a>
+    </div>
+  </div>
+
+  <% if('undefined'!==typeof alertArr || alertArr!=='' || alertArr!==null) { %>
+  <% if
+      (alertArr.ac) { %>
+  <script>alert('Officer\'s Access Control Certificate expiring soon!')</script>
+  <% } %>
+  <% if
+      (alertArr.gs) { %>
+  <script>alert('Officer\'s General Screener Certificate expiring soon!');</script>
+  <% } %>
+  <% if
+      (alertArr.xray_cargo) { %>
+  <script>alert('Officer\'s X-Ray-Cargo Certificate expiring soon!');</script>
+  <% } %>
+  <% if
+      (alertArr.xray_hbs) { %>
+  <script>alert('Officer\'s X-Ray-HBS Certificate expiring soon!');</script>
+  <% } %>
+
+  <% if
+      (alertArr.xray_pb) { %>
+  <script>alert('Officer\'s X-Ray-Pre-Board Certificate expiring soon!');</script>
+  <% } %>
+  <% } %>
+  <% } %>
+
+  <% include partials/footer %>
