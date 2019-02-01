@@ -3,6 +3,12 @@ html, body {
   height: 100%;
 }
 
+.navPills .active a,
+.navPills .active a:hover {
+  background-color: #00205B;
+}
+
+
 .btn-danger,
 .btn-danger:active,
 .btn-danger:focus{
@@ -74,8 +80,6 @@ img.logoImg {
   max-width: 330px;
   padding: 15px;
   margin: auto;
-}
-.form-signin {
   font-weight: 400;
 }
 .form-signin .form-control {
@@ -102,7 +106,7 @@ img.logoImg {
 
 /* index */
 .index-container {
-  height: 80%;
+  height: 100%;
 }
 
 #index-hr {

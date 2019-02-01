@@ -153,14 +153,14 @@ if (officer_details.certification !== undefined) {
 //   alert('Officer\'s General Access Certificate expiring soon!');
 // }
 // if(alertArr.xray_cargo){
-//   alert('Officer\'s Xray-Cargo Certificate expiring soon!');
+//   alert('Officer\'s X-Ray Cargo Certificate expiring soon!');
 // }
 //
 // if(alertArr.xray_hbs){
-//   alert('Officer\'s Xray-HBS Certificate expiring soon!');
+//   alert('Officer\'s X-Ray HBS Certificate expiring soon!');
 // }
 // if(alertArr.xray_pb){
-//   alert('Officer\'s Xray-PB Certificate expiring soon!');
+//   alert('Officer\'s X-Ray Pre-Board Certificate expiring soon!');
 // }
 %>
 <div class="container-fluid">
@@ -304,7 +304,7 @@ if (officer_details.certification !== undefined) {
 
         <div class="row mb-2">
           <div class="col-sm-4">
-            <label class="font-weight-bold mb-0" for="xray_hbs">Xray HBS:</label><br />
+            <label class="font-weight-bold mb-0" for="xray_hbs">X-Ray HBS:</label><br />
             <div class="input-group mb-3">
               <input type="text" class="form-control datepicker" name="xray_hbs" id="xray_hbs" value="<%=UNIXConverter(xray_hbs_date)%>"
                 <% if (user.role> 1) { %> readonly
@@ -312,7 +312,7 @@ if (officer_details.certification !== undefined) {
             </div>
           </div>
           <div class="col-sm-4">
-            <label class="font-weight-bold mb-0" for="xray_pb">Xray PB:</label><br />
+            <label class="font-weight-bold mb-0" for="xray_pb">X-Ray Pre-Board:</label><br />
             <div class="input-group mb-3">
               <input type="text" class="form-control datepicker" name="xray_pb" id="xray_pb" value="<%=UNIXConverter(xray_pb_date)%>"
                 readonly <% if (user.role> 1) { %> readonly
@@ -320,7 +320,7 @@ if (officer_details.certification !== undefined) {
             </div>
           </div>
           <div class="col-sm-4">
-            <label class="font-weight-bold mb-0" for="xray_cargo">Xray Cargo:</label><br />
+            <label class="font-weight-bold mb-0" for="xray_cargo">X-Ray Cargo:</label><br />
             <div class="input-group mb-3">
               <input type="text" class="form-control datepicker" name="xray_cargo" id="xray_cargo" value="<%=UNIXConverter(xray_cargo_date)%>"
                 readonly <% if (user.role> 1) { %> readonly
@@ -351,16 +351,16 @@ if (officer_details.certification !== undefined) {
 <% } %>
 <% if
   (alertArr.xray_cargo) { %>
-<script>alert('Officer\'s Xray-Cargo Certificate expiring soon!');</script>
+<script>alert('Officer\'s X-Ray-Cargo Certificate expiring soon!');</script>
 <% } %>
 <% if
   (alertArr.xray_hbs) { %>
-<script>alert('Officer\'s Xray-HBS Certificate expiring soon!');</script>
+<script>alert('Officer\'s X-Ray-HBS Certificate expiring soon!');</script>
 <% } %>
 
 <% if
   (alertArr.xray_pb) { %>
-<script>alert('Officer\'s Xray-PB Certificate expiring soon!');</script>
+<script>alert('Officer\'s X-Ray-Pre-Board Certificate expiring soon!');</script>
 <% } %>
 <% } %>
 <% include partials/footer %>

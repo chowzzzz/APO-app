@@ -7,6 +7,14 @@ var moment = require('moment');
 var functions = require('./modules');
 var firebase = require('./firebase');
 
+router.use(function (req, res, next) {
+  res.locals.urlObj = {
+    path: req.path
+  }
+
+  next();
+})
+
 router.get('/', function (req, res) {
   if (req.user == null) {
     res.redirect('/login');
@@ -15,6 +23,7 @@ router.get('/', function (req, res) {
       if (snapshot.val() != null) {
         console.log(snapshot.val().s1);
         res.render('index', { user: req.user, s1: snapshot.val().s1, s2: snapshot.val().s2, s3: snapshot.val().s3, s4: snapshot.val().s4, s5: snapshot.val().s5 });
+        // console.log("query" + req.path);
         console.log("[RENDER] INDEX");
         console.log("USER: " + req.user);
       } else {
@@ -183,37 +192,37 @@ router.get('/officers/:nric', functions.verifyAdmin, functions.getEachOfficers, 
   alertArr.xray_pb = false;
   alertArr.xray_cargo = false;
   var curDate = moment().format("YYYYMMDD");
-  if(req.gs_details!=null){
+  if (req.gs_details != null) {
     var cert = req.gs_details;
 
-    gsDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    gsDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
     gsDetail = cert[gsDetailSortedKey[0]];
 
-    if(gsDetail){
+    if (gsDetail) {
       var overall_status = gsDetail.overall_status;
 
       if (overall_status == 1) {
         gs_date = gsDetail.certified_date;
       }
     }
-    if('undefined'!==typeof gs_date) {
+    if ('undefined' !== typeof gs_date) {
       var certDate = moment(gs_date),
-          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-          certDateIncr = moment(certDateFormat).add(11, 'M'),
-          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-      if (diffDate >0 && diffDate<1) {
+        certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+        certDateIncr = moment(certDateFormat).add(11, 'M'),
+        certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+        diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+      if (diffDate > 0 && diffDate < 1) {
         alertArr.gs = true;
       }
     }
   }
-  if(req.ac_details!=null){
+  if (req.ac_details != null) {
     var cert = req.ac_details;
 
-    acDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    acDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
     acDetail = cert[acDetailSortedKey[0]];
 
-    if(acDetail){
+    if (acDetail) {
       var overall_status = acDetail.overall_status;
 
       if (overall_status == 1) {
@@ -221,91 +230,91 @@ router.get('/officers/:nric', functions.verifyAdmin, functions.getEachOfficers, 
       }
     }
 
-    if('undefined'!==typeof ac_date) {
+    if ('undefined' !== typeof ac_date) {
       var certDate = moment(ac_date),
-          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-          certDateIncr = moment(certDateFormat).add(11, 'M'),
-          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-          //diffDate = moment(curDate).diff(moment(certDateIncr), 'days');
-          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+        certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+        certDateIncr = moment(certDateFormat).add(11, 'M'),
+        certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+        //diffDate = moment(curDate).diff(moment(certDateIncr), 'days');
+        diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
 
-      if (diffDate >0 && diffDate<1) {
+      if (diffDate > 0 && diffDate < 1) {
         alertArr.ac = true;
       }
     }
   }
-  if(req.xray_hbs_details!=null){
+  if (req.xray_hbs_details != null) {
     var cert = req.xray_hbs_details;
 
-    xrHbDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    xrHbDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
     xrHbDetail = cert[xrHbDetailSortedKey[0]];
 
-    if(xrHbDetail){
+    if (xrHbDetail) {
       var overall_status = xrHbDetail.overall_status;
 
       if (overall_status == 1) {
         xray_hbs_date = xrHbDetail.certified_date;
       }
     }
-    if('undefined'!==typeof xray_hbs_date) {
+    if ('undefined' !== typeof xray_hbs_date) {
       var certDate = moment(xray_hbs_date),
-          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-          certDateIncr = moment(certDateFormat).add(11, 'M'),
-          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+        certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+        certDateIncr = moment(certDateFormat).add(11, 'M'),
+        certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+        diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
       console.log('xr hbd: ' + diffDate);
-      if (diffDate >0 && diffDate<1) {
+      if (diffDate > 0 && diffDate < 1) {
         alertArr.xray_hbs = true;
       }
     }
   }
-  if(req.xray_pb_details!=null){
+  if (req.xray_pb_details != null) {
     var cert = req.xray_pb_details;
 
-    xrPbDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    xrPbDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
     xrPbDetail = cert[xrPbDetailSortedKey[0]];
-  console.log('xrPbDetail')
+    console.log('xrPbDetail')
     console.log(xrPbDetail)
-    if(xrPbDetail){
+    if (xrPbDetail) {
       var overall_status = xrPbDetail.overall_status;
 
       if (overall_status == 1) {
         xray_pb_date = xrPbDetail.certified_date;
       }
     }
-    if('undefined'!==typeof xray_pb_date){
+    if ('undefined' !== typeof xray_pb_date) {
       console.log('moment(xray_pb_date)')
       console.log(moment(xray_pb_date))
       var certDate = moment(xray_pb_date),
-          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-          certDateIncr = moment(certDateFormat).add(11,'M'),
-          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-      if (diffDate >0 && diffDate<1) {
+        certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+        certDateIncr = moment(certDateFormat).add(11, 'M'),
+        certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+        diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+      if (diffDate > 0 && diffDate < 1) {
         alertArr.xray_pb = true;
       }
     }
   }
-  if(req.xray_cargo_details!=null){
+  if (req.xray_cargo_details != null) {
     var cert = req.xray_cargo_details;
 
-    xrCgDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    xrCgDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
     xrCgDetail = cert[xrCgDetailSortedKey[0]];
 
-    if(xrCgDetail){
+    if (xrCgDetail) {
       var overall_status = xrCgDetail.overall_status;
 
       if (overall_status == 1) {
         xray_cargo_date = xrCgDetail.certified_date;
       }
     }
-    if('undefined'!==typeof xray_cargo_date){
+    if ('undefined' !== typeof xray_cargo_date) {
       var certDate = moment(xray_cargo_date),
-          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-          certDateIncr = moment(certDateFormat).add(11,'M'),
-          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-      if (diffDate >0 && diffDate<1) {
+        certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+        certDateIncr = moment(certDateFormat).add(11, 'M'),
+        certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+        diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+      if (diffDate > 0 && diffDate < 1) {
         alertArr.xray_cargo = true;
       }
     }
@@ -393,37 +402,37 @@ router.post('/officers/:nric', functions.verifyAdmin, function (req, res, next) 
   alertArr.xray_pb = false;
   alertArr.xray_cargo = false;
   var curDate = moment().format("YYYYMMDD");
-  if(req.gs_details!=null){
+  if (req.gs_details != null) {
     var cert = req.gs_details;
 
-    gsDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    gsDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
     gsDetail = cert[gsDetailSortedKey[0]];
 
-    if(gsDetail){
+    if (gsDetail) {
       var overall_status = gsDetail.overall_status;
 
       if (overall_status == 1) {
         gs_date = gsDetail.certified_date;
       }
     }
-    if('undefined'!==typeof gs_date) {
+    if ('undefined' !== typeof gs_date) {
       var certDate = moment(gs_date),
-          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-          certDateIncr = moment(certDateFormat).add(11, 'M'),
-          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-      if (diffDate >0 && diffDate<1) {
+        certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+        certDateIncr = moment(certDateFormat).add(11, 'M'),
+        certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+        diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+      if (diffDate > 0 && diffDate < 1) {
         alertArr.gs = true;
       }
     }
   }
-  if(req.ac_details!=null){
+  if (req.ac_details != null) {
     var cert = req.ac_details;
 
-    acDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    acDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
     acDetail = cert[acDetailSortedKey[0]];
 
-    if(acDetail){
+    if (acDetail) {
       var overall_status = acDetail.overall_status;
 
       if (overall_status == 1) {
@@ -431,89 +440,89 @@ router.post('/officers/:nric', functions.verifyAdmin, function (req, res, next) 
       }
     }
 
-    if('undefined'!==typeof ac_date) {
+    if ('undefined' !== typeof ac_date) {
       var certDate = moment(ac_date),
-          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-          certDateIncr = moment(certDateFormat).add(11, 'M'),
-          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+        certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+        certDateIncr = moment(certDateFormat).add(11, 'M'),
+        certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+        diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
       console.log(diffDate)
-      if (diffDate >0 && diffDate<1) {
+      if (diffDate > 0 && diffDate < 1) {
         alertArr.ac = true;
       }
     }
   }
-  if(req.xray_hbs_details!=null){
+  if (req.xray_hbs_details != null) {
     var cert = req.xray_hbs_details;
 
-    xrHbDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    xrHbDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
     xrHbDetail = cert[xrHbDetailSortedKey[0]];
 
-    if(xrHbDetail){
+    if (xrHbDetail) {
       var overall_status = xrHbDetail.overall_status;
 
       if (overall_status == 1) {
         xray_hbs_date = xrHbDetail.certified_date;
       }
     }
-    if('undefined'!==typeof xray_hbs_date) {
+    if ('undefined' !== typeof xray_hbs_date) {
       var certDate = moment(xray_hbs_date),
-          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-          certDateIncr = moment(certDateFormat).add(11, 'M'),
-          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-      if (diffDate >0 && diffDate<1) {
+        certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+        certDateIncr = moment(certDateFormat).add(11, 'M'),
+        certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+        diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+      if (diffDate > 0 && diffDate < 1) {
         alertArr.xray_hbs = true;
       }
     }
   }
-  if(req.xray_pb_details!=null){
+  if (req.xray_pb_details != null) {
     var cert = req.xray_pb_details;
 
-    xrPbDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    xrPbDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
     xrPbDetail = cert[xrPbDetailSortedKey[0]];
     console.log('xrPbDetail')
     console.log(xrPbDetail)
-    if(xrPbDetail){
+    if (xrPbDetail) {
       var overall_status = xrPbDetail.overall_status;
 
       if (overall_status == 1) {
         xray_pb_date = xrPbDetail.certified_date;
       }
     }
-    if('undefined'!==typeof xray_pb_date){
+    if ('undefined' !== typeof xray_pb_date) {
       console.log('moment(xray_pb_date)')
       console.log(moment(xray_pb_date))
       var certDate = moment(xray_pb_date),
-          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-          certDateIncr = moment(certDateFormat).add(11,'M'),
-          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-      if (diffDate >0 && diffDate<1) {
+        certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+        certDateIncr = moment(certDateFormat).add(11, 'M'),
+        certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+        diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+      if (diffDate > 0 && diffDate < 1) {
         alertArr.xray_pb = true;
       }
     }
   }
-  if(req.xray_cargo_details!=null){
+  if (req.xray_cargo_details != null) {
     var cert = req.xray_cargo_details;
 
-    xrCgDetailSortedKey = Object.keys(cert).sort(function(a,b){return cert[b]['certified_date']-cert[a]['certified_date']});
+    xrCgDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
     xrCgDetail = cert[xrCgDetailSortedKey[0]];
 
-    if(xrCgDetail){
+    if (xrCgDetail) {
       var overall_status = xrCgDetail.overall_status;
 
       if (overall_status == 1) {
         xray_cargo_date = xrCgDetail.certified_date;
       }
     }
-    if('undefined'!==typeof xray_cargo_date){
+    if ('undefined' !== typeof xray_cargo_date) {
       var certDate = moment(xray_cargo_date),
-          certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-          certDateIncr = moment(certDateFormat).add(11,'M'),
-          certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-          diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-      if (diffDate >0 && diffDate<1) {
+        certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+        certDateIncr = moment(certDateFormat).add(11, 'M'),
+        certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+        diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+      if (diffDate > 0 && diffDate < 1) {
         alertArr.xray_cargo = true;
       }
     }
@@ -1149,8 +1158,8 @@ router.post('/security_test/new/:nric', functions.isAdminPage, functions.verifyA
   var isUploaded = false;
   var uploadFileName = '';
 
-  if(upload && upload.st_image){
-    upload.st_image.mv('./uploads/'  + upload.st_image.name, function(err) {
+  if (upload && upload.st_image) {
+    upload.st_image.mv('./uploads/' + upload.st_image.name, function (err) {
     });
   }
   var officer_id = req.params.nric;
@@ -1173,7 +1182,7 @@ router.post('/security_test/new/:nric', functions.isAdminPage, functions.verifyA
   var st_cat = req.body.st_cat;
   var st_supervisor = req.body.st_supervisor;
   var st_image = '';
-  if(upload && upload.st_image){
+  if (upload && upload.st_image) {
     st_image = upload.st_image.name;
   }
   var st_remarks = req.body.st_remarks;
@@ -1304,8 +1313,8 @@ router.post('/security_breach/new/:nric', functions.isAdminPage, functions.verif
   var isUploaded = false;
   var uploadFileName = '';
 
-  if(upload && upload.sb_image){
-    upload.sb_image.mv('./uploads/'  + upload.sb_image.name, function(err) {
+  if (upload && upload.sb_image) {
+    upload.sb_image.mv('./uploads/' + upload.sb_image.name, function (err) {
     });
   }
   var officer_id = req.params.nric;
@@ -1324,7 +1333,7 @@ router.post('/security_breach/new/:nric', functions.isAdminPage, functions.verif
   var sb_certSeized = req.body.sb_certSeized;
   var sb_cat = req.body.sb_cat;
   var sb_image = '';
-  if(upload && upload.sb_image){
+  if (upload && upload.sb_image) {
     sb_image = upload.sb_image.name;
   }
   var sb_remarks = req.body.sb_remarks;
@@ -1665,29 +1674,29 @@ router.get('/expiring', functions.verifyAdmin, functions.getOfficers, function (
   // console.log(officers.length)
 
   var officersToExpire = [];
-  if(officers!==null){
-    for(var id in officers){
+  if (officers !== null) {
+    for (var id in officers) {
       var officerId = officers[id];
-      if(officerId && officerId.certification){
+      if (officerId && officerId.certification) {
         var officerCert = officerId.certification;
-        if(officerCert){
-          if(officerCert.access_control){
+        if (officerCert) {
+          if (officerCert.access_control) {
             var officerAc = officerCert.access_control;
-            for(var accCrtId in officerAc){
+            for (var accCrtId in officerAc) {
               //console.log(officerAc[accCrtId]);
               var cert = officerAc[accCrtId];
-              if(cert){
+              if (cert) {
                 var curDate = moment().format("YYYYMMDD");
                 //console.log(curDate)
                 var certDate = moment(cert.certified_date),
-                    certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-                    certDateIncr = moment(certDateFormat).add(11,'M'),
-                    certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-                    diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+                  certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+                  certDateIncr = moment(certDateFormat).add(11, 'M'),
+                  certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+                  diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
                 // console.log('diffDate')
                 // console.log(certDateFormat)
                 // console.log(diffDate)
-                if (diffDate >0 && diffDate<1) {
+                if (diffDate > 0 && diffDate < 1) {
                   var offc = [];
                   offc.expiringDate = moment(certDateFormat).format("DD-MM-YYYY");
                   offc.name = officerId.fname;
@@ -1720,7 +1729,7 @@ router.get('/expiring', functions.verifyAdmin, functions.getOfficers, function (
       }
     }
   }
-  res.render('expiring_ac', { user: req.user, officersToExpire: officersToExpire})
+  res.render('expiring_ac', { user: req.user, officersToExpire: officersToExpire })
 });
 
 
@@ -1731,26 +1740,26 @@ router.get('/expiring_gs', functions.verifyAdmin, functions.getOfficers, functio
   // console.log(officers.length)
 
   var officersToExpire = [];
-  if(officers!==null){
-    for(var id in officers){
+  if (officers !== null) {
+    for (var id in officers) {
       var officerId = officers[id];
-      if(officerId && officerId.certification){
+      if (officerId && officerId.certification) {
         var officerCert = officerId.certification;
-        if(officerCert){
-          if(officerCert.general_screener){
+        if (officerCert) {
+          if (officerCert.general_screener) {
             var officerAc = officerCert.general_screener;
-            for(var accCrtId in officerAc){
+            for (var accCrtId in officerAc) {
               //console.log(officerAc[accCrtId]);
               var cert = officerAc[accCrtId];
-              if(cert){
+              if (cert) {
                 var curDate = moment().format("YYYYMMDD");
                 //console.log(curDate)
                 var certDate = moment(cert.certified_date),
-                    certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-                    certDateIncr = moment(certDateFormat).add(11,'M'),
-                    certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-                    diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-                if (diffDate >0 && diffDate<1) {
+                  certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+                  certDateIncr = moment(certDateFormat).add(11, 'M'),
+                  certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+                  diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+                if (diffDate > 0 && diffDate < 1) {
                   var offc = [];
                   offc.expiringDate = moment(certDateFormat).format("DD-MM-YYYY");
                   offc.name = officerId.fname;
@@ -1766,7 +1775,7 @@ router.get('/expiring_gs', functions.verifyAdmin, functions.getOfficers, functio
       }
     }
   }
-  res.render('expiring_gs', { user: req.user, officersToExpire: officersToExpire})
+  res.render('expiring_gs', { user: req.user, officersToExpire: officersToExpire })
 });
 
 router.get('/expiring_xrpb', functions.verifyAdmin, functions.getOfficers, function (req, res) {
@@ -1776,26 +1785,26 @@ router.get('/expiring_xrpb', functions.verifyAdmin, functions.getOfficers, funct
   // console.log(officers.length)
 
   var officersToExpire = [];
-  if(officers!==null){
-    for(var id in officers){
+  if (officers !== null) {
+    for (var id in officers) {
       var officerId = officers[id];
-      if(officerId && officerId.certification){
+      if (officerId && officerId.certification) {
         var officerCert = officerId.certification;
-        if(officerCert){
-          if(officerCert.xray_pb){
+        if (officerCert) {
+          if (officerCert.xray_pb) {
             var officerAc = officerCert.xray_pb;
-            for(var accCrtId in officerAc){
+            for (var accCrtId in officerAc) {
               //console.log(officerAc[accCrtId]);
               var cert = officerAc[accCrtId];
-              if(cert){
+              if (cert) {
                 var curDate = moment().format("YYYYMMDD");
                 //console.log(curDate)
                 var certDate = moment(cert.certified_date),
-                    certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-                    certDateIncr = moment(certDateFormat).add(11,'M'),
-                    certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-                    diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-                if (diffDate >0 && diffDate<1) {
+                  certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+                  certDateIncr = moment(certDateFormat).add(11, 'M'),
+                  certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+                  diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+                if (diffDate > 0 && diffDate < 1) {
                   var offc = [];
                   offc.expiringDate = moment(certDateFormat).format("DD-MM-YYYY");
                   offc.name = officerId.fname;
@@ -1811,7 +1820,7 @@ router.get('/expiring_xrpb', functions.verifyAdmin, functions.getOfficers, funct
       }
     }
   }
-  res.render('expiring_xrpb', { user: req.user, officersToExpire: officersToExpire})
+  res.render('expiring_xrpb', { user: req.user, officersToExpire: officersToExpire })
 });
 
 router.get('/expiring_xrhbs', functions.verifyAdmin, functions.getOfficers, function (req, res) {
@@ -1821,26 +1830,26 @@ router.get('/expiring_xrhbs', functions.verifyAdmin, functions.getOfficers, func
   // console.log(officers.length)
 
   var officersToExpire = [];
-  if(officers!==null){
-    for(var id in officers){
+  if (officers !== null) {
+    for (var id in officers) {
       var officerId = officers[id];
-      if(officerId && officerId.certification){
+      if (officerId && officerId.certification) {
         var officerCert = officerId.certification;
-        if(officerCert){
-          if(officerCert.xray_hbs){
+        if (officerCert) {
+          if (officerCert.xray_hbs) {
             var officerAc = officerCert.xray_hbs;
-            for(var accCrtId in officerAc){
+            for (var accCrtId in officerAc) {
               //console.log(officerAc[accCrtId]);
               var cert = officerAc[accCrtId];
-              if(cert){
+              if (cert) {
                 var curDate = moment().format("YYYYMMDD");
                 //console.log(curDate)
                 var certDate = moment(cert.certified_date),
-                    certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-                    certDateIncr = moment(certDateFormat).add(11,'M'),
-                    certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-                    diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-                if (diffDate >0 && diffDate<1) {
+                  certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+                  certDateIncr = moment(certDateFormat).add(11, 'M'),
+                  certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+                  diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+                if (diffDate > 0 && diffDate < 1) {
                   var offc = [];
                   offc.expiringDate = moment(certDateFormat).format("DD-MM-YYYY");
                   offc.name = officerId.fname;
@@ -1856,7 +1865,7 @@ router.get('/expiring_xrhbs', functions.verifyAdmin, functions.getOfficers, func
       }
     }
   }
-  res.render('expiring_xrhbs', { user: req.user, officersToExpire: officersToExpire})
+  res.render('expiring_xrhbs', { user: req.user, officersToExpire: officersToExpire })
 });
 
 router.get('/expiring_xrcg', functions.verifyAdmin, functions.getOfficers, function (req, res) {
@@ -1866,26 +1875,26 @@ router.get('/expiring_xrcg', functions.verifyAdmin, functions.getOfficers, funct
   // console.log(officers.length)
 
   var officersToExpire = [];
-  if(officers!==null){
-    for(var id in officers){
+  if (officers !== null) {
+    for (var id in officers) {
       var officerId = officers[id];
-      if(officerId && officerId.certification){
+      if (officerId && officerId.certification) {
         var officerCert = officerId.certification;
-        if(officerCert){
-          if(officerCert.xray_cargo){
+        if (officerCert) {
+          if (officerCert.xray_cargo) {
             var officerAc = officerCert.xray_cargo;
-            for(var accCrtId in officerAc){
+            for (var accCrtId in officerAc) {
               //console.log(officerAc[accCrtId]);
               var cert = officerAc[accCrtId];
-              if(cert){
+              if (cert) {
                 var curDate = moment().format("YYYYMMDD");
                 //console.log(curDate)
                 var certDate = moment(cert.certified_date),
-                    certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-                    certDateIncr = moment(certDateFormat).add(11,'M'),
-                    certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-                    diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-                if (diffDate >0 && diffDate<1) {
+                  certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+                  certDateIncr = moment(certDateFormat).add(11, 'M'),
+                  certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+                  diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+                if (diffDate > 0 && diffDate < 1) {
                   var offc = [];
                   offc.expiringDate = moment(certDateFormat).format("DD-MM-YYYY");
                   offc.name = officerId.fname;
@@ -1901,7 +1910,7 @@ router.get('/expiring_xrcg', functions.verifyAdmin, functions.getOfficers, funct
       }
     }
   }
-  res.render('expiring_xrcg', { user: req.user, officersToExpire: officersToExpire})
+  res.render('expiring_xrcg', { user: req.user, officersToExpire: officersToExpire })
 });
 
 
@@ -1912,25 +1921,27 @@ router.get('/securitytestfailure', functions.verifyAdmin, functions.getOfficers,
   // console.log(officers.length)
 
   var officersSec = [];
-  if(officers!==null){
-    for(var id in officers){
+  if (officers !== null) {
+    for (var id in officers) {
       var officerId = officers[id];
-      if(officerId && officerId.security_records){
+      if (officerId && officerId.security_records) {
         var officerSecRec = officerId.security_records;
-        if(officerSecRec){
-          if(officerSecRec.security_test){
+        if (officerSecRec) {
+          if (officerSecRec.security_test) {
             var officerSecT = officerSecRec.security_test;
-            for(var accCrtId in officerSecT){
+            for (var accCrtId in officerSecT) {
               //console.log(officerAc[accCrtId]);
               var secR = officerSecT[accCrtId];
-              if(secR){
-                if(secR.overall_status==0){
+              if (secR) {
+                if (secR.overall_status == 0) {
                   var offc = [];
                   offc.stId = accCrtId;
                   offc.stName = secR.st_name;
                   offc.name = officerId.fname;
                   offc.nric = id;
                   offc.location = secR.st_location;
+                  offc.date = secR.st_date;
+                  offc.time = secR.st_time;
                   offc.mode = secR.st_mode;
                   officersSec.push(offc)
                 }
@@ -1941,7 +1952,7 @@ router.get('/securitytestfailure', functions.verifyAdmin, functions.getOfficers,
       }
     }
   }
-  res.render('securitytestfailure', { user: req.user, officersSec: officersSec})
+  res.render('securitytestfailure', { user: req.user, officersSec: officersSec })
 });
 
 
@@ -1952,26 +1963,27 @@ router.get('/securitybreach', functions.verifyAdmin, functions.getOfficers, func
   // console.log(officers.length)
 
   var officersSec = [];
-  if(officers!==null){
-    for(var id in officers){
+  if (officers !== null) {
+    for (var id in officers) {
       var officerId = officers[id];
-      if(officerId && officerId.security_records){
+      if (officerId && officerId.security_records) {
         var officerSecRec = officerId.security_records;
-        if(officerSecRec){
-          if(officerSecRec.security_breach){
+        if (officerSecRec) {
+          if (officerSecRec.security_breach) {
             var officerSecT = officerSecRec.security_breach;
-            for(var accCrtId in officerSecT){
+            for (var accCrtId in officerSecT) {
               //console.log(officerAc[accCrtId]);
               var secR = officerSecT[accCrtId];
-              if(secR){
-                  var offc = [];
-                  offc.sbId = accCrtId;
-                  offc.sbName = secR.sb_name;
-                  offc.name = officerId.fname;
-                  offc.nric = id;
-                  offc.location = secR.sb_location;
-                  offc.mode = secR.sb_mode;
-                  officersSec.push(offc)
+              if (secR) {
+                var offc = [];
+                offc.sbId = accCrtId;
+                offc.sbName = secR.sb_name;
+                offc.name = officerId.fname;
+                offc.nric = id;
+                offc.location = secR.sb_location;
+                offc.date = secR.sb_date;
+                offc.time = secR.sb_time;
+                officersSec.push(offc)
               }
             }
           }
@@ -1979,7 +1991,7 @@ router.get('/securitybreach', functions.verifyAdmin, functions.getOfficers, func
       }
     }
   }
-  res.render('securitybreach', { user: req.user, officersSec: officersSec})
+  res.render('securitybreach', { user: req.user, officersSec: officersSec })
 });
 
 

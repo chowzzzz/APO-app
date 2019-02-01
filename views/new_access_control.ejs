@@ -40,14 +40,14 @@
         $('input[name=ac_mbs_status][value=' + setall_status + ']').attr('checked', 'checked');
         $('input[name=ac_vs_status][value=' + setall_status + ']').attr('checked', 'checked');
 
-        $('input[name=certified_date]').val(setall_date);
-        $('input[name=ac_theory]').val(setall_date);
-        $('input[name=ac_hhmd]').val(setall_date);
-        $('input[name=ac_pds]').val(setall_date);
-        $('input[name=ac_wtmd]').val(setall_date);
-        $('input[name=ac_etd]').val(setall_date);
-        $('input[name=ac_mbs]').val(setall_date);
-        $('input[name=ac_vs]').val(setall_date);
+        $('input[name=certified_date]').datepicker("setDate", setall_date);
+        $('input[name=ac_theory]').datepicker("setDate", setall_date);
+        $('input[name=ac_hhmd]').datepicker("setDate", setall_date);
+        $('input[name=ac_pds]').datepicker("setDate", setall_date);
+        $('input[name=ac_wtmd]').datepicker("setDate", setall_date);
+        $('input[name=ac_etd]').datepicker("setDate", setall_date);
+        $('input[name=ac_mbs]').datepicker("setDate", setall_date);
+        $('input[name=ac_vs]').datepicker("setDate", setall_date);
       });
 
     });

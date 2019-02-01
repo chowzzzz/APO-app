@@ -1,4 +1,8 @@
 <% include partials/header %>
+<% if (user.role == 2 || user.role == 3) { %>
+<% include partials/nav %>
+<% } %>
+
 <% var error; %>
 <script>
   var availableTags = [
@@ -10,6 +14,7 @@
   ];
 </script>
 
+<% if (user.role == 1) { %>
 <nav class="navbar sticky-top justify-content-end">
 
   <% if (user) { %>
@@ -19,6 +24,7 @@
   <% } %>
 
 </nav>
+<% } %>
 
 <div class="index-container d-flex">
   <div class="align-self-center w-100">
@@ -36,7 +42,7 @@
     </div>
     <form action="/" method="POST">
       <div class="row col-md-6 mx-auto">
-        <div class="input-group col-11 col-md-7 mb-3 mx-auto">
+        <div class="input-group col-10 col-sm-7 mb-3 mx-auto">
           <input type="text" class="form-control" placeholder="NRIC/FIN" name="search_nric" id="search_nric"
             aria-describedby="search_nric" maxlength="9">
           <div class="input-group-append">
@@ -47,7 +53,7 @@
     </form>
 
     <div class="col-md-6 mx-auto">
-      <% if (user.role < 3) { %>
+      <% if (user.role < 2) { %>
       <a class="btn btn-primary col-6 col-md-5 text-center" href="/admin/">Administrators</a></br>
       <% } %>
       <a class="btn btn-primary col-6 col-md-5 text-center" href="/officers/">Officers</a>

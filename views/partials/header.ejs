@@ -68,7 +68,9 @@
     $(document).ready(function () {
       $('.datepicker').datepicker({
         format: 'dd/mm/yyyy',
-        endDate: '0d'
+        endDate: '0d',
+        todayHighlight: true,
+        autoclose: true
       });
       $('.timepicker').datetimepicker({
         format: 'LT'

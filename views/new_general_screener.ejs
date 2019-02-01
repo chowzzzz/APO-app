@@ -40,14 +40,14 @@
         $('input[name=gs_etd_status][value=' + setall_status + ']').attr('checked', 'checked');
         $('input[name=gs_mbs_status][value=' + setall_status + ']').attr('checked', 'checked');
 
-        $('input[name=certified_date]').val(setall_date);
-        $('input[name=gs_theory]').val(setall_date);
-        $('input[name=gs_hhmd]').val(setall_date);
-        $('input[name=gs_pds]').val(setall_date);
-        $('input[name=gs_wtmd]').val(setall_date);
-        $('input[name=gs_fl]').val(setall_date);
-        $('input[name=gs_etd]').val(setall_date);
-        $('input[name=gs_mbs]').val(setall_date);
+        $('input[name=certified_date]').datepicker("setDate", setall_date);
+        $('input[name=gs_theory]').datepicker("setDate", setall_date);
+        $('input[name=gs_hhmd]').datepicker("setDate", setall_date);
+        $('input[name=gs_pds]').datepicker("setDate", setall_date);
+        $('input[name=gs_wtmd]').datepicker("setDate", setall_date);
+        $('input[name=gs_fl]').datepicker("setDate", setall_date);
+        $('input[name=gs_etd]').datepicker("setDate", setall_date);
+        $('input[name=gs_mbs]').datepicker("setDate", setall_date);
       });
 
     });

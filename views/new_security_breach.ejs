@@ -1,0 +1,191 @@
+<% include partials/header %>
+<% include partials/nav %>
+
+<script>
+  function UNIXConverter(UNIX_timestamp) {
+    try {
+      if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
+        return "-";
+      }
+      var a = new Date(UNIX_timestamp * 1000);
+      var year = a.getFullYear();
+      var month = a.getMonth() + 1;
+      var date = a.getDate();
+      if (month < 10) {
+        month = "0" + month;
+      }
+      if (date < 10) {
+        date = "0" + date;
+      }
+      var time = date + '/' + month + '/' + year;
+      return time;
+    } catch (error) {
+      return "";
+    }
+  }
+  $(document).ready(function () {
+    $('input[name=sb_date]').datepicker("setDate", 'now');
+  });
+</script>
+<div class="container-fluid">
+
+  <h4 class="mt-4">Add New Security Breach Record</h4>
+  <hr>
+
+  <form action='/security_breach/new/<%=officer_details.nric%>/' method="POST" enctype="multipart/form-data">
+    <div class="card d-flex mx-auto mb-5">
+      <div class="card-header text-left">
+        <div class="d-sm-flex flex-sm-row">
+          <div class="mr-auto">
+            <h6 class="mb-2 font-weight-bold">Name:
+              <%=officer_details.fname%>
+              <%=officer_details.lname%>
+            </h6>
+            <p class="mb-2">NRIC:
+              <%=officer_details.nric%>
+            </p>
+          </div>
+
+          <div>
+
+            <div>
+              <label for="sb_certified_date" class="font-weight-bold">Test Name:</label>
+              <div class="input-group mb-0">
+                <input type="text" class="form-control" name="sb_name" id="sb_name" value="" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="card-body text-left">
+
+
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="sb_date">Date:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="sb_date" id="sb_date" value="" required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="sb_time">Time:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control timepicker" name="sb_time" id="sb_time" value="" required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-clock"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="sb_location">Location:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="sb_location" id="sb_location" value="" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="sb_breachOff">Breach Offense:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="sb_breachOff" id="sb_breachOff" value="" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="sb_personInv">Person Involved:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="sb_personInv" id="sb_personInv" value="" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="sb_supervisor">Supervisor:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="sb_supervisor" id="sb_supervisor" value="" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="sb_contact">Contact:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="sb_contact" id="sb_contact" value="" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="sb_entity">Entity:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="sb_entity" id="sb_entity" value="" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="sb_certExpOrAPno">Cert Expiry or A/P no.:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="sb_certExpOrAPno" id="sb_certExpOrAPno" value="" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="sb_detect">Detecting Officer:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="sb_detect" id="sb_detect" value="" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="sb_certSeized">Cert Seized:</label><br />
+            <div class="input-group mb-3">
+              <select class="custom-select" id="sb_certSeized" name="sb_certSeized" required>
+                <option selected>Select</option>
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="sb_cat">Category:</label><br />
+            <div class="input-group mb-3">
+              <select class="custom-select" id="sb_cat" name="sb_cat" required>
+                <option selected>Select</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <label class="font-weight-bold mb-0" for="sb_image">Image:</label><br />
+            <div class="input-group mb-3">
+              <input type="file" name="sb_image" />
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <label class="font-weight-bold mb-0" for="sb_remarks">Remarks:</label><br />
+            <div class="input-group mb-3">
+              <textarea class="form-control" name="sb_remarks" id="sb_remarks" required></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <% if (user.role == 1) { %>
+      <div class="card-footer">
+        <button type="submit" class="btn btn-primary btn-block" name="add_btn">Add</button>
+      </div>
+      <% } %>
+    </div>
+
+
+  </form>
+</div>
+
+<% include partials/footer %>

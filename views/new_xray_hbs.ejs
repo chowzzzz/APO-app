@@ -27,7 +27,7 @@
 
     $(document).ready(function () {
 
-      $("#setall_btn").click(function () { // set all function for GS/AC/Xray HBS.
+      $("#setall_btn").click(function () { // set all function for GS/AC/X-Ray HBS.
         var setall_date = $('input[name=setall_date]').val();
         var setall_status = $('input[name=setall_overall_status]:checked').val();
 
@@ -36,17 +36,17 @@
         $('input[name=xray_hbs_etd_status][value=' + setall_status + ']').attr('checked', 'checked');
         $('input[name=xray_hbs_iit_status][value=' + setall_status + ']').attr('checked', 'checked');
 
-        $('input[name=certified_date]').val(setall_date);
-        $('input[name=xray_hbs_theory]').val(setall_date);
-        $('input[name=xray_hbs_etd]').val(setall_date);
-        $('input[name=xray_hbs_iit]').val(setall_date);
+        $('input[name=certified_date]').datepicker("setDate", setall_date);
+        $('input[name=xray_hbs_theory]').datepicker("setDate", setall_date);
+        $('input[name=xray_hbs_etd]').datepicker("setDate", setall_date);
+        $('input[name=xray_hbs_iit]').datepicker("setDate", setall_date);
       });
 
     });
   </script>
 </head>
 <div class="container-fluid">
-  <h4 class="mt-4">Add New Xray HBS Record</h4>
+  <h4 class="mt-4">Add New X-Ray HBS Record</h4>
   <hr>
 
   <div class="row my-3 justify-content-center">

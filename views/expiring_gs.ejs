@@ -1,0 +1,105 @@
+<% include partials/header %>
+<% include partials/nav %>
+
+<%
+function UNIXConverter(UNIX_timestamp){
+  try {
+    if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
+      return "-";
+    }
+    var a = new Date(UNIX_timestamp * 1000);
+    var year = a.getFullYear();
+    var month = a.getMonth() + 1;
+    var date = a.getDate();
+    if (month < 10) {
+      month = "0" + month;
+    }
+    if (date < 10) {
+      date = "0" + date;
+    }
+    var time = date + '/' + month + '/' + year;
+    return time;
+  } catch (error) {
+    return "";
+  }
+}
+
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
+}
+%>
+<div class="container-fluid">
+  <h4 class="mt-4">Expiring Certification
+  </h4>
+  <hr>
+
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <a class="nav-link" href="/expiring">AC</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" href="#">GS</a>
+    </li>
+    <!-- For small devices and up -->
+    <li class="nav-item d-none d-sm-block">
+      <a class="nav-link" href="/expiring_xrhbs/">X-Ray HBS</a>
+    </li>
+    <li class="nav-item d-none d-sm-block">
+      <a class="nav-link" href="/expiring_xrpb/">X-Ray Pre-Board</a>
+    </li>
+    <li class="nav-item d-none d-sm-block">
+      <a class="nav-link" href="/expiring_xrcg/">X-Ray Cargo</a>
+    </li>
+
+    <!-- For mobile -->
+    <li class="nav-item dropdown d-sm-none">
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+        aria-expanded="false">X-Ray</a>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="/expiring_xrhbs/">X-Ray HBS</a>
+        <a class="dropdown-item" href="/expiring_xrpb/">X-Ray Pre-Board</a>
+        <a class="dropdown-item" href="/expiring_xrcg/">X-Ray Cargo</a>
+      </div>
+    </li>
+  </ul>
+
+  <table class="table table-hover table-bordered table-striped table-responsive-sm col-sm-10 mx-auto p-0 mb-4">
+    <thead class="thead-light">
+      <tr>
+        <th>Expiring Date</th>
+        <th>Name</th>
+        <th>NRIC</th>
+        <th>Certification Card No.</th>
+      </tr>
+    </thead>
+    <% if ('undefined'===typeof officersToExpire || officersToExpire == null) { %>
+    <tr>
+      <td class="mx-auto text-danger" colspan="3">Officer does not have any existing certificates.</td>
+    </tr>
+    <% } else { %>
+
+    <%
+    for (var i=0; i<officersToExpire.length; i++) { %>
+    <tr class='clickable-row' data-href='/access_control/<%=officersToExpire[i].nric%>'>
+      <td>
+        <%=officersToExpire[i].expiringDate%>
+      </td>
+      <td>
+        <%=officersToExpire[i].name%>
+      </td>
+      <td>
+        <%=officersToExpire[i].nric%>
+      </td>
+      <td>
+        <%=officersToExpire[i].certCardNo%>
+      </td>
+    </tr>
+
+    <%
+    }
+    %>
+    <% } //CLOSE BRACKET FOR ELSE STATEMENT%>
+  </table>
+</div>
+
+<% include partials/footer %>

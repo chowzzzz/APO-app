@@ -1,8 +1,15 @@
-<nav class="navbar navbar-dark navbar-expand-lg shadow-sm" style="background-color: #888B8D">
+<% if (user.role == 1) { %>
+<nav class="navbar navbar-dark navbar-expand-lg shadow-sm text-left" style="background-color: #888B8D">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navBar" aria-controls="navBar"
     aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
+
+  <% if (user) { %>
+  <a class="btn btn-primary my-2 my-sm-0 d-lg-none" href="/logout"><i class="fas fa-sign-out-alt"></i></a>
+  <% } else { %>
+  <a class="btn btn-primary my-2 my-sm-0 d-lg-none" href="/login"><i class="fas fa-sign-in-alt"></i></a>
+  <% } %>
 
   <div class="collapse navbar-collapse" id="navBar">
     <ul class="navbar-nav mr-auto">
@@ -21,12 +28,12 @@
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="xrayDropdown" role="button" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
-          Xray
+          X-Ray
         </a>
         <div class="dropdown-menu" aria-labelledby="xrayDropdown">
-          <a class="dropdown-item" href="/xray_hbs/">Xray HBS</a>
-          <a class="dropdown-item" href="/xray_pb/">Xray PB</a>
-          <a class="dropdown-item" href="/xray_cargo/">Xray Cargo</a>
+          <a class="dropdown-item" href="/xray_hbs/">X-Ray HBS</a>
+          <a class="dropdown-item" href="/xray_pb/">X-Ray Pre-Board</a>
+          <a class="dropdown-item" href="/xray_cargo/">X-Ray Cargo</a>
         </div>
       </li>
       <li class="nav-item dropdown">
@@ -48,13 +55,26 @@
       </li>
       <% } %>
     </ul>
-
-    <% if (user) { %>
-    <a class="btn btn-primary my-2 my-sm-0" href="/logout"><i class="fas fa-sign-out-alt"></i></a>
-    <% } else { %>
-    <a class="btn btn-primary my-2 my-sm-0" href="/login"><i class="fas fa-sign-in-alt"></i></a>
-    <% } %>
-
-
   </div>
+
+  <% if (user) { %>
+  <a class="btn btn-primary my-2 my-sm-0 d-none d-lg-block" href="/logout"><i class="fas fa-sign-out-alt"></i></a>
+  <% } else { %>
+  <a class="btn btn-primary my-2 my-sm-0 d-none d-lg-block" href="/login"><i class="fas fa-sign-in-alt"></i></a>
+  <% } %>
 </nav>
+<% } else if (user.role == 2 || user.role == 3) { %>
+<% urlObj = typeof urlObj !== 'object' ? {} : urlObj %>
+<nav class="nav fixed-bottom  nav-pills nav-fill navPills">
+  <% if (urlObj.path == "profile") { %>
+  <a class="nav-item nav-link active" href="#"><i class="fas fa-user"></i></a>
+  <a class="nav-item nav-link" href="/"><i class="fas fa-search"></i></a>
+  <% } else if (urlObj.path == "/") { %>
+  <a class="nav-item nav-link" href="#"><i class="fas fa-user"></i></a>
+  <a class="nav-item nav-link active" href="/"><i class="fas fa-search"></i></a>
+  <% } else { %>
+  <a class="nav-item nav-link" href="#"><i class="fas fa-user"></i></a>
+  <a class="nav-item nav-link" href="/"><i class="fas fa-search"></i></a>
+  <% } %>
+</nav>
+<% } %>

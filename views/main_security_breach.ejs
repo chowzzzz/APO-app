@@ -24,7 +24,7 @@ function UNIXConverter(UNIX_timestamp){
 }
 %>
 <div class="container-fluid">
-  <h4 class="mt-4">X-Ray HBS - Select Officer</h4>
+  <h4 class="mt-4">Security Breach - Select Officer</h4>
   <hr>
   <table class="table table-hover table-bordered table-striped table-responsive-sm col-sm-10 mx-auto p-0">
     <thead class="thead-light">
@@ -36,7 +36,7 @@ function UNIXConverter(UNIX_timestamp){
       </tr>
     </thead>
     <% for (var key in officer_details) { %>
-    <tr class='clickable-row' data-href='/xray_hbs/<%=key%>/'>
+    <tr class='clickable-row' data-href='/security_breach/<%=key%>/'>
       <td>
         <%=officer_details[key].fname%>
         <%=officer_details[key].lname%>

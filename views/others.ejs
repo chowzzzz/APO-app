@@ -1,5 +1,6 @@
 <% include partials/header %>
 <% include partials/nav %>
+
 <%
 function UNIXConverter(UNIX_timestamp){
   try {
@@ -22,13 +23,9 @@ function UNIXConverter(UNIX_timestamp){
     return "";
   }
 }
-
-function getKeyByValue(object, value) {
-  return Object.keys(object).find(key => object[key] === value);
-}
 %>
 <div class="container-fluid">
-  <h4 class="mt-4">General Screener -
+  <h4 class="mt-4">Others -
     <%=officer_details.nric%>
   </h4>
   <hr>
@@ -38,7 +35,7 @@ function getKeyByValue(object, value) {
       <a class="nav-link" href="/access_control/<%=officer_details.nric%>">AC</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link active" href="#">GS</a>
+      <a class="nav-link" href="/general_screener/<%=officer_details.nric%>">GS</a>
     </li>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
@@ -58,73 +55,46 @@ function getKeyByValue(object, value) {
       </div>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="/others/<%=officer_details.nric%>">Others</a>
+      <a class="nav-link active" href="#">Others</a>
     </li>
   </ul>
 
-  <table class="table table-hover table-bordered table-striped col-sm-10 mx-auto p-0 mb-4">
+  <table class="table table-hover table-bordered table-striped table-responsive-sm col-sm-10 mx-auto p-0 mb-4">
     <thead class="thead-light">
       <tr>
-        <th>#</th>
-        <th>Status</th>
-        <th>Certified Date</th>
+        <th>Card Seized</th>
+        <th>Certification Card No.</th>
+        <th>Ex-Employer</th>
       </tr>
     </thead>
-    <% if (gs_details == null) { %>
+    <% if (others_details == null) { %>
     <tr>
-      <td class="mx-auto text-danger" colspan="3">Officer does not have any existing certificates.</td>
+      <td class="mx-auto text-danger" colspan="5">Officer does not have any existing records.</td>
     </tr>
-    <% } else { %>
+    <% } %>
 
-    <%
-    var keys=[];
-
-
-    var sorted_gs_details = Object.keys(gs_details).sort(function(a,b) {
-      return gs_details[b].certified_date - gs_details[a].certified_date;
-    }).map(function(category) {
-      var key = getKeyByValue(gs_details, gs_details[category]);
-      keys.push(key);
-      return gs_details[category];
-    });
-    console.log('keys');
-    console.log(keys);
-    console.log('sorted_gs_details');
-    console.log(sorted_gs_details);
-    %>
-
-    <% var i = 1 %>
-    <% for (var general_screener_index in sorted_gs_details) { %>
+    <% for (var others_id in others_details) { %>
     <% var status; %>
-    <tr class='clickable-row' data-href='/general_screener/<%=officer_details.nric%>/<%=keys[general_screener_index]%>'>
+    <tr class='clickable-row' data-href='/others/<%=officer_details.nric%>/<%=others_id%>'>
       <td>
-        <%=i%>
-        <% i++ %>
+        <%=UNIXConverter(others_details[others_id].others_cardSeized)%>
       </td>
-      <% if (sorted_gs_details[general_screener_index].overall_status == "1") { %>
       <td>
-        PASS
+        <%=others_details[others_id].others_certCardNo%>
       </td>
-      <% } else { %>
-      <td class="text-danger">
-        FAIL
-      </td>
-      <% } %>
       <td>
-        <%=UNIXConverter(sorted_gs_details[general_screener_index].certified_date)%>
+        <%=others_details[others_id].others_exEmployer%>
       </td>
     </tr>
     <% } %>
-    <% } //CLOSE BRACKET FOR ELSE STATEMENT%>
   </table>
 
   <div class="mb-4 col-11 mx-auto">
     <% if (user.role == 1) { %>
-    <a href="/general_screener/new/<%=officer_details.nric%>" class="btn btn-primary col-sm-6">Add New Record</a>
+    <a href="/others/new/<%=officer_details.nric%>" class="btn btn-primary col-sm-6">Add New Record</a>
     <% } %>
 
   </div>
-
 </div>
 
 <% include partials/footer %>

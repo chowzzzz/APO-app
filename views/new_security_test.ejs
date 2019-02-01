@@ -1,28 +1,31 @@
 <% include partials/header %>
 <% include partials/nav %>
-<%
-function UNIXConverter(UNIX_timestamp){
-  try {
-    if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
-      return "-";
+<script>
+  function UNIXConverter(UNIX_timestamp) {
+    try {
+      if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
+        return "-";
+      }
+      var a = new Date(UNIX_timestamp * 1000);
+      var year = a.getFullYear();
+      var month = a.getMonth() + 1;
+      var date = a.getDate();
+      if (month < 10) {
+        month = "0" + month;
+      }
+      if (date < 10) {
+        date = "0" + date;
+      }
+      var time = date + '/' + month + '/' + year;
+      return time;
+    } catch (error) {
+      return "";
     }
-    var a = new Date(UNIX_timestamp * 1000);
-    var year = a.getFullYear();
-    var month = a.getMonth() + 1;
-    var date = a.getDate();
-    if (month < 10) {
-      month = "0" + month;
-    }
-    if (date < 10) {
-      date = "0" + date;
-    }
-    var time = date + '/' + month + '/' + year;
-    return time;
-  } catch (error) {
-    return "";
   }
-}
-%>
+  $(document).ready(function () {
+    $('input[name=st_date]').datepicker("setDate", 'now');
+  });
+</script>
 <div class="container-fluid">
 
   <h4 class="mt-4">Add New Security Test Record</h4>

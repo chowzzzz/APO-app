@@ -26,6 +26,7 @@
   $(document).ready(function () { // the whole function below sets the value of the general screener (from firebase) to the various textboxes. this is a neater way to do it as compared to doing it in the value fields.
     $('input[name=overall_status][value=' +<%=st_details.overall_status %> +']').attr('checked', 'checked');
 
+    $('input[name=st_name]').val('<%=st_details.st_name %>');
     $('input[name=st_date]').datepicker("setDate", UNIXConverter(<%=st_details.st_date %>));
     $('input[name=st_time]').val('<%=st_details.st_time %>');
     $('input[name=st_location]').val('<%=st_details.st_location %>');
@@ -71,9 +72,6 @@
       <div class="card-header text-left">
         <div class="d-sm-flex flex-sm-row">
           <div class="mr-auto">
-            <h6 class="mb-2 font-weight-bold">Test Name:
-              <%=st_details.st_name%>
-            </h6>
             <h6 class="mb-2 font-weight-bold">Name:
               <%=officer_details.fname%>
               <%=officer_details.lname%>
@@ -81,24 +79,25 @@
             <p class="mb-2">NRIC:
               <%=officer_details.nric%>
             </p>
+          </div>
+          <div class="col-sm-6 px-0">
+            <label class="font-weight-bold mb-0" for="st_name">Test Name:</label><br />
+            <div class="input-group mb-2">
+              <input type="text" class="form-control" name="st_name" id="st_name" value="" required>
+            </div>
 
             <div class="mb-0">
               Status:&nbsp;
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="overall_status" id="passStatus" value="1" <% if
-                  (st_details.overall_status=="1" ) {%> checked
-                <% } %>>
+                <input class="form-check-input" type="radio" name="overall_status" id="passStatus" value="1">
                 <label class="form-check-label" for="passStatus">Pass</label>
               </div>
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="overall_status" id="failStatus" value="0" <% if
-                  (st_details.overall_status=="0" ) {%> checked
-                <% } %>>
+                <input class="form-check-input" type="radio" name="overall_status" id="failStatus" value="0">
                 <label class="form-check-label" for="failStatus">Fail</label>
               </div>
             </div>
           </div>
-
         </div>
       </div>
       <div class="card-body text-left">
