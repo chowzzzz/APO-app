@@ -7,6 +7,28 @@ var moment = require('moment');
 var functions = require('./modules');
 var firebase = require('./firebase');
 
+function UNIXConverter(UNIX_timestamp) {
+  try {
+    if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
+      return "-";
+    }
+    var a = new Date(UNIX_timestamp * 1000);
+    var year = a.getFullYear();
+    var month = a.getMonth() + 1;
+    var date = a.getDate();
+    if (month < 10) {
+      month = "0" + month;
+    }
+    if (date < 10) {
+      date = "0" + date;
+    }
+    var time = date + '/' + month + '/' + year;
+    return time;
+  } catch (error) {
+    return "";
+  }
+}
+
 router.use(function (req, res, next) {
   res.locals.urlObj = {
     path: req.path
@@ -539,7 +561,28 @@ router.get('/access_control', functions.verifyAdmin, functions.getOfficers, func
 })
 
 router.get('/access_control/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getACRecords, function (req, res) {
-  res.render('access_control', { user: req.user, officer_details: req.officer_details, ac_details: req.ac_details });
+  function getKeyByValue(object, value) {
+    return Object.keys(object).find(key => object[key] === value);
+  }
+  var keys = [];
+  var sorted_ac_details = Object.keys(req.ac_details).sort(function (a, b) {
+    return req.ac_details[b].certified_date - req.ac_details[a].certified_date;
+  }).map(function (category) {
+    var key = getKeyByValue(req.ac_details, req.ac_details[category]);
+    keys.push(key);
+    return req.ac_details[category];
+  });
+  console.log(sorted_ac_details);
+  sorted_ac_details.forEach((item, i) => {
+    if (item.overall_status == "1") {
+      item.overall_status = "PASS";
+    };
+    item.certified_date = UNIXConverter(item.certified_date);
+    item.id = i + 1;
+  });
+  console.log(sorted_ac_details);
+
+  res.render('access_control', { user: req.user, officer_details: req.officer_details, ac_details: req.sorted_ac_details });
 })
 
 router.get('/access_control/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
