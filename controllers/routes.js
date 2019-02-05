@@ -41,7 +41,7 @@ router.use(function (req, res, next) {
 })
 
 router.get('/', function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     firebase.db.ref("searches/").once('value').then(function (snapshot) {
@@ -56,7 +56,7 @@ router.get('/', function (req, res) {
 });
 
 router.post('/', function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else if (req.body.search_nric != "") {
     search_nric = req.body.search_nric;
@@ -110,7 +110,7 @@ router.post('/login', passport.authenticate('local', { successRedirect: '/', fai
 
 
 router.get('/officers', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -152,7 +152,7 @@ router.get('/officers', functions.verifyAdmin, functions.getOfficers, function (
 });
 
 router.get('/officers/new', functions.isAdminPage, functions.verifyAdmin, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('add_officer', { user: req.user });
@@ -171,7 +171,7 @@ router.post('/officers/new', functions.isAdminPage, function (req, res, next) {
 
   });
 }, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var nric = req.body.nric;
@@ -217,7 +217,7 @@ router.post('/officers/new', functions.isAdminPage, function (req, res, next) {
 });
 
 router.get('/officers/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getACRecords, functions.getGSRecords, functions.getXrayHBSRecords, functions.getXrayPBRecords, functions.getXrayCargoRecords, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var ac_date = "-", gs_date = "-", xray_hbs_date = "-", xray_pb_date = "-", xray_cargo_date = "-";
@@ -357,7 +357,7 @@ router.get('/officers/:nric', functions.verifyAdmin, functions.getEachOfficers, 
 });
 
 router.post('/officers/:nric', functions.verifyAdmin, function (req, res, next) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     if (req.body.update_btn != null) {
@@ -365,8 +365,6 @@ router.post('/officers/:nric', functions.verifyAdmin, function (req, res, next) 
       var fname = req.body.fname;
       var lname = req.body.lname;
       var dob = req.body.dob;
-      var nric = req.body.nric;
-      nric = nric.toUpperCase();
 
       var cert_card_no = req.body.cert_card_no;
       var organisation = req.body.organisation;
@@ -379,7 +377,6 @@ router.post('/officers/:nric', functions.verifyAdmin, function (req, res, next) 
       var update_user = {
         fname: fname,
         lname: lname,
-        nric: nric,
         dob: dob,
         cert_card_no: cert_card_no,
         organisation: organisation,
@@ -440,7 +437,7 @@ router.post('/officers/:nric', functions.verifyAdmin, function (req, res, next) 
 //Access Control Section
 
 router.get('/access_control', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -464,7 +461,7 @@ router.get('/access_control', functions.verifyAdmin, functions.getOfficers, func
 
 router.get('/access_control/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getACRecords, function (req, res) {
 
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -513,7 +510,7 @@ router.get('/access_control/:nric', functions.verifyAdmin, functions.getEachOffi
 })
 
 router.get('/access_control/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('new_access_control', { user: req.user, officer_details: req.officer_details })
@@ -521,7 +518,7 @@ router.get('/access_control/new/:nric', functions.isAdminPage, functions.verifyA
 })
 
 router.post('/access_control/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officer_id = req.params.nric;
@@ -590,7 +587,7 @@ router.post('/access_control/new/:nric', functions.isAdminPage, functions.verify
 })
 
 router.get('/access_control/:nric/:ac_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachACRecord, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('view_access_control', { user: req.user, officer_details: req.officer_details, ac_id: req.params.ac_id, ac_details: req.ac_details });
@@ -598,7 +595,7 @@ router.get('/access_control/:nric/:ac_id', functions.verifyAdmin, functions.getE
 });
 
 router.post('/access_control/:nric/:ac_id', functions.verifyAdmin, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officer_id = req.params.nric;
@@ -700,7 +697,7 @@ router.post('/access_control/:nric/:ac_id', functions.verifyAdmin, function (req
 //General Screener Section
 
 router.get('/general_screener', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -723,7 +720,7 @@ router.get('/general_screener', functions.verifyAdmin, functions.getOfficers, fu
 })
 
 router.get('/general_screener/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getGSRecords, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -772,7 +769,7 @@ router.get('/general_screener/:nric', functions.verifyAdmin, functions.getEachOf
 })
 
 router.get('/general_screener/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('new_general_screener', { user: req.user, officer_details: req.officer_details })
@@ -780,7 +777,7 @@ router.get('/general_screener/new/:nric', functions.isAdminPage, functions.verif
 })
 
 router.post('/general_screener/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officer_id = req.params.nric;
@@ -849,7 +846,7 @@ router.post('/general_screener/new/:nric', functions.isAdminPage, functions.veri
 })
 
 router.get('/general_screener/:nric/:gs_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachGSRecord, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('view_general_screener', { user: req.user, officer_details: req.officer_details, gs_id: req.params.gs_id, gs_details: req.gs_details });
@@ -857,7 +854,7 @@ router.get('/general_screener/:nric/:gs_id', functions.verifyAdmin, functions.ge
 });
 
 router.post('/general_screener/:nric/:gs_id', functions.verifyAdmin, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officer_id = req.params.nric;
@@ -959,7 +956,7 @@ router.post('/general_screener/:nric/:gs_id', functions.verifyAdmin, function (r
 //Xray HBS Section
 
 router.get('/xray_hbs', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -982,7 +979,7 @@ router.get('/xray_hbs', functions.verifyAdmin, functions.getOfficers, function (
 })
 
 router.get('/xray_hbs/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getXrayHBSRecords, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -1031,7 +1028,7 @@ router.get('/xray_hbs/:nric', functions.verifyAdmin, functions.getEachOfficers, 
 })
 
 router.get('/xray_hbs/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('new_xray_hbs', { user: req.user, officer_details: req.officer_details })
@@ -1039,7 +1036,7 @@ router.get('/xray_hbs/new/:nric', functions.isAdminPage, functions.verifyAdmin, 
 })
 
 router.post('/xray_hbs/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officer_id = req.params.nric;
@@ -1084,7 +1081,7 @@ router.post('/xray_hbs/new/:nric', functions.isAdminPage, functions.verifyAdmin,
 })
 
 router.get('/xray_hbs/:nric/:xray_hbs_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachXrayHBSRecord, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('view_xray_hbs', { user: req.user, officer_details: req.officer_details, xray_hbs_id: req.params.xray_hbs_id, xray_hbs_details: req.xray_hbs_details });
@@ -1092,7 +1089,7 @@ router.get('/xray_hbs/:nric/:xray_hbs_id', functions.verifyAdmin, functions.getE
 });
 
 router.post('/xray_hbs/:nric/:xray_hbs_id', functions.verifyAdmin, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officer_id = req.params.nric;
@@ -1170,7 +1167,7 @@ router.post('/xray_hbs/:nric/:xray_hbs_id', functions.verifyAdmin, function (req
 //Xray Preboard (PB) Section
 
 router.get('/xray_pb', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -1194,7 +1191,7 @@ router.get('/xray_pb', functions.verifyAdmin, functions.getOfficers, function (r
 })
 
 router.get('/xray_pb/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getXrayPBRecords, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -1243,7 +1240,7 @@ router.get('/xray_pb/:nric', functions.verifyAdmin, functions.getEachOfficers, f
 })
 
 router.get('/xray_pb/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('new_xray_pb', { user: req.user, officer_details: req.officer_details })
@@ -1251,7 +1248,7 @@ router.get('/xray_pb/new/:nric', functions.isAdminPage, functions.verifyAdmin, f
 })
 
 router.post('/xray_pb/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officer_id = req.params.nric;
@@ -1290,7 +1287,7 @@ router.post('/xray_pb/new/:nric', functions.isAdminPage, functions.verifyAdmin, 
 })
 
 router.get('/xray_pb/:nric/:xray_pb_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachXrayPBRecord, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('view_xray_pb', { user: req.user, officer_details: req.officer_details, xray_pb_id: req.params.xray_pb_id, xray_pb_details: req.xray_pb_details });
@@ -1298,7 +1295,7 @@ router.get('/xray_pb/:nric/:xray_pb_id', functions.verifyAdmin, functions.getEac
 });
 
 router.post('/xray_pb/:nric/:xray_pb_id', functions.verifyAdmin, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officer_id = req.params.nric;
@@ -1370,7 +1367,7 @@ router.post('/xray_pb/:nric/:xray_pb_id', functions.verifyAdmin, function (req, 
 //Xray Cargo Section
 
 router.get('/xray_cargo', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -1393,7 +1390,7 @@ router.get('/xray_cargo', functions.verifyAdmin, functions.getOfficers, function
 })
 
 router.get('/xray_cargo/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getXrayCargoRecords, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -1442,7 +1439,7 @@ router.get('/xray_cargo/:nric', functions.verifyAdmin, functions.getEachOfficers
 })
 
 router.get('/xray_cargo/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('new_xray_cargo', { user: req.user, officer_details: req.officer_details })
@@ -1450,7 +1447,7 @@ router.get('/xray_cargo/new/:nric', functions.isAdminPage, functions.verifyAdmin
 })
 
 router.post('/xray_cargo/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officer_id = req.params.nric;
@@ -1495,7 +1492,7 @@ router.post('/xray_cargo/new/:nric', functions.isAdminPage, functions.verifyAdmi
 })
 
 router.get('/xray_cargo/:nric/:xray_cargo_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachXrayCargoRecord, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('view_xray_cargo', { user: req.user, officer_details: req.officer_details, xray_cargo_id: req.params.xray_cargo_id, xray_cargo_details: req.xray_cargo_details });
@@ -1503,7 +1500,7 @@ router.get('/xray_cargo/:nric/:xray_cargo_id', functions.verifyAdmin, functions.
 });
 
 router.post('/xray_cargo/:nric/:xray_cargo_id', functions.verifyAdmin, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officer_id = req.params.nric;
@@ -1581,7 +1578,7 @@ router.post('/xray_cargo/:nric/:xray_cargo_id', functions.verifyAdmin, function 
 //Security Test Section
 
 router.get('/security_test', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -1604,7 +1601,7 @@ router.get('/security_test', functions.verifyAdmin, functions.getOfficers, funct
 })
 
 router.get('/security_test/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getSTRecords, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -1653,7 +1650,7 @@ router.get('/security_test/:nric', functions.verifyAdmin, functions.getEachOffic
 })
 
 router.get('/security_test/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('new_security_test', { user: req.user, officer_details: req.officer_details })
@@ -1661,7 +1658,7 @@ router.get('/security_test/new/:nric', functions.isAdminPage, functions.verifyAd
 })
 
 router.post('/security_test/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var upload = req.files;
@@ -1730,7 +1727,7 @@ router.post('/security_test/new/:nric', functions.isAdminPage, functions.verifyA
 })
 
 router.get('/security_test/:nric/:st_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachSTRecord, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('view_security_test', { user: req.user, officer_details: req.officer_details, st_id: req.params.st_id, st_details: req.security_test_details });
@@ -1738,7 +1735,7 @@ router.get('/security_test/:nric/:st_id', functions.verifyAdmin, functions.getEa
 });
 
 router.post('/security_test/:nric/:st_id', functions.verifyAdmin, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officer_id = req.params.nric;
@@ -1842,7 +1839,7 @@ router.post('/security_test/:nric/:st_id', functions.verifyAdmin, function (req,
 //Security Breach Section
 
 router.get('/security_breach', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -1865,7 +1862,7 @@ router.get('/security_breach', functions.verifyAdmin, functions.getOfficers, fun
 })
 
 router.get('/security_breach/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getSBRecords, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -1914,7 +1911,7 @@ router.get('/security_breach/:nric', functions.verifyAdmin, functions.getEachOff
 })
 
 router.get('/security_breach/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('new_security_breach', { user: req.user, officer_details: req.officer_details })
@@ -1922,7 +1919,7 @@ router.get('/security_breach/new/:nric', functions.isAdminPage, functions.verify
 })
 
 router.post('/security_breach/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var upload = req.files;
@@ -1983,7 +1980,7 @@ router.post('/security_breach/new/:nric', functions.isAdminPage, functions.verif
 })
 
 router.get('/security_breach/:nric/:sb_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachSBRecord, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('view_security_breach', { user: req.user, officer_details: req.officer_details, sb_id: req.params.sb_id, sb_details: req.security_breach_details });
@@ -1991,7 +1988,7 @@ router.get('/security_breach/:nric/:sb_id', functions.verifyAdmin, functions.get
 });
 
 router.post('/security_breach/:nric/:sb_id', functions.verifyAdmin, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officer_id = req.params.nric;
@@ -2087,7 +2084,7 @@ router.post('/security_breach/:nric/:sb_id', functions.verifyAdmin, function (re
 //Others Section
 
 router.get('/others', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -2110,7 +2107,7 @@ router.get('/others', functions.verifyAdmin, functions.getOfficers, function (re
 })
 
 router.get('/others/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getOTHERSRecords, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -2154,7 +2151,7 @@ router.get('/others/:nric', functions.verifyAdmin, functions.getEachOfficers, fu
 })
 
 router.get('/others/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('new_others', { user: req.user, officer_details: req.officer_details })
@@ -2162,7 +2159,7 @@ router.get('/others/new/:nric', functions.isAdminPage, functions.verifyAdmin, fu
 })
 
 router.post('/others/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officer_id = req.params.nric;
@@ -2201,7 +2198,7 @@ router.post('/others/new/:nric', functions.isAdminPage, functions.verifyAdmin, f
 })
 
 router.get('/others/:nric/:others_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachOTHERSRecord, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('view_others', { user: req.user, officer_details: req.officer_details, others_id: req.params.others_id, others_details: req.others_details });
@@ -2209,7 +2206,7 @@ router.get('/others/:nric/:others_id', functions.verifyAdmin, functions.getEachO
 });
 
 router.post('/others/:nric/:others_id', functions.verifyAdmin, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officer_id = req.params.nric;
@@ -2282,7 +2279,7 @@ router.post('/others/:nric/:others_id', functions.verifyAdmin, function (req, re
 //Admin Section
 
 router.get('/admin', functions.verifyAdmin, functions.getAllAdmin, functions.isAdminPage, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var keys = [];
@@ -2334,7 +2331,7 @@ router.get('/admin', functions.verifyAdmin, functions.getAllAdmin, functions.isA
 });
 
 router.get('/admin/new', functions.isAdminPage, functions.verifyAdmin, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('new_admin', { user: req.user, error: null });
@@ -2342,7 +2339,7 @@ router.get('/admin/new', functions.isAdminPage, functions.verifyAdmin, function 
 });
 
 router.post('/admin/new', functions.isAdminPage, functions.verifyAdmin, functions.checkUsername, functions.checkNRIC, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var fname = req.body.fname;
@@ -2387,7 +2384,7 @@ router.post('/admin/new', functions.isAdminPage, functions.verifyAdmin, function
 });
 
 router.get('/admin/view/:username', functions.isAdminPage, functions.verifyAdmin, functions.getEachAdmin, functions.checkAdminCount, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('view_admin', { user: req.user, admin_details: req.admin_details, admin_count: req.admin_count, error: null });
@@ -2395,14 +2392,12 @@ router.get('/admin/view/:username', functions.isAdminPage, functions.verifyAdmin
 });
 
 router.post('/admin/view/:username', functions.isAdminPage, functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var fname = req.body.fname;
     var lname = req.body.lname;
     var username = req.params.username;
-    var nric = req.body.nric;
-    nric = nric.toUpperCase();
     var role = req.body.role;
 
     var edit_btn = req.body.edituser_btn;
@@ -2412,7 +2407,6 @@ router.post('/admin/view/:username', functions.isAdminPage, functions.verifyAdmi
       var data = {
         fname: fname,
         lname: lname,
-        nric: nric,
         role: role
       }
       firebase.db.ref("/admin/" + username).update(data, function (error) {
@@ -2455,7 +2449,7 @@ router.post('/admin/view/:username', functions.isAdminPage, functions.verifyAdmi
 });
 
 router.get('/admin/changepw/:username', functions.isAdminPage, functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('change_pwd', { user: req.user, admin_details: req.admin_details, notif: null })
@@ -2463,7 +2457,7 @@ router.get('/admin/changepw/:username', functions.isAdminPage, functions.verifyA
 });
 
 router.post('/admin/changepw/:username', functions.isAdminPage, functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var notif = null;
@@ -2496,7 +2490,7 @@ router.post('/admin/changepw/:username', functions.isAdminPage, functions.verify
 //Profile Section
 
 router.get('/profile', functions.verifyAdmin, functions.getAllAdmin, functions.isUserPage, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('profile', { user: req.user, user_details: req.admin_details });
@@ -2504,7 +2498,7 @@ router.get('/profile', functions.verifyAdmin, functions.getAllAdmin, functions.i
 });
 
 router.get('/user/changepw/:username', functions.isUserPage, functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     res.render('change_pwd', { user: req.user, admin_details: req.admin_details, notif: null })
@@ -2512,7 +2506,7 @@ router.get('/user/changepw/:username', functions.isUserPage, functions.verifyAdm
 });
 
 router.post('/user/changepw/:username', functions.isUserPage, functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var notif = null;
@@ -2552,7 +2546,7 @@ router.post('/user/changepw/:username', functions.isUserPage, functions.verifyAd
 });
 
 router.get('/logout', function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     console.log('[LOGOUT] User ' + req.user);
@@ -2562,7 +2556,7 @@ router.get('/logout', function (req, res) {
 });
 
 router.get('/expiring_ac/', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officers = req.officer_details;
@@ -2607,7 +2601,7 @@ router.get('/expiring_ac/', functions.verifyAdmin, functions.getOfficers, functi
 
 
 router.get('/expiring_gs', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officers = req.officer_details;
@@ -2651,7 +2645,7 @@ router.get('/expiring_gs', functions.verifyAdmin, functions.getOfficers, functio
 });
 
 router.get('/expiring_xrpb', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officers = req.officer_details;
@@ -2696,7 +2690,7 @@ router.get('/expiring_xrpb', functions.verifyAdmin, functions.getOfficers, funct
 });
 
 router.get('/expiring_xrhbs', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officers = req.officer_details;
@@ -2741,7 +2735,7 @@ router.get('/expiring_xrhbs', functions.verifyAdmin, functions.getOfficers, func
 });
 
 router.get('/expiring_xrcg', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officers = req.officer_details;
@@ -2787,7 +2781,7 @@ router.get('/expiring_xrcg', functions.verifyAdmin, functions.getOfficers, funct
 
 
 router.get('/securitytestfailure', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officers = req.officer_details;
@@ -2829,7 +2823,7 @@ router.get('/securitytestfailure', functions.verifyAdmin, functions.getOfficers,
 
 
 router.get('/securitybreach', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  if (req.user == null) {
+  if (req.user == null || req.user === undefined) {
     res.redirect('/login');
   } else {
     var officers = req.officer_details;

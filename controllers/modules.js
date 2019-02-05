@@ -27,17 +27,6 @@ module.exports.checkUsername = function (req, res, next) {
   });
 }
 
-// OLD VERSION THAT DOESN'T WORK
-/*module.exports.checkUsername = function (username) {
-  firebase.db.ref("admin/" + username).once('value').then(function (snapshot) {
-    if (snapshot.exists()) {
-      return true;
-    } else {
-      return false;
-    }
-  });
-}*/
-
 module.exports.checkNRIC = function (req, res, next) {
   firebase.db.ref("admin/").once('value').then(function (snapshot) {
     var admin_details = snapshot.val();
@@ -59,28 +48,6 @@ module.exports.checkNRIC = function (req, res, next) {
     }
   });
 }
-
-/*module.exports.checkNRIC = function (nric) {
-  firebase.db.ref("admin/").once('value').then(function (snapshot) {
-    var admin_details = snapshot.val();
-    var exist_NRIC = false;
-    var counter=0; // need to use this because for loop is async
-    var arr_length = Object.keys(admin_details).length;
-    console.log("ARRAY LENGTH: "+arr_length);
-    for (var id in admin_details) {
-      counter++;
-      loop_nric = admin_details[id].nric;
-      console.log("NRIC:" + loop_nric);
-      if (loop_nric == nric) {
-        console.log("NRIC EXIST");
-        exist_NRIC = true;
-      }
-      if (counter == arr_length) {
-        return exist_NRIC;
-      }
-    }
-  });
-}*/
 
 module.exports.checkAdminCount = function (req, res, next) {
   firebase.db.ref("admin/").once('value').then(function (snapshot) {
@@ -110,18 +77,26 @@ module.exports.getEachAdmin = function (req, res, next) {
 }
 
 module.exports.isAdminPage = function (req, res, next) {
-  if (req.user.role > 2) {
-    res.redirect('back');
+  if (req.user == null || req.user === undefined) {
+    res.redirect('/login');
   } else {
-    next();
+    if (req.user.role > 2) {
+      res.redirect('back');
+    } else {
+      next();
+    }
   }
 }
 
 module.exports.isUserPage = function (req, res, next) {
-  if (req.user.role == 1) {
-    res.redirect('back');
+  if (req.user == null || req.user === undefined) {
+    res.redirect('/login');
   } else {
-    next();
+    if (req.user.role == 1) {
+      res.redirect('back');
+    } else {
+      next();
+    }
   }
 }
 
@@ -269,9 +244,6 @@ module.exports.getLatestSTRecord = function (req, res, next) {
 module.exports.getEachSTRecord = function (req, res, next) {
   firebase.db.ref("officers/" + req.params.nric + "/security_records/security_test/" + req.params.st_id).once('value').then(function (snapshot) {
     req.security_test_details = snapshot.val();
-
-    console.log('req.security_test_details')
-    console.log(req.security_test_details)
     next();
   });
 }
@@ -294,9 +266,6 @@ module.exports.getLatestSBRecord = function (req, res, next) {
 module.exports.getEachSBRecord = function (req, res, next) {
   firebase.db.ref("officers/" + req.params.nric + "/security_records/security_breach/" + req.params.sb_id).once('value').then(function (snapshot) {
     req.security_breach_details = snapshot.val();
-
-    console.log('req.security_breach_details')
-    console.log(req.security_breach_details)
     next();
   });
 }
@@ -319,9 +288,6 @@ module.exports.getLatestOTHERSRecord = function (req, res, next) {
 module.exports.getEachOTHERSRecord = function (req, res, next) {
   firebase.db.ref("officers/" + req.params.nric + "/others_records/others/" + req.params.others_id).once('value').then(function (snapshot) {
     req.others_details = snapshot.val();
-
-    console.log('req.others_details')
-    console.log(req.others_details)
     next();
   });
 }

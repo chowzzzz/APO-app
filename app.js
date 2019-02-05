@@ -16,7 +16,7 @@ app.use(fileUpload());
 
 //VIEW ENGINE
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '/public/views'));
 
 // BODY PARSER MIDDLEWARE
 app.use(bodyParser.json());
@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // SET STATIC PATH
 app.use(express.static(path.join(__dirname, 'public')));
-app.use("/uploads", express.static(__dirname + "/uploads"));
+app.use("/uploads", express.static(__dirname + "/public/uploads"));
 
 // EXPRESS VALIDATOR
 app.use(expressValidator());
