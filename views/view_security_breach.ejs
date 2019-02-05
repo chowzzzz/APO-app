@@ -227,8 +227,12 @@
 <% } else if (user.role == 2 || user.role == 3) { %>
 <div class="title d-flex">
   <span class="justify-content-start align-self-center position-absolute pl-3" style="font-size: 2rem;">
+    <% if (user.role==2) { %>
     <a href="/security_breach/<%=officer_details.nric%>" onclick="return confirm('Are you sure you want to return?');"
-      class="backBtn"><i class="fas fa-angle-left"></i></a>
+      class=" backBtn"><i class="fas fa-angle-left"></i></a>
+    <% } else if (user.role==3) {%>
+    <a href="/security_breach/<%=officer_details.nric%>" class="backBtn"><i class="fas fa-angle-left"></i></a>
+    <% } %>
   </span>
   <h4 class="mx-auto mt-2">Security Breach Record</h4>
 </div>
@@ -251,7 +255,9 @@
           <div class="col-sm-6 px-0">
             <label class="font-weight-bold mb-0" for="sb_name">Test Name:</label><br />
             <div class="input-group mb-2">
-              <input type="text" class="form-control" name="sb_name" id="sb_name" value="" required>
+              <input type="text" class="form-control" name="sb_name" id="sb_name" value="" <% if (user.role==3) {%>
+              readonly
+              <% } %> required>
             </div>
           </div>
         </div>
@@ -263,7 +269,10 @@
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="sb_date">Date:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="sb_date" id="sb_date" value="" required>
+              <input type="text" class="form-control datepicker" name="sb_date" id="sb_date" value="" <% if (user.role==3)
+                {%>
+              readonly
+              <% } %> required>
               <div class="input-group-append">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               </div>
@@ -272,7 +281,10 @@
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="sb_time">Time:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control timepicker" name="sb_time" id="sb_time" value="" required>
+              <input type="text" class="form-control timepicker" name="sb_time" id="sb_time" value="" <% if (user.role==3)
+                {%>
+              readonly
+              <% } %> required>
               <div class="input-group-append">
                 <span class="input-group-text"><i class="fas fa-clock"></i></span>
               </div>
@@ -281,7 +293,10 @@
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="sb_location">Location:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control" name="sb_location" id="sb_location" value="" required>
+              <input type="text" class="form-control" name="sb_location" id="sb_location" value="" <% if (user.role==3)
+                {%>
+              readonly
+              <% } %> required>
             </div>
           </div>
         </div>
@@ -290,19 +305,28 @@
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="sb_breachOff">Breach Offense:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control" name="sb_breachOff" id="sb_breachOff" value="" required>
+              <input type="text" class="form-control" name="sb_breachOff" id="sb_breachOff" value="" <% if (user.role==3)
+                {%>
+              readonly
+              <% } %> required>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="sb_personInv">Person Involved:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control" name="sb_personInv" id="sb_personInv" value="" required>
+              <input type="text" class="form-control" name="sb_personInv" id="sb_personInv" value="" <% if (user.role==3)
+                {%>
+              readonly
+              <% } %> required>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="sb_supervisor">Supervisor:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control" name="sb_supervisor" id="sb_supervisor" value="" required>
+              <input type="text" class="form-control" name="sb_supervisor" id="sb_supervisor" value="" <% if (user.role==3)
+                {%>
+              readonly
+              <% } %> required>
             </div>
           </div>
         </div>
@@ -311,19 +335,27 @@
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="sb_contact">Contact:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control" name="sb_contact" id="sb_contact" value="" required>
+              <input type="text" class="form-control" name="sb_contact" id="sb_contact" value="" <% if (user.role==3)
+                {%>
+              readonly
+              <% } %> required>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="sb_entity">Entity:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control" name="sb_entity" id="sb_entity" value="" required>
+              <input type="text" class="form-control" name="sb_entity" id="sb_entity" value="" <% if (user.role==3) {%>
+              readonly
+              <% } %> required>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="sb_certExpOrAPno">Cert Expiry or A/P no.:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control" name="sb_certExpOrAPno" id="sb_certExpOrAPno" value="" required>
+              <input type="text" class="form-control" name="sb_certExpOrAPno" id="sb_certExpOrAPno" value="" <% if
+                (user.role==3) {%>
+              readonly
+              <% } %> required>
             </div>
           </div>
         </div>
@@ -332,13 +364,17 @@
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="sb_detect">Detecting Officer:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control" name="sb_detect" id="sb_detect" value="" required>
+              <input type="text" class="form-control" name="sb_detect" id="sb_detect" value="" <% if (user.role==3) {%>
+              readonly
+              <% } %> required>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="sb_certSeized">Cert Seized:</label><br />
             <div class="input-group mb-3">
-              <select class="custom-select" id="sb_certSeized" name="sb_certSeized" required>
+              <select class="custom-select" id="sb_certSeized" name="sb_certSeized" <% if (user.role==3) {%>
+                readonly
+                <% } %> required>
                 <option value="1" <% if (sb_details.sb_certSeized=="1" ) {%> selected
                   <% } %>>Yes</option>
                 <option value="0" <% if (sb_details.sb_certSeized=="0" ) {%> selected
@@ -349,7 +385,9 @@
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="sb_cat">Category:</label><br />
             <div class="input-group mb-3">
-              <select class="custom-select" id="sb_cat" name="sb_cat" required>
+              <select class="custom-select" id="sb_cat" name="sb_cat" <% if (user.role==3) {%>
+                readonly
+                <% } %> required>
                 <option value="1" <% if (sb_details.sb_cat=="1" ) {%> selected
                   <% } %>>1</option>
                 <option value="2" <% if (sb_details.sb_cat=="2" ) {%> selected
@@ -365,15 +403,19 @@
           <div class="col-sm-6">
             <label class="font-weight-bold mb-0" for="sb_image">Image:</label><br />
             <div class="input-group mb-3">
-              <img src="/uploads/<%=sb_details.sb_image %>" class="img-fluid">              
-              <input type="file" accept="image/*" name="sb_image" capture >
+              <img src="/uploads/<%=sb_details.sb_image %>" class="img-fluid">
+              <% if (user.role==2) { %>
+              <input type="file" accept="image/*" name="sb_image" capture>
               <!-- <input type="file" name="sb_image" /> -->
+              <% } %>
             </div>
           </div>
           <div class="col-sm-6">
             <label class="font-weight-bold mb-0" for="sb_remarks">Remarks:</label><br />
             <div class="input-group mb-3">
-              <textarea class="form-control" name="sb_remarks" id="sb_remarks" required><%=sb_details.sb_remarks%></textarea>
+              <textarea class="form-control" name="sb_remarks" id="sb_remarks" <% if (user.role==3) {%>
+                  readonly
+                  <% } %> required><%=sb_details.sb_remarks%></textarea>
             </div>
           </div>
         </div>

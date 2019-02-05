@@ -117,6 +117,14 @@ module.exports.isAdminPage = function (req, res, next) {
   }
 }
 
+module.exports.isUserPage = function (req, res, next) {
+  if (req.user.role == 1) {
+    res.redirect('back');
+  } else {
+    next();
+  }
+}
+
 // Officers
 module.exports.getOfficers = function (req, res, next) {
   firebase.db.ref("officers/").once('value').then(function (snapshot) {

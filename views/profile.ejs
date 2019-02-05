@@ -25,8 +25,13 @@
 
     </div>
     <div class="col-md-4 mx-auto mb-5">
-      <a class="btn btn-primary col-6 text-center" href="/admin/changepw/<%=user.username%>">Change
-        Password</a>
+      <% if (user.role == 1) { %>
+        <a class="btn btn-primary col-6 text-center" href="/admin/changepw/<%=user.username%>">Change
+          Password</a>
+        <% } else if (user.role == 2 || user.role == 3) {%>
+          <a class="btn btn-primary col-6 text-center" href="/user/changepw/<%=user.username%>">Change
+            Password</a>
+          <% } %>
     </div>
     <br>
     <% if (user) { %>
