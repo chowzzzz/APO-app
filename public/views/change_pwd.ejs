@@ -1,0 +1,87 @@
+<% include partials/header %>
+<% include partials/nav %>
+
+<% if (user.role == 2 || user.role == 3) { %>
+<div class="title d-flex">
+  <span class="justify-content-start align-self-center position-absolute pl-3" style="font-size: 2rem;">
+    <a href="/profile/" class="backBtn"><i class="fas fa-angle-left"></i></a>
+  </span>
+  <h5 class="mx-auto mt-2">
+    <%=admin_details.username%>: Change Password</h5>
+</div>
+<% } %>
+
+<div class="container-fluid">
+  <% if (notif != null) { %>
+  <% if('undefined'!== typeof alert || alert !== '' || alert !== null) { %>
+  <% if (alert) { %>
+  <div class="alert alert-success alert-dismissible fade show mx-auto col-11 col-sm-6 mt-3" role="alert">
+    <% } else { %>
+    <div class="alert alert-danger alert-dismissible fade show mx-auto col-11 col-sm-6 mt-3" role="alert">
+      <% } %>
+      <%=notif%>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <% } %>
+    <% } %>
+
+    <% if (user.role == 1) { %>
+    <h4 class="mt-4">
+      <%=admin_details.username%>: Change Password
+    </h4>
+    <hr>
+    <% } %>
+
+
+    <% if (user.role == 1) { %>
+    <form class="col-sm-8 col-md-6 mx-auto" action='/admin/changepw/<%=admin_details.username%>' method="POST">
+      <% } else if (user.role == 2 || user.role == 3) {%>
+      <form class="col-sm-8 col-md-6 mx-auto" action='/user/changepw/<%=admin_details.username%>' method="POST">
+        <% } %>
+        <div class="card d-flex mx-auto mb-4 text-left">
+          <div class="card-body px-4">
+
+            <% if (user.role == 2 || user.role == 3) { %>
+            <div class="row mb-2">
+              <div class="col-sm-10 mx-auto">
+                <label class="font-weight-bold mb-0" for="oldPassword">Current Password: </label><br />
+                <div class="input-group mb-2">
+                  <input type="password" class="form-control" name="oldPassword" id="oldPassword" required>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <% } %>
+
+
+            <div class="row mb-2">
+              <div class="col-sm-10 mx-auto">
+                <label class="font-weight-bold mb-0" for="password">New Password: </label><br />
+                <div class="input-group mb-2">
+                  <input type="password" class="form-control" name="password" id="password" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-sm-10 mx-auto">
+                <label class="font-weight-bold mb-0" for="rpassword">Repeat New Password: </label><br />
+                <div class="input-group mb-2">
+                  <input type="password" class="form-control" name="rpassword" id="rpassword" required>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <button type="submit" class="btn btn-primary btn-block">Change</button>
+          </div>
+        </div>
+      </form>
+
+  </div>
+
+  <% include partials/footer %>

@@ -1,0 +1,255 @@
+<% include partials/header %>
+<% include partials/nav %>
+<script>
+  function UNIXConverter(UNIX_timestamp) {
+    try {
+      if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
+        return "-";
+      }
+      var a = new Date(UNIX_timestamp * 1000);
+      var year = a.getFullYear();
+      var month = a.getMonth() + 1;
+      var date = a.getDate();
+      if (month < 10) {
+        month = "0" + month;
+      }
+      if (date < 10) {
+        date = "0" + date;
+      }
+      var time = date + '/' + month + '/' + year;
+      return time;
+    } catch (error) {
+      return "";
+    }
+  }
+
+  $(document).ready(function () { // the whole function below sets the value of the general screener (from firebase) to the various textboxes. this is a neater way to do it as compared to doing it in the value fields.
+    $('input[name=overall_status][value=' +<%=gs_details.overall_status %> +']').attr('checked', 'checked');
+    $('input[name=gs_theory_status][value=' +<%=gs_details.theory.status %> +']').attr('checked', 'checked');
+    $('input[name=gs_hhmd_status][value=' +<%=gs_details.hhmd.status %> +']').attr('checked', 'checked');
+    $('input[name=gs_pds_status][value=' +<%=gs_details.pds.status %> +']').attr('checked', 'checked');
+    $('input[name=gs_wtmd_status][value=' +<%=gs_details.wtmd.status %> +']').attr('checked', 'checked');
+    $('input[name=gs_fl_status][value=' +<%=gs_details.fl.status %> +']').attr('checked', 'checked');
+    $('input[name=gs_etd_status][value=' +<%=gs_details.etd.status %> +']').attr('checked', 'checked');
+    $('input[name=gs_mbs_status][value=' +<%=gs_details.mbs.status %> +']').attr('checked', 'checked');
+
+    $('input[name=certified_date]').datepicker("setDate", UNIXConverter(<%=gs_details.certified_date %>));
+    $('input[name=gs_theory]').datepicker("setDate", UNIXConverter(<%=gs_details.theory.date %>));
+    $('input[name=gs_hhmd]').datepicker("setDate", UNIXConverter(<%=gs_details.hhmd.date %>));
+    $('input[name=gs_pds]').datepicker("setDate", UNIXConverter(<%=gs_details.pds.date %>));
+    $('input[name=gs_wtmd]').datepicker("setDate", UNIXConverter(<%=gs_details.wtmd.date %>));
+    $('input[name=gs_fl]').datepicker("setDate", UNIXConverter(<%=gs_details.fl.date %>));
+    $('input[name=gs_etd]').datepicker("setDate", UNIXConverter(<%=gs_details.etd.date %>));
+    $('input[name=gs_mbs]').datepicker("setDate", UNIXConverter(<%=gs_details.mbs.date %>));
+
+    $("#GSForm").on("submit", function (e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
+      var alert = confirm("Are you sure you want to edit/delete the General Screener?");
+      if (alert == true) {
+        return true;
+      } else {
+        e.preventDefault();
+        return false;
+      }
+    });
+
+    var user_role = <%=user.role %>;
+    if (user_role > 1) {
+      $("input[type=text]").attr('readonly', true);
+      $("input[type=radio]").attr('disabled', true);
+    }
+  });
+</script>
+<div class="container-fluid">
+  <h4 class="mt-4">General Screener Record</h4>
+  <hr>
+
+
+  <form action='/general_screener/<%=officer_details.nric%>/<%=gs_id%>' method="POST" id="GSForm">
+    <div class="card d-flex mx-auto mb-5">
+      <div class="card-header text-left">
+        <div class="d-sm-flex flex-sm-row">
+          <div class="mr-auto">
+            <h6 class="mb-1 font-weight-bold">Name:
+              <%=officer_details.fname%>
+              <%=officer_details.lname%>
+            </h6>
+            <p class="mb-2">NRIC:
+              <%=officer_details.nric%>
+            </p>
+
+            <div class="mb-1">
+              Status:&nbsp;
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="overall_status" id="passStatus" value="1" required>
+                <label class="form-check-label" for="passStatus">Pass</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="overall_status" id="failStatus" value="0">
+                <label class="form-check-label" for="failStatus">Fail</label>
+              </div>
+            </div>
+          </div>
+
+          <div>
+
+            <div>
+              <label for="gs_certified_date" class="font-weight-bold">Certified Date:</label>
+              <div class="input-group mb-2">
+                <input type="text" class="form-control datepicker" name="certified_date" id="gs_certified_date" value=""
+                  required>
+                <div class="input-group-append">
+                  <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="card-body">
+
+        <div class="row mb-2 justify-content-center">
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="gs_theory">Theory:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_theory_status" id="gs_theory_pass" value="1"
+                required>
+              <label class="form-check-label" for="gs_theory_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_theory_status" id="gs_theory_fail" value="0">
+              <label class="form-check-label" for="gs_theory_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="gs_theory" id="gs_theory" value="" required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="gs_hhmd">HHMD:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_hhmd_status" id="gs_hhmd_pass" value="1" required>
+              <label class="form-check-label" for="gs_hhmd_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_hhmd_status" id="gs_hhmd_fail" value="0">
+              <label class="form-check-label" for="gs_hhmd_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="gs_hhmd" id="gs_hhmd" value="" required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="gs_pds">PDS:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_pds_status" id="gs_pds_pass" value="1" required>
+              <label class="form-check-label" for="gs_pds_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_pds_status" id="gs_pds_fail" value="0">
+              <label class="form-check-label" for="gs_pds_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="gs_pds" id="gs_pds" value="" required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-2 justify-content-center">
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="gs_wtmd">WTMD:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_wtmd_status" id="gs_wtmd_pass" value="1" required>
+              <label class="form-check-label" for="gs_wtmd_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_wtmd_status" id="gs_wtmd_fail" value="0">
+              <label class="form-check-label" for="gs_wtmd_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="gs_wtmd" id="gs_wtmd" value="" required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="gs_fl">FL:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_fl_status" id="gs_fl_pass" value="1" required>
+              <label class="form-check-label" for="gs_fl_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_fl_status" id="gs_fl_fail" value="0">
+              <label class="form-check-label" for="gs_fl_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="gs_fl" id="gs_fl" value="" required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="gs_etd">ETD:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_etd_status" id="gs_etd_pass" value="1" required>
+              <label class="form-check-label" for="gs_etd_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_etd_status" id="gs_etd_fail" value="0">
+              <label class="form-check-label" for="gs_etd_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="gs_etd" id="gs_etd" value="" required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold" for="gs_mbs">MBS:&nbsp;</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_mbs_status" id="gs_mbs_pass" value="1" required>
+              <label class="form-check-label" for="gs_mbs_pass">Pass</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gs_mbs_status" id="gs_mbs_fail" value="0">
+              <label class="form-check-label" for="gs_mbs_fail">Fail</label>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="gs_mbs" id="gs_mbs" value="" required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <% if (user.role == 1) { %>
+      <div class="card-footer">
+        <button type="submit" class="btn btn-primary btn-block" name="edit_btn">Update</button>
+        <button type="submit" class="btn btn-danger btn-block" name="delete_btn">Delete</button>
+      </div>
+      <% } %>
+    </div>
+
+
+  </form>
+</div>
+
+<% include partials/footer %>

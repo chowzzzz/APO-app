@@ -1,0 +1,155 @@
+<% include partials/header %>
+<% include partials/nav %>
+<script>
+  function UNIXConverter(UNIX_timestamp) {
+    try {
+      if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
+        return "-";
+      }
+      var a = new Date(UNIX_timestamp * 1000);
+      var year = a.getFullYear();
+      var month = a.getMonth() + 1;
+      var date = a.getDate();
+      if (month < 10) {
+        month = "0" + month;
+      }
+      if (date < 10) {
+        date = "0" + date;
+      }
+      var time = date + '/' + month + '/' + year;
+      return time;
+    } catch (error) {
+      return "";
+    }
+  }
+
+  $(document).ready(function () { // the whole function below sets the value of the general screener (from firebase) to the various textboxes. this is a neater way to do it as compared to doing it in the value fields.
+    $('input[name=others_cardSeized]').datepicker("setDate", UNIXConverter(<%=others_details.others_cardSeized %>));
+    $('input[name=others_certCardNo]').val('<%=others_details.others_certCardNo %>');
+    $('input[name=others_cardReturned]').datepicker("setDate", UNIXConverter(<%=others_details.others_cardReturned %>));
+    $('input[name=others_exEmployer]').val('<%=others_details.others_exEmployer %>');
+    $('input[name=others_serviceNo]').val('<%=others_details.others_serviceNo %>');
+    $('textarea[name=others_reason]').val('<%=others_details.others_reason %>');
+    $('textarea[name=others_remarks]').val('<%=others_details.others_remarks %>');
+
+    $("#OTHERSForm").on("submit", function (e) { // this part of the code is for the confirmation alert when pressing the edit or delete button.
+      var alert = confirm("Are you sure you want to edit/delete the Others?");
+      if (alert == true) {
+        return true;
+      } else {
+        e.preventDefault();
+        return false;
+      }
+    });
+
+    var user_role = <%=user.role %>;
+    if (user_role > 1) {
+      $("input[type=text]").attr('readonly', true);
+      $("select").attr('disabled', true);
+      $("textarea").attr('disabled', true);
+      $("input[type=radio]").attr('disabled', true);
+    }
+  });
+</script>
+<div class="container-fluid">
+  <h4 class="mt-4">Others Record</h4>
+  <hr>
+
+
+  <form action='/others/<%=officer_details.nric%>/<%=others_id%>' method="POST" id="OTHERSForm">
+    <div class="card d-flex mx-auto mb-5">
+      <div class="card-header text-left">
+        <div class="d-sm-flex flex-sm-row">
+          <div class="mr-auto">
+            <h6 class="mb-2 font-weight-bold">Name:
+              <%=officer_details.fname%>
+              <%=officer_details.lname%>
+            </h6>
+            <p class="mb-0">NRIC:
+              <%=officer_details.nric%>
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="card-body text-left">
+
+
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="others_cardSeized">Card Seized:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="others_cardSeized" id="others_cardSeized" value=""
+                required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="others_certCardNo">Certification Card No.:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="others_certCardNo" id="others_certCardNo" value="" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="others_cardReturned">Card Returned:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="others_cardReturned" id="others_cardReturned"
+                value="" required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="others_exEmployer">Ex-Employer:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="others_exEmployer" id="others_exEmployer" value="" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="others_serviceNo">Service No.:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="others_serviceNo" id="others_serviceNo" value="" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-sm-12">
+            <label class="font-weight-bold mb-0" for="others_reason">Reason:</label><br />
+            <div class="input-group mb-3">
+              <textarea class="form-control" name="others_reason" id="others_reason" required></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-sm-12">
+            <label class="font-weight-bold mb-0" for="others_remarks">Remarks:</label><br />
+            <div class="input-group mb-3">
+              <textarea class="form-control" name="others_remarks" id="others_remarks" required></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <% if (user.role == 1) { %>
+      <div class="card-footer">
+        <button type="submit" class="btn btn-primary btn-block" name="edit_btn">Update</button>
+        <button type="submit" class="btn btn-danger btn-block" name="delete_btn">Delete</button>
+      </div>
+      <% } %>
+    </div>
+
+
+  </form>
+</div>
+
+<% include partials/footer %>

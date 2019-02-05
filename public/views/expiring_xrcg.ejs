@@ -1,0 +1,61 @@
+<% include partials/header %>
+<% include partials/nav %>
+<% var data = JSON.stringify(xrcgToExpire); %>
+<script>
+  $(function () {
+    var data = <%- data %>;
+    $("#xrcgExTable").bootstrapTable({ data: data });
+    $("#xrcgExTable").on('click-cell.bs.table', function (field, columnName, valueClicked, data) {
+      window.location.href = "/xray_cargo/" + data.nric +  "/" + data.certId;
+    });
+  })
+</script>
+<div class="container-fluid">
+  <h4 class="mt-4">Expiring Certification
+  </h4>
+  <hr>
+
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <a class="nav-link" href="/expiring_ac/">AC</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/expiring_gs">GS</a>
+    </li>
+
+    <!-- For small devices and up -->
+    <li class="nav-item d-none d-sm-block">
+      <a class="nav-link" href="/expiring_xrhbs/">X-Ray HBS</a>
+    </li>
+    <li class="nav-item d-none d-sm-block">
+      <a class="nav-link" href="/expiring_xrpb/">X-Ray Pre-Board</a>
+    </li>
+    <li class="nav-item d-none d-sm-block">
+      <a class="nav-link active" href="#">X-Ray Cargo</a>
+    </li>
+
+    <!-- For mobile -->
+    <li class="nav-item dropdown d-sm-none">
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+        aria-expanded="false">X-Ray</a>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="/expiring_xrhbs/">X-Ray HBS</a>
+        <a class="dropdown-item" href="/expiring_xrpb/">X-Ray Pre-Board</a>
+        <a class="dropdown-item" href="#">X-Ray Cargo</a>
+      </div>
+    </li>
+  </ul>
+  
+  <table class="table table-hover table-bordered table-striped mx-auto" id="xrcgExTable" data-search="true" data-pagination="true">
+    <thead class="thead-light">
+      <tr>
+        <th data-field="expiringDate" data-sortable="true">Expiring Date</th>
+        <th data-field="name" data-sortable="true">Name</th>
+        <th data-field="nric" data-sortable="true">NRIC</th>
+        <th data-field="certCardNo" data-sortable="true">Certification Card No.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<% include partials/footer %>

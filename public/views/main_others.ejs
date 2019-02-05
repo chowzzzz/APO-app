@@ -1,0 +1,30 @@
+<% include partials/header %>
+<% include partials/nav %>
+<% var data = JSON.stringify(officer_details); %>
+<script>
+  $(function () {
+    var data = <%- data %>;
+    $("#mainOthersTable").bootstrapTable({ data: data });
+    $("#mainOthersTable").on('click-cell.bs.table', function (field, columnName, valueClicked, data) {
+      window.location.href = "/others/" + data.nric + "/";
+    });
+  })
+</script>
+<div class="container-fluid">
+  <h4 class="mt-4">Others - Select Officer</h4>
+  <hr>
+  <table class="table table-hover table-bordered table-striped mx-auto" id="mainOthersTable" data-search="true"
+    data-pagination="true">
+    <thead class="thead-light">
+      <tr>
+        <th data-field="name" data-sortable="true">Name</th>
+        <th data-field="nric" data-sortable="true">NRIC</th>
+        <th data-field="cert_card_no" data-sortable="true">Certification Card No.</th>
+        <th data-field="designation" data-sortable="true">Designation</th>
+      </tr>
+    </thead>
+  </table>
+
+</div>
+
+<% include partials/footer %>

@@ -1,0 +1,119 @@
+<% include partials/header %>
+<% include partials/nav %>
+<% var message; %>
+<div class="container-fluid">
+  <h3 class="my-4">
+    <% if (message != null) { %>Message:
+    <%=message%>
+    <% } %>
+  </h3>
+  <h4 class="my-4">Add New Officer</h4>
+  <hr>
+
+  <form action='/officers/new/' method="POST">
+    <div class="card d-flex mx-auto mb-5 text-left">
+      <div class="card-body px-4">
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="fname">First Name:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="fname" id="fname" value="" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="lname">Last Name:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="lname" id="lname" value="" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="nric">NRIC:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control nric_textbox" name="nric" id="nric" style="text-transform: uppercase" value="" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="dob">D.O.B.:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control datepicker" name="dob" id="dob" value="" required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="gender">Gender:</label><br />
+            <div class="input-group mb-3">
+              <select class="custom-select" id="gender" name="gender">
+                <option selected>Select</option>
+                <option value="0">Male</option>
+                <option value="1">Female</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="cert_card_no">Certification Card No.:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="cert_card_no" id="cert_card_no" value="" required>
+
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="organisation">Organisation:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="organisation" id="organisation" value="" required>
+
+            </div>
+          </div>
+
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="serial_no">Serial No.:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="serial_no" id="serial_no" value="" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="designation">Designation:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="designation" id="designation" value="" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="ranks">Ranks:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="rank" id="rank" value="" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-12">
+            <label class="font-weight-bold mb-0" for="remarks">Remarks:</label><br />
+            <div class="input-group mb-3">
+              <textarea class="form-control" name="remarks" id="remarks" required></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      </br>
+
+      <% if (user.role == 1) { %>
+      <div class="card-footer">
+        <button type="submit" class="btn btn-primary btn-block" name="add_btn">Add</button>
+      </div>
+      <% } %>
+    </div>
+  </form>
+</div>
+
+
+<% include partials/footer %>

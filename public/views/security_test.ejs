@@ -1,0 +1,166 @@
+<% include partials/header %>
+<% include partials/nav %>
+<% 
+var data = JSON.stringify(st_details);
+var nric = JSON.stringify(officer_details.nric);
+%>
+<script>
+  $(function () {
+    var data = <%- data %>;
+    var nric = <%- nric %>;
+    $("#stTable").bootstrapTable({ data: data });
+    $("#stTable").on('click-cell.bs.table', function (field, columnName, valueClicked, data) {
+      window.location.href = "/security_test/" + nric + "/" + data.key;
+    });
+  })
+</script>
+
+<% if (user.role == 1) { %>
+<div class="container-fluid">
+  <% if (notif != null) { %>
+  <% if('undefined'!== typeof alert || alert !== '' || alert !== null) { %>
+  <% if (alert) { %>
+  <div class="alert alert-success alert-dismissible fade show mx-auto col-11 col-sm-6 mt-3" role="alert">
+    <% } else { %>
+    <div class="alert alert-danger alert-dismissible fade show mx-auto col-11 col-sm-6 mt-3" role="alert">
+      <% } %>
+      <%=notif%>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <% } %>
+    <% } %>
+
+    <h4 class="mt-4">Security Test -
+      <%=officer_details.nric%>
+    </h4>
+    <hr>
+
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link" href="/access_control/<%=officer_details.nric%>">AC</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/general_screener/<%=officer_details.nric%>">GS</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+          aria-expanded="false">X-Ray</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="/xray_hbs/<%=officer_details.nric%>">X-Ray HBS</a>
+          <a class="dropdown-item" href="/xray_pb/<%=officer_details.nric%>">X-Ray Pre-Board</a>
+          <a class="dropdown-item" href="/xray_cargo/<%=officer_details.nric%>">X-Ray Cargo</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+          aria-expanded="false">ST & SB</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="#">Security Test</a>
+          <a class="dropdown-item" href="/security_breach/<%=officer_details.nric%>">Security Breach</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/others/<%=officer_details.nric%>">Others</a>
+      </li>
+    </ul>
+
+    <table class="table table-hover table-bordered table-striped mx-auto" id="stTable" data-search="true"
+      data-pagination="true">
+      <thead class="thead-light">
+        <tr>
+          <th data-field="st_name" data-sortable="true">Test Name</th>
+          <th data-field="overall_status" data-sortable="true">Status</th>
+          <th data-field="st_location" data-sortable="true">Location</th>
+          <th data-field="st_date" data-sortable="true">Date</th>
+          <th data-field="st_time" data-sortable="true">Time</th>
+          <th data-field="st_mode" data-sortable="true">Mode</th>
+        </tr>
+      </thead>
+    </table>
+
+    <div class="mb-4 col-11 mx-auto">
+      <a href="/security_test/new/<%=officer_details.nric%>" class="btn btn-primary col-sm-6"><i class="fas fa-plus-circle"></i>&nbsp;&nbsp;Add
+        New Record</a>
+    </div>
+  </div>
+
+
+
+  <% } else if (user.role == 2 || user.role == 3) { %>
+  <div class="title d-flex">
+      <span class="justify-content-start align-self-center position-absolute pl-3" style="font-size: 2rem;">
+        <a href="/officers/<%=officer_details.nric%>" class="backBtn"><i class="fas fa-angle-left"></i></a>
+      </span>
+    <h4 class="mx-auto mt-2" style="font-size: 22px!important">
+      Security Test -
+      <%=officer_details.nric%>
+    </h4>
+  </div>
+  <div class="container-fluid" style="margin-bottom:90px">
+    <% if (notif != null) { %>
+    <% if('undefined'!== typeof alert || alert !== '' || alert !== null) { %>
+    <% if (alert) { %>
+    <div class="alert alert-success alert-dismissible fade show mx-auto col-11 col-sm-6 mt-3" role="alert">
+      <% } else { %>
+      <div class="alert alert-danger alert-dismissible fade show mx-auto col-11 col-sm-6 mt-3" role="alert">
+        <% } %>
+        <%=notif%>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <% } %>
+      <% } %>
+      <% if (user.role == 2) { %>
+      <div class="col-11 mx-auto">
+        <a href="/security_test/new/<%=officer_details.nric%>" class="btn btn-primary col-sm-6"><i class="fas fa-plus-circle"></i>
+          &nbsp;Add New Record</a>
+      </div>
+      <hr>
+      <% } %>
+
+
+      <% if (st_details == null) { %>
+      <p class="text-danger">Officer does not have any existing security test records.</p>
+      <% } %>
+
+      <% st_details.forEach(item => { %>
+      <a href="/security_test/<%=officer_details.nric%>/<%=item.key%>" class="card bg-light mb-3 text-left mx-auto">
+        <div class="card-header font-weight-bold d-flex">
+          <div class="mr-auto">
+            Test Name:
+            <%=item.st_name%>
+          </div>
+          <% if (item.overall_status == "PASS") { %>
+          <span class="badge badge-success pt-1">Pass</span>
+          <% } else if (item.overall_status == "FAIL") { %>
+          <span class="badge badge-danger pt-1">Fail</span>
+          <% } %>
+        </div>
+        <div class="card-body py-2 px-3">
+
+          <div class="card-text">
+            <p class="mb-0">Location:
+              <%=item.st_location%>
+            </p>
+            <p class="mb-0">Date:
+              <%=item.st_date%>
+            </p>
+            <p class="mb-0">Time:
+              <%=item.st_time%>
+            </p>
+            <p class="mb-0">Mode:
+              <%=item.st_mode%>
+            </p>
+
+          </div>
+        </div>
+      </a>
+
+      <% }) %>
+
+    </div>
+    <% } %>
+    <% include partials/footer %>

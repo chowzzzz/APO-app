@@ -1,0 +1,105 @@
+<% include partials/header %>
+<% include partials/nav %>
+
+<script>
+  function UNIXConverter(UNIX_timestamp) {
+    try {
+      if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
+        return "-";
+      }
+      var a = new Date(UNIX_timestamp * 1000);
+      var year = a.getFullYear();
+      var month = a.getMonth() + 1;
+      var date = a.getDate();
+      if (month < 10) {
+        month = "0" + month;
+      }
+      if (date < 10) {
+        date = "0" + date;
+      }
+      var time = date + '/' + month + '/' + year;
+      return time;
+    } catch (error) {
+      return "";
+    }
+  }
+
+  $(document).ready(function () { // sets the value grabbed from firebase to the textboxes.
+    $('input[name=fname]').val("<%=admin_details.fname%>");
+    $('input[name=lname]').val("<%=admin_details.lname%>");
+    $('input[name=nric]').val("<%=admin_details.nric%>");
+    $('input[name=username]').val("<%=admin_details.username%>");
+    $('input[name=password]').val("<%=admin_details.password%>");
+    $('#role').val(<%=admin_details.role %>);
+  });
+</script>
+<div class="container-fluid">
+  <h4 class="mt-4">
+    <%=admin_details.username%>
+  </h4>
+  <hr>
+  <% if (error) { %>
+  <div class="alert alert-danger" role="alert">
+    <%=error%>
+  </div>
+  <hr>
+  <% } %>
+  <form action='/admin/view/<%=admin_details.username%>' method="POST">
+    <div class="card d-flex mx-auto mb-5 text-left">
+      <div class="card-body px-4">
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="fname">First Name:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="fname" id="fname" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="lname">Last Name:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="lname" id="lname" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="nric">NRIC:</label><br />
+            <div class="input-group mb-3">
+              <input type="text" class="form-control nric_textbox" name="nric" id="nric" style="text-transform: uppercase" disabled required>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <label class="font-weight-bold mb-0" for="role">Role:</label><br />
+            <div class="input-group mb-3">
+              <select class="custom-select" id="role" name="role" required>
+                <option value="1">Administrator</option>
+                <option value="2">User</option>
+                <option value="3">Read-only User</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mx-auto">
+          <% if ((user.role != 1 && user.username == admin_details.username) || user.role == 1 || (user.role == 2 && admin_details.role == 2)) { %>
+          <a class="btn btn-primary col-12 text-center" href="/admin/changepw/<%=admin_details.username%>">Change
+            Password</a>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <% if (user.role == 1) { %>
+        <button type="submit" class="btn btn-primary btn-block" name="edituser_btn">Edit</button>
+        <% if (admin_count > 1) { %>
+        <button type="submit" class="btn btn-danger btn-block" name="deleteuser_btn">Delete</button>
+        <% } %>
+        <% } %>
+      </div>
+    </div>
+  </form>
+
+</div>
+
+<% include partials/footer %>
