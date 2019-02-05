@@ -1,6 +1,8 @@
 /* overall css */
 html, body {
   height: 100%;
+  overscroll-behavior-y: contain;
+  overscroll-behavior-y: none;
 }
 
 .nav-pills > a.active {

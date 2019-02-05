@@ -1,12 +1,11 @@
 {
-	"name": "APOapp",
-	"short_name": "APOapp",
+	"name": "APO app",
+	"short_name": "APO",
 	"description": "APOapp description",
-	"background_color": "#3367D6",
+	"background_color": "#00205B",
 	"start_url": "/",
-	"orientation": "landscape",
 	"display": "standalone",
-	"theme_color": "#3367D6",
+	"theme_color": "#00205B",
 	"script": {
 		"start": "http-server -c-1"
 	},
