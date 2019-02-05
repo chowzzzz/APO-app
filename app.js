@@ -71,6 +71,8 @@ passport.use(new LocalStrategy({
 
 app.use('/', routes);
 
-app.listen(5000, function () {
-  console.log('Server started on port 5000.');
+const port = process.env.PORT || 3000
+
+app.listen(port, function () {
+  console.log('Server started on port ', port);
 });
