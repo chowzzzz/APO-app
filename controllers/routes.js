@@ -4,6 +4,7 @@ var passport = require('passport')
 var router = express.Router();
 
 var moment = require('moment');
+var bcrypt = require('bcrypt');
 var functions = require('./modules');
 var firebase = require('./firebase');
 var url = require('url');
@@ -61,7 +62,6 @@ router.post('/', function (req, res) {
   } else if (req.body.search_nric != "") {
     search_nric = req.body.search_nric;
     search_nric = search_nric.toUpperCase();
-    console.log(search_nric);
     try {
       firebase.db.ref("officers/" + search_nric + "/").once('value').then(function (snapshot) {
         if (snapshot.val() != null) {
@@ -228,7 +228,6 @@ router.get('/officers/:nric', functions.verifyAdmin, functions.getEachOfficers, 
     notif.xray_pb = null;
     notif.xray_cargo = null;
     var curDate = moment().format("YYYYMMDD");
-    console.log(req.officer_details);
 
     if (req.ac_details != undefined || req.ac_details != null) {
       sorted_ac = Object.keys(req.ac_details).sort(function (a, b) {
@@ -1644,7 +1643,6 @@ router.get('/security_test/:nric', functions.verifyAdmin, functions.getEachOffic
       notif = null;
       alert = null;
     }
-    console.log(st_details);
     res.render('security_test', { user: req.user, officer_details: req.officer_details, st_details: st_details, notif: notif, alert: alert });
   }
 })
@@ -1883,7 +1881,6 @@ router.get('/security_breach/:nric', functions.verifyAdmin, functions.getEachOff
         item.sb_date = UNIXConverter(item.sb_date);
         item.key = keys[i];
       });
-      console.log(sb_details)
     } else {
       var sb_details = [];
     }
@@ -2348,6 +2345,7 @@ router.post('/admin/new', functions.isAdminPage, functions.verifyAdmin, function
     nric = nric.toUpperCase();
     var username = req.body.username;
     var password = req.body.password;
+    var hashPwd = bcrypt.hashSync(password, 10);
     var role = req.body.role;
 
     if (req.error == null) {
@@ -2356,7 +2354,7 @@ router.post('/admin/new', functions.isAdminPage, functions.verifyAdmin, function
         lname: lname,
         nric: nric,
         username: username,
-        password: password,
+        password: hashPwd,
         role: role
       };
 
@@ -2464,8 +2462,9 @@ router.post('/admin/changepw/:username', functions.isAdminPage, functions.verify
     var username = req.params.username;
     var password = req.body.password;
     var rpassword = req.body.rpassword;
+    var hashPwd = bcrypt.hashSync(password, 10);
 
-    var data = { password: password }
+    var data = { password: hashPwd }
 
     if (password == rpassword) {
       firebase.db.ref("/admin/" + username).update(data, function (error) {
@@ -2515,11 +2514,13 @@ router.post('/user/changepw/:username', functions.isUserPage, functions.verifyAd
     var password = req.body.password;
     var rpassword = req.body.rpassword;
 
-    var data = { password: password }
+    var hashPwd = bcrypt.hashSync(password, 10);
+    
+    var data = { password: hashPwd }
 
     var admin_details = req.admin_details;
 
-    if (oldPassword === admin_details.password) {
+    if (bcrypt.compareSync(oldPassword, admin_details.password)) {
       if (password == rpassword) {
         firebase.db.ref("/admin/" + username).update(data, function (error) {
           if (!error) {

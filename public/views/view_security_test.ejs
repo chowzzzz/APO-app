@@ -265,9 +265,7 @@
 </div>
 <div class="container-fluid">
 
-  <form action='/security_test/<%=officer_details.nric%>/
-    <%=st_id%>' method="POST" enctype="multipart/form-data"
-    id="STForm">
+  <form action='/security_test/<%=officer_details.nric%>/<%=st_id%>' method="POST" enctype="multipart/form-data" id="STForm">
     <div class="card d-flex mx-auto" style="margin-bottom: 90px">
       <div class="card-header text-left">
         <div class="d-sm-flex flex-sm-row">
@@ -461,8 +459,8 @@
             <div class="input-group mb-3">
               <img src="/uploads/<%=st_details.st_image %>" class="img-fluid">
               <% if (user.role==2) { %>
-              <input type="file" accept="image/*" name="st_image" capture>
-              <!-- <input type="file" name="st_image" /> -->
+              <!-- <input type="file" accept="image/*" name="st_image" capture> -->
+              <input type="file" name="st_image" />
               <% } %>
             </div>
           </div>

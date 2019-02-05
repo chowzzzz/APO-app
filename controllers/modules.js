@@ -2,6 +2,7 @@ var firebase = require('./firebase');
 
 // Admin
 module.exports.verifyAdmin = function (req, res, next) {
+  console.log("user", req.user)
   if (req.user == null) {
     res.redirect('/login');
   } else {
@@ -70,6 +71,7 @@ module.exports.checkAdminCount = function (req, res, next) {
 }
 
 module.exports.getEachAdmin = function (req, res, next) {
+  console.log("params", req.params.username);
   firebase.db.ref("admin/" + req.params.username).once('value').then(function (snapshot) {
     req.admin_details = snapshot.val();
     next();

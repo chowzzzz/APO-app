@@ -7,6 +7,7 @@ var flash = require('connect-flash');
 var fileUpload = require('express-fileupload');
 var routes = require('./controllers/routes');
 var firebase = require('./controllers/firebase');
+var bcrypt = require('bcrypt');
 
 var app = express();
 
@@ -52,8 +53,8 @@ passport.use(new LocalStrategy({
         if (snapshot.val() == null) {
           return done(null, false, { message: 'Incorrect username or password.' });
         } else {
-          console.log(snapshot.val());
-          if (snapshot.val().password == password) {
+          // console.log(snapshot.val());
+          if (bcrypt.compareSync(password, snapshot.val().password)) {
             console.log('[LOGIN] User ' + username);
             return done(null, snapshot.val());
           } else {
