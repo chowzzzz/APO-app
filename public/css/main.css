@@ -64,6 +64,13 @@ html, body {
   background: url(/res/Preloader_3.gif) center no-repeat #fff;
 }
 
+/* table */
+@media only screen and (min-width: 600px) {
+  .bootstrap-table {
+    margin: 0 10% 20px;
+  }
+}
+
 /* sign in */
 body#signinBody {
   display: -ms-flexbox;
@@ -141,12 +148,19 @@ img.logoImg {
   .card {
     max-width: 100%;
   }
+  .bootstrap-table {
+    margin-bottom: 20px;
+  }
 } 
 
 .title {
   background-color: lightgray;
-  padding: 20px 0 15px 0;
+  padding: 15px 0;
   margin-bottom: 20px;
+}
+
+a.backBtn {
+  color: black;
 }
 
 a.card {

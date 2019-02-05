@@ -1,27 +1,6 @@
 <% include partials/header %>
 <% include partials/nav %>
 <script>
-  function UNIXConverter(UNIX_timestamp) {
-    try {
-      if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
-        return "-";
-      }
-      var a = new Date(UNIX_timestamp * 1000);
-      var year = a.getFullYear();
-      var month = a.getMonth() + 1;
-      var date = a.getDate();
-      if (month < 10) {
-        month = "0" + month;
-      }
-      if (date < 10) {
-        date = "0" + date;
-      }
-      var time = date + '/' + month + '/' + year;
-      return time;
-    } catch (error) {
-      return "";
-    }
-  }
   $(document).ready(function () {
     $('input[name=st_date]').datepicker("setDate", 'now');
   });
@@ -214,9 +193,14 @@
 </div>
 
 <% } else if (user.role == 2 || user.role == 3) { %>
-<div class="title">
-  <h4 class="font-weight-bold">NEW RECORD</h4>
-  <p class="mb-0">Security Test</p>
+<div class="title d-flex">
+  <span class="justify-content-start align-self-center position-absolute pl-3" style="font-size: 2rem;">
+    <a href="/security_test/<%=officer_details.nric%>" onclick="return confirm('Are you sure you want to return?');" class="backBtn"><i class="fas fa-angle-left"></i></a>
+  </span>
+  <div class="mx-auto">
+    <h4 class="font-weight-bold mb-0">NEW RECORD</h4>
+    <p class="mb-0">Security Test</p>
+  </div>
 </div>
 <div class="container-fluid">
 
@@ -379,7 +363,8 @@
           <div class="col-sm-6">
             <label class="font-weight-bold mb-0" for="st_image">Image:</label><br />
             <div class="input-group mb-3">
-              <input type="file" name="st_image" />
+              <!-- <input type="file" name="st_image" /> -->
+              <input type="file" accept="image/*" name="st_image" capture >
             </div>
           </div>
           <div class="col-sm-6">

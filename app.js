@@ -1,9 +1,7 @@
 var express = require('express');
-// var express_fileupload = require('express-fileupload');
 var expressValidator = require('express-validator');
 var bodyParser = require('body-parser');
 var passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
-// var extend = require("jquery-extend");
 var path = require('path');
 var flash = require('connect-flash');
 var fileUpload = require('express-fileupload');
@@ -15,7 +13,6 @@ var app = express();
 // flash
 app.use(flash());
 app.use(fileUpload());
-//var ocrfunct = require("./ocrfunctions.js");
 
 //VIEW ENGINE
 app.set('view engine', 'ejs');

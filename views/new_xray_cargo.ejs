@@ -1,50 +1,25 @@
 <% include partials/header %>
 <% include partials/nav %>
+<script>
+  $(document).ready(function () {
 
-<head>
-  <script>
-    function UNIXConverter(UNIX_timestamp) {
-      try {
-        if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
-          return "-";
-        }
-        var a = new Date(UNIX_timestamp * 1000);
-        var year = a.getFullYear();
-        var month = a.getMonth() + 1;
-        var date = a.getDate();
-        if (month < 10) {
-          month = "0" + month;
-        }
-        if (date < 10) {
-          date = "0" + date;
-        }
-        var time = date + '/' + month + '/' + year;
-        return time;
-      } catch (error) {
-        return "";
-      }
-    }
+    $("#setall_btn").click(function () { // set all function for GS/AC/X-Ray HBS.
+      var setall_date = $('input[name=setall_date]').val();
+      var setall_status = $('input[name=setall_overall_status]:checked').val();
 
-    $(document).ready(function () {
+      $('input[name=overall_status][value=' + setall_status + ']').attr('checked', 'checked');
+      $('input[name=xray_cargo_theory_status][value=' + setall_status + ']').attr('checked', 'checked');
+      $('input[name=xray_cargo_etd_status][value=' + setall_status + ']').attr('checked', 'checked');
+      $('input[name=xray_cargo_iit_status][value=' + setall_status + ']').attr('checked', 'checked');
 
-      $("#setall_btn").click(function () { // set all function for GS/AC/X-Ray HBS.
-        var setall_date = $('input[name=setall_date]').val();
-        var setall_status = $('input[name=setall_overall_status]:checked').val();
-
-        $('input[name=overall_status][value=' + setall_status + ']').attr('checked', 'checked');
-        $('input[name=xray_cargo_theory_status][value=' + setall_status + ']').attr('checked', 'checked');
-        $('input[name=xray_cargo_etd_status][value=' + setall_status + ']').attr('checked', 'checked');
-        $('input[name=xray_cargo_iit_status][value=' + setall_status + ']').attr('checked', 'checked');
-
-        $('input[name=certified_date]').datepicker("setDate", setall_date);
-        $('input[name=xray_cargo_theory]').datepicker("setDate", setall_date);
-        $('input[name=xray_cargo_etd]').datepicker("setDate", setall_date);
-        $('input[name=xray_cargo_iit]').datepicker("setDate", setall_date);
-      });
-
+      $('input[name=certified_date]').datepicker("setDate", setall_date);
+      $('input[name=xray_cargo_theory]').datepicker("setDate", setall_date);
+      $('input[name=xray_cargo_etd]').datepicker("setDate", setall_date);
+      $('input[name=xray_cargo_iit]').datepicker("setDate", setall_date);
     });
-  </script>
-</head>
+
+  });
+</script>
 <div class="container-fluid">
   <h4 class="mt-4">Add New X-Ray Cargo Record</h4>
   <hr>

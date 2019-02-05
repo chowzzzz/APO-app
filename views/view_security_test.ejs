@@ -69,7 +69,7 @@
   <hr>
 
 
-  <form action='/security_test/<%=officer_details.nric%>/<%=st_id%>' method="POST" id="STForm">
+  <form action='/security_test/<%=officer_details.nric%>/<%=st_id%>' method="POST" enctype="multipart/form-data" id="STForm">
     <div class="card d-flex mx-auto mb-5">
       <div class="card-header text-left">
         <div class="d-sm-flex flex-sm-row">
@@ -207,11 +207,11 @@
             <label class="font-weight-bold mb-0" for="st_cat">Category:</label><br />
             <div class="input-group mb-3">
               <select class="custom-select" id="st_cat" name="st_cat" required>
-                <option value="1" <% if (st_details.st_certSeized=="1" ) {%> selected
+                <option value="1" <% if (st_details.st_cat=="1" ) {%> selected
                   <% } %>>1</option>
-                <option value="2" <% if (st_details.st_certSeized=="1" ) {%> selected
+                <option value="2" <% if (st_details.st_cat=="2" ) {%> selected
                   <% } %>>2</option>
-                <option value="3" <% if (st_details.st_certSeized=="1" ) {%> selected
+                <option value="3" <% if (st_details.st_cat=="3" ) {%> selected
                   <% } %>>3</option>
               </select>
             </div>
@@ -227,29 +227,24 @@
           <div class="col-sm-6">
             <label class="font-weight-bold mb-0" for="st_image">Image:</label><br />
             <div class="input-group mb-3">
-              <% if (st_details.st_image != '') { %>
               <img src="/uploads/<%=st_details.st_image %>" class="img-fluid">
-              <% }else{ %>
               <input type="file" name="st_image" />
-              <% } %>
             </div>
           </div>
           <div class="col-sm-6">
             <label class="font-weight-bold mb-0" for="st_remarks">Remarks:</label><br />
             <div class="input-group mb-3">
-              <textarea class="form-control" name="st_remarks" id="st_remarks" required></textarea>
+              <textarea class="form-control" name="st_remarks" id="st_remarks" required><%=st_details.st_remarks%></textarea>
             </div>
           </div>
         </div>
 
       </div>
 
-      <% if (user.role < 3) { %>
       <div class="card-footer">
         <button type="submit" class="btn btn-primary btn-block" name="edit_btn">Update</button>
         <button type="submit" class="btn btn-danger btn-block" name="delete_btn">Delete</button>
       </div>
-      <% } %>
     </div>
 
 
@@ -257,12 +252,15 @@
 </div>
 
 <% } else if (user.role == 2 || user.role == 3) { %>
-<div class="title">
-  <h4>Security Test Record</h4>
+<div class="title d-flex">
+  <span class="justify-content-start align-self-center position-absolute pl-3" style="font-size: 2rem;">
+    <a href="/security_test/<%=officer_details.nric%>" onclick="return confirm('Are you sure you want to return?');" class="backBtn"><i class="fas fa-angle-left"></i></a>
+  </span>
+  <h4 class="mx-auto mt-2">Security Test Record</h4>
 </div>
 <div class="container-fluid">
 
-  <form action='/security_test/<%=officer_details.nric%>/<%=st_id%>' method="POST" id="STForm">
+  <form action='/security_test/<%=officer_details.nric%>/<%=st_id%>' method="POST" enctype="multipart/form-data" id="STForm">
     <div class="card d-flex mx-auto" style="margin-bottom: 90px">
       <div class="card-header text-left">
         <div class="d-sm-flex flex-sm-row">
@@ -400,11 +398,11 @@
             <label class="font-weight-bold mb-0" for="st_cat">Category:</label><br />
             <div class="input-group mb-3">
               <select class="custom-select" id="st_cat" name="st_cat" required>
-                <option value="1" <% if (st_details.st_certSeized=="1" ) {%> selected
+                <option value="1" <% if (st_details.st_cat=="1" ) {%> selected
                   <% } %>>1</option>
-                <option value="2" <% if (st_details.st_certSeized=="1" ) {%> selected
+                <option value="2" <% if (st_details.st_cat=="2" ) {%> selected
                   <% } %>>2</option>
-                <option value="3" <% if (st_details.st_certSeized=="1" ) {%> selected
+                <option value="3" <% if (st_details.st_cat=="3" ) {%> selected
                   <% } %>>3</option>
               </select>
             </div>
@@ -420,17 +418,15 @@
           <div class="col-sm-6">
             <label class="font-weight-bold mb-0" for="st_image">Image:</label><br />
             <div class="input-group mb-3">
-              <% if (st_details.st_image != '') { %>
               <img src="/uploads/<%=st_details.st_image %>" class="img-fluid">
-              <% }else{ %>
-              <input type="file" name="st_image" />
-              <% } %>
+              <input type="file" accept="image/*" name="st_image" capture >
+              <!-- <input type="file" name="st_image" /> -->
             </div>
           </div>
           <div class="col-sm-6">
             <label class="font-weight-bold mb-0" for="st_remarks">Remarks:</label><br />
             <div class="input-group mb-3">
-              <textarea class="form-control" name="st_remarks" id="st_remarks" required></textarea>
+              <textarea class="form-control" name="st_remarks" id="st_remarks" required><%=st_details.st_remarks%></textarea>
             </div>
           </div>
         </div>

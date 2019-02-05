@@ -67,7 +67,7 @@
 <% } else if (user.role == 2 || user.role == 3) { %>
 <% urlObj = typeof urlObj !== 'object' ? {} : urlObj %>
 <nav class="nav fixed-bottom  nav-pills nav-fill">
-  <% if (urlObj.path == "profile") { %>
+  <% if (urlObj.path == "/profile") { %>
   <a class="nav-item nav-link active" href="#"><i class="fas fa-user"></i><br />Profile</a>
   <a class="nav-item nav-link" href="/"><i class="fas fa-search"></i><br />Search</a>
   <% } else if (urlObj.path == "/") { %>

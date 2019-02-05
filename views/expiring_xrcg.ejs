@@ -1,33 +1,15 @@
 <% include partials/header %>
 <% include partials/nav %>
-
-<%
-function UNIXConverter(UNIX_timestamp){
-  try {
-    if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
-      return "-";
-    }
-    var a = new Date(UNIX_timestamp * 1000);
-    var year = a.getFullYear();
-    var month = a.getMonth() + 1;
-    var date = a.getDate();
-    if (month < 10) {
-      month = "0" + month;
-    }
-    if (date < 10) {
-      date = "0" + date;
-    }
-    var time = date + '/' + month + '/' + year;
-    return time;
-  } catch (error) {
-    return "";
-  }
-}
-
-function getKeyByValue(object, value) {
-  return Object.keys(object).find(key => object[key] === value);
-}
-%>
+<% var data = JSON.stringify(xrcgToExpire); %>
+<script>
+  $(function () {
+    var data = <%- data %>;
+    $("#xrcgExTable").bootstrapTable({ data: data });
+    $("#xrcgExTable").on('click-cell.bs.table', function (field, columnName, valueClicked, data) {
+      window.location.href = "/xray_cargo/" + data.nric +  "/" + data.certId;
+    });
+  })
+</script>
 <div class="container-fluid">
   <h4 class="mt-4">Expiring Certification
   </h4>
@@ -35,7 +17,7 @@ function getKeyByValue(object, value) {
 
   <ul class="nav nav-tabs mb-4">
     <li class="nav-item">
-      <a class="nav-link" href="/expiring">AC</a>
+      <a class="nav-link" href="/expiring_ac/">AC</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="/expiring_gs">GS</a>
@@ -63,43 +45,16 @@ function getKeyByValue(object, value) {
       </div>
     </li>
   </ul>
-
-  <table class="table table-hover table-bordered table-striped table-responsive-sm col-sm-10 mx-auto p-0 mb-4">
+  
+  <table class="table table-hover table-bordered table-striped mx-auto" id="xrcgExTable" data-search="true" data-pagination="true">
     <thead class="thead-light">
       <tr>
-        <th>Expiring Date</th>
-        <th>Name</th>
-        <th>NRIC</th>
-        <th>Certification Card No.</th>
+        <th data-field="expiringDate" data-sortable="true">Expiring Date</th>
+        <th data-field="name" data-sortable="true">Name</th>
+        <th data-field="nric" data-sortable="true">NRIC</th>
+        <th data-field="certCardNo" data-sortable="true">Certification Card No.</th>
       </tr>
     </thead>
-    <% if ('undefined'===typeof officersToExpire || officersToExpire == null) { %>
-    <tr>
-      <td class="mx-auto text-danger" colspan="3">Officer does not have any existing certificates.</td>
-    </tr>
-    <% } else { %>
-
-    <%
-    for (var i=0; i<officersToExpire.length; i++) { %>
-    <tr class='clickable-row' data-href='/access_control/<%=officersToExpire[i].nric%>'>
-      <td>
-        <%=officersToExpire[i].expiringDate%>
-      </td>
-      <td>
-        <%=officersToExpire[i].name%>
-      </td>
-      <td>
-        <%=officersToExpire[i].nric%>
-      </td>
-      <td>
-        <%=officersToExpire[i].certCardNo%>
-      </td>
-    </tr>
-
-    <%
-    }
-    %>
-    <% } //CLOSE BRACKET FOR ELSE STATEMENT%>
   </table>
 </div>
 

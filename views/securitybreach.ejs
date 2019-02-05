@@ -1,33 +1,15 @@
 <% include partials/header %>
 <% include partials/nav %>
-
-<%
-function UNIXConverter(UNIX_timestamp){
-  try {
-    if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
-      return "-";
-    }
-    var a = new Date(UNIX_timestamp * 1000);
-    var year = a.getFullYear();
-    var month = a.getMonth() + 1;
-    var date = a.getDate();
-    if (month < 10) {
-      month = "0" + month;
-    }
-    if (date < 10) {
-      date = "0" + date;
-    }
-    var time = date + '/' + month + '/' + year;
-    return time;
-  } catch (error) {
-    return "";
-  }
-}
-
-function getKeyByValue(object, value) {
-  return Object.keys(object).find(key => object[key] === value);
-}
-%>
+<% var data = JSON.stringify(officersSB); %>
+<script>
+  $(function () {
+    var data = <%- data %>;
+    $("#sbTable").bootstrapTable({ data: data });
+    $("#sbTable").on('click-cell.bs.table', function (field, columnName, valueClicked, data) {
+      window.location.href = "/security_breach/" + data.nric +  "/" + data.sbId;
+    });
+  })
+</script>
 <div class="container-fluid">
   <h4 class="mt-4">Security Breaches
   </h4>
@@ -42,50 +24,17 @@ function getKeyByValue(object, value) {
     </li>
   </ul>
 
-  <table class="table table-hover table-bordered table-striped table-responsive-sm col-sm-10 mx-auto p-0 mb-4">
+  <table class="table table-hover table-bordered table-striped mx-auto" id="sbTable" data-search="true" data-pagination="true">
     <thead class="thead-light">
       <tr>
-        <th>Test Name</th>
-        <th>Name</th>
-        <th>NRIC</th>
-        <th>Location</th>
-        <th>Date</th>
-        <th>Time</th>
+        <th data-field="sbName" data-sortable="true">Test Name</th>
+        <th data-field="name" data-sortable="true">Name</th>
+        <th data-field="nric" data-sortable="true">NRIC</th>
+        <th data-field="location" data-sortable="true">Location</th>
+        <th data-field="date" data-sortable="true">Date</th>
+        <th data-field="time" data-sortable="true">Time</th>
       </tr>
     </thead>
-    <% if ('undefined'===typeof officersSec || officersSec == null) { %>
-    <tr>
-      <td class="mx-auto text-danger" colspan="3">Officer does not have any existing certificates.</td>
-    </tr>
-    <% } else { %>
-
-    <%
-    for (var i=0; i<officersSec.length; i++) { %>
-    <tr class='clickable-row' data-href='/security_breach/<%=officersSec[i].nric%>/<%=officersSec[i].sbId%>'>
-      <td>
-        <%=officersSec[i].sbName%>
-      </td>
-      <td>
-        <%=officersSec[i].name%>
-      </td>
-      <td>
-        <%=officersSec[i].nric%>
-      </td>
-      <td>
-        <%=officersSec[i].location%>
-      </td>
-      <td>
-        <%=UNIXConverter(officersSec[i].date)%>
-      </td>
-      <td>
-        <%=officersSec[i].time%>
-      </td>
-    </tr>
-
-    <%
-    }
-    %>
-    <% } //CLOSE BRACKET FOR ELSE STATEMENT%>
   </table>
 </div>
 

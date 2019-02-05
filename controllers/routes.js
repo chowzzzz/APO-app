@@ -6,6 +6,7 @@ var router = express.Router();
 var moment = require('moment');
 var functions = require('./modules');
 var firebase = require('./firebase');
+var url = require('url');
 
 function UNIXConverter(UNIX_timestamp) {
   try {
@@ -28,12 +29,14 @@ function UNIXConverter(UNIX_timestamp) {
     return "";
   }
 }
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
+}
 
 router.use(function (req, res, next) {
   res.locals.urlObj = {
     path: req.path
   }
-
   next();
 })
 
@@ -43,15 +46,9 @@ router.get('/', function (req, res) {
   } else {
     firebase.db.ref("searches/").once('value').then(function (snapshot) {
       if (snapshot.val() != null) {
-        console.log(snapshot.val().s1);
         res.render('index', { user: req.user, s1: snapshot.val().s1, s2: snapshot.val().s2, s3: snapshot.val().s3, s4: snapshot.val().s4, s5: snapshot.val().s5 });
-        // console.log("query" + req.path);
-        console.log("[RENDER] INDEX");
-        console.log("USER: " + req.user);
       } else {
         res.render('index', { user: req.user, s1: "", s2: "", s3: "", s4: "", s5: "" });
-        console.log("[RENDER] INDEX");
-        console.log("USER: " + req.user);
       }
     });
 
@@ -61,7 +58,7 @@ router.get('/', function (req, res) {
 router.post('/', function (req, res) {
   if (req.user == null) {
     res.redirect('/login');
-  } else {
+  } else if (req.body.search_nric != "") {
     search_nric = req.body.search_nric;
     try {
       firebase.db.ref("officers/" + search_nric + "/").once('value').then(function (snapshot) {
@@ -97,6 +94,8 @@ router.post('/', function (req, res) {
     } catch (error) {
       res.render('index', { user: req.user, error: "The NRIC does not exist!", s1: "", s2: "", s3: "", s4: "", s5: "" });
     }
+  } else {
+    res.render('index', { user: req.user, error: "The NRIC does not exist!", s1: "", s2: "", s3: "", s4: "", s5: "" });
   }
 });
 
@@ -109,11 +108,41 @@ router.post('/login', passport.authenticate('local', { successRedirect: '/', fai
 
 
 router.get('/officers', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  console.log(req.officer_details);
-  for (var key in req.officer_details) {
-    console.log(key);
+  var keys = [];
+  if (req.officer_details != undefined || req.officer_details != null) {
+    var officer_details = Object.keys(req.officer_details).sort(function (a, b) {
+      return req.officer_details[b].nric - req.officer_details[a].nric;
+    }).map(function (category) {
+      var key = getKeyByValue(req.officer_details, req.officer_details[category]);
+      keys.push(key);
+      return req.officer_details[category];
+    });
+    officer_details.forEach((item) => {
+      item.name = item.fname + " " + item.lname;
+    });
+  } else {
+    var officer_details = [];
   }
-  res.render('all_officers', { user: req.user, officer_details: req.officer_details });
+  if (req.query.valid == "new_success") {
+    notif = "New officer has been added successfully."
+    alert = true;
+  } else if (req.query.valid == "update_success") {
+    notif = "Officer's details updated successfully."
+    alert = true;
+  } else if (req.query.valid == "update_fail") {
+    notif = "Failed to update officer's details."
+    alert = false;
+  } else if (req.query.valid == "delete_success") {
+    notif = "Officer's record deleted."
+    alert = false;
+  } else if (req.query.valid == "delete_fail") {
+    notif = "Failed to delete officer's record."
+    alert = false;
+  } else {
+    notif = null;
+    alert = null;
+  }
+  res.render('all_officers', { user: req.user, officer_details: officer_details, notif: notif, alert: alert });
 });
 
 router.get('/officers/new', functions.isAdminPage, functions.verifyAdmin, function (req, res) {
@@ -142,14 +171,6 @@ router.post('/officers/new', functions.isAdminPage, function (req, res, next) {
   var rank = req.body.rank;
   var remarks = req.body.remarks;
 
-  /*var general_screener = req.body.general_screener || 0;
-  var access_control = req.body.access_control || 0;
-  var etd = req.body.etd || 0;
-  var front_loader = req.body.front_loader || 0;
-  var xray_hbs = req.body.xray_hbs || 0;
-  var xray_pb = req.body.xray_pb || 0;
-  var xray_cargo = req.body.xray_cargo || 0;*/
-
   var add_user = {
     nric: nric,
     fname: fname,
@@ -164,67 +185,66 @@ router.post('/officers/new', functions.isAdminPage, function (req, res, next) {
     remarks: remarks
   }
 
-  // THESE SET OF CODES ARE REMOVED -- NO LONGER WANT CERTIFICATION ON NEW OFFICER. MOVED TO GS/AC SEPARATELY.
-  /*var add_user_certification = {
-    general_screener: functions.dateToUNIX(general_screener),
-    access_control: functions.dateToUNIX(access_control),
-    etd: functions.dateToUNIX(etd),
-    front_loader: functions.dateToUNIX(front_loader),
-    xray_hbs: functions.dateToUNIX(xray_hbs),
-    xray_pb: functions.dateToUNIX(xray_pb),
-    xray_cargo: functions.dateToUNIX(xray_cargo)
-  }*/
-
   firebase.db.ref("officers/" + nric + "/").set(add_user, function (error) {
     if (error) {
       res.render('add_officer', { user: req.user, message: "The officer could not be inserted. Please try again." });
     } else {
-      res.redirect("/officers/");
-      /*firebase.db.ref("officers/"+nric+"/certification/").set(add_user_certification, function(error2) {
-        if (error2) {
-          res.render('add_officer', {user: req.user, message: "The officer could not be inserted. Please try again."});
-        } else {
-          res.redirect("/officers/");
+      res.redirect(url.format({
+        pathname: "/officers/",
+        query: {
+          "valid": "new_success"
         }
-      });*/
+      }));
     }
   });
 });
 
 router.get('/officers/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getACRecords, functions.getGSRecords, functions.getXrayHBSRecords, functions.getXrayPBRecords, functions.getXrayCargoRecords, function (req, res) {
-  console.log('req.gs_details');
-  console.log(req.gs_details);
 
-  console.log('req.ac_details');
-  console.log(req.ac_details);
-
-  console.log('req.xray_hbs_details');
-  console.log(req.xray_hbs_details);
-
-  console.log('req.xray_pb_details');
-  console.log(req.xray_pb_details);
-
-  console.log('req.xray_cargo_details');
-  console.log(req.xray_cargo_details);
-
-  var alertArr = [];
-  alertArr.gs = false;
-  alertArr.ac = false;
-  alertArr.xray_hbs = false;
-  alertArr.xray_pb = false;
-  alertArr.xray_cargo = false;
+  var ac_date = "-", gs_date = "-", xray_hbs_date = "-", xray_pb_date = "-", xray_cargo_date = "-";
+  notif = {};
+  notif.ac = null;
+  notif.gs = null;
+  notif.xray_hbs = null;
+  notif.xray_pb = null;
+  notif.xray_cargo = null;
   var curDate = moment().format("YYYYMMDD");
-  if (req.gs_details != null) {
-    var cert = req.gs_details;
+  console.log(req.officer_details);
 
-    gsDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
-    gsDetail = cert[gsDetailSortedKey[0]];
+  if (req.ac_details != undefined || req.ac_details != null) {
+    sorted_ac = Object.keys(req.ac_details).sort(function (a, b) {
+      return req.ac_details[b]['certified_date'] - req.ac_details[a]['certified_date']
+    });
+    latest_ac = req.ac_details[sorted_ac[0]];
 
-    if (gsDetail) {
-      var overall_status = gsDetail.overall_status;
+    if (latest_ac) {
+      if (latest_ac.overall_status == 1) {
+        ac_date = latest_ac.certified_date;
+      }
+    }
+    if ('undefined' !== typeof ac_date) {
+      var certDate = moment(ac_date),
+        certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
+        certDateIncr = moment(certDateFormat).add(11, 'M'),
+        certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
+        diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
+      if (diffDate > 0 && diffDate < 1) {
+        notif.ac = "Officer's Access Control Certificate expiring soon!";
+      }
+    }
+    ac_date = UNIXConverter(ac_date);
+  }
 
-      if (overall_status == 1) {
-        gs_date = gsDetail.certified_date;
+  if (req.gs_details != undefined || req.gs_details != null) {
+
+    sorted_gs = Object.keys(req.gs_details).sort(function (a, b) {
+      return req.gs_details[b]['certified_date'] - req.gs_details[a]['certified_date']
+    });
+    latest_gs = req.gs_details[sorted_gs[0]];
+
+    if (latest_gs) {
+      if (latest_gs.overall_status == 1) {
+        gs_date = latest_gs.certified_date;
       }
     }
     if ('undefined' !== typeof gs_date) {
@@ -234,48 +254,22 @@ router.get('/officers/:nric', functions.verifyAdmin, functions.getEachOfficers, 
         certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
         diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
       if (diffDate > 0 && diffDate < 1) {
-        alertArr.gs = true;
+        notif.gs = "Officer's General Screener Certificate expiring soon!";
       }
     }
+    gs_date = UNIXConverter(gs_date);
   }
-  if (req.ac_details != null) {
-    var cert = req.ac_details;
 
-    acDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
-    acDetail = cert[acDetailSortedKey[0]];
+  if (req.xray_hbs_details != undefined || req.xray_hbs_details != null) {
 
-    if (acDetail) {
-      var overall_status = acDetail.overall_status;
+    sorted_xray_hbs = Object.keys(req.xray_hbs_details).sort(function (a, b) {
+      return req.xray_hbs_details[b]['certified_date'] - req.xray_hbs_details[a]['certified_date']
+    });
+    latest_xray_hbs = req.xray_hbs_details[sorted_xray_hbs[0]];
 
-      if (overall_status == 1) {
-        ac_date = acDetail.certified_date;
-      }
-    }
-
-    if ('undefined' !== typeof ac_date) {
-      var certDate = moment(ac_date),
-        certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-        certDateIncr = moment(certDateFormat).add(11, 'M'),
-        certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-        //diffDate = moment(curDate).diff(moment(certDateIncr), 'days');
-        diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-
-      if (diffDate > 0 && diffDate < 1) {
-        alertArr.ac = true;
-      }
-    }
-  }
-  if (req.xray_hbs_details != null) {
-    var cert = req.xray_hbs_details;
-
-    xrHbDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
-    xrHbDetail = cert[xrHbDetailSortedKey[0]];
-
-    if (xrHbDetail) {
-      var overall_status = xrHbDetail.overall_status;
-
-      if (overall_status == 1) {
-        xray_hbs_date = xrHbDetail.certified_date;
+    if (latest_xray_hbs) {
+      if (latest_xray_hbs.overall_status == 1) {
+        xray_hbs_date = latest_xray_hbs.certified_date;
       }
     }
     if ('undefined' !== typeof xray_hbs_date) {
@@ -284,50 +278,47 @@ router.get('/officers/:nric', functions.verifyAdmin, functions.getEachOfficers, 
         certDateIncr = moment(certDateFormat).add(11, 'M'),
         certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
         diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-      console.log('xr hbd: ' + diffDate);
       if (diffDate > 0 && diffDate < 1) {
-        alertArr.xray_hbs = true;
+        notif.xray_hbs = "Officer's X-Ray HBS Certificate expiring soon!";
       }
     }
+    xray_hbs_date = UNIXConverter(xray_hbs_date);
   }
-  if (req.xray_pb_details != null) {
-    var cert = req.xray_pb_details;
 
-    xrPbDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
-    xrPbDetail = cert[xrPbDetailSortedKey[0]];
-    console.log('xrPbDetail')
-    console.log(xrPbDetail)
-    if (xrPbDetail) {
-      var overall_status = xrPbDetail.overall_status;
+  if (req.xray_pb_details != undefined || req.xray_pb_details != null) {
 
-      if (overall_status == 1) {
-        xray_pb_date = xrPbDetail.certified_date;
+    sorted_xray_pb = Object.keys(req.xray_pb_details).sort(function (a, b) {
+      return req.xray_pb_details[b]['certified_date'] - req.xray_pb_details[a]['certified_date']
+    });
+    latest_xray_pb = req.xray_pb_details[sorted_xray_pb[0]];
+
+    if (latest_xray_pb) {
+      if (latest_xray_pb.overall_status == 1) {
+        xray_pb_date = latest_xray_pb.certified_date;
       }
     }
     if ('undefined' !== typeof xray_pb_date) {
-      console.log('moment(xray_pb_date)')
-      console.log(moment(xray_pb_date))
       var certDate = moment(xray_pb_date),
         certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
         certDateIncr = moment(certDateFormat).add(11, 'M'),
         certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
         diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
       if (diffDate > 0 && diffDate < 1) {
-        alertArr.xray_pb = true;
+        notif.xray_pb = "Officer's X-Ray Pre-Board Certificate expiring soon!";
       }
     }
+    xray_pb_date = UNIXConverter(xray_pb_date);
   }
-  if (req.xray_cargo_details != null) {
-    var cert = req.xray_cargo_details;
+  if (req.xray_cargo_details != undefined || req.xray_cargo_details != null) {
 
-    xrCgDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
-    xrCgDetail = cert[xrCgDetailSortedKey[0]];
+    sorted_xray_cargo = Object.keys(req.xray_cargo_details).sort(function (a, b) {
+      return req.xray_cargo_details[b]['certified_date'] - req.xray_cargo_details[a]['certified_date']
+    });
+    latest_xray_cargo = req.xray_cargo_details[sorted_xray_cargo[0]];
 
-    if (xrCgDetail) {
-      var overall_status = xrCgDetail.overall_status;
-
-      if (overall_status == 1) {
-        xray_cargo_date = xrCgDetail.certified_date;
+    if (latest_xray_cargo) {
+      if (latest_xray_cargo.overall_status == 1) {
+        xray_cargo_date = latest_xray_cargo.certified_date;
       }
     }
     if ('undefined' !== typeof xray_cargo_date) {
@@ -337,13 +328,12 @@ router.get('/officers/:nric', functions.verifyAdmin, functions.getEachOfficers, 
         certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
         diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
       if (diffDate > 0 && diffDate < 1) {
-        alertArr.xray_cargo = true;
+        notif.xray_cargo = "Officer's X-Ray Cargo Certificate expiring soon!";
       }
     }
+    xray_cargo_date = UNIXConverter(xray_cargo_date);
   }
-  console.log('Arr')
-  console.log(alertArr)
-  res.render('officer_details', { user: req.user, officer_details: req.officer_details, ac_details: req.ac_details, gs_details: req.gs_details, xray_hbs_details: req.xray_hbs_details, xray_pb_details: req.xray_pb_details, xray_cargo_details: req.xray_cargo_details, nric: req.params.nric, alertArr: alertArr });
+  res.render('officer_details', { user: req.user, officer_details: req.officer_details, ac_date: ac_date, gs_date: gs_date, xray_hbs_date: xray_hbs_date, xray_pb_date: xray_pb_date, xray_cargo_date: xray_cargo_date, notif: notif });
 });
 
 router.post('/officers/:nric', functions.verifyAdmin, function (req, res, next) {
@@ -362,14 +352,6 @@ router.post('/officers/:nric', functions.verifyAdmin, function (req, res, next) 
     var rank = req.body.rank;
     var remarks = req.body.remarks;
 
-    /*var general_screener = req.body.general_screener || 0;
-    var access_control = req.body.access_control || 0;
-    var etd = req.body.etd || 0;
-    var front_loader = req.body.front_loader || 0;
-    var xray_hbs = req.body.xray_hbs || 0;
-    var xray_pb = req.body.xray_pb || 0;
-    var xray_cargo = req.body.xray_cargo || 0;*/
-
     var update_user = {
       fname: fname,
       lname: lname,
@@ -384,23 +366,39 @@ router.post('/officers/:nric', functions.verifyAdmin, function (req, res, next) 
       remarks: remarks
     }
 
-    /*var update_user_certification = {
-      general_screener: functions.dateToUNIX(general_screener),
-      access_control: functions.dateToUNIX(access_control),
-      etd: functions.dateToUNIX(etd),
-      front_loader: functions.dateToUNIX(front_loader),
-      xray_hbs: functions.dateToUNIX(xray_hbs),
-      xray_pb: functions.dateToUNIX(xray_pb),
-      xray_cargo: functions.dateToUNIX(xray_cargo)
-    }*/
-
-    firebase.db.ref("officers/" + req.params.nric + "/").update(update_user);
-    /*firebase.db.ref("officers/"+req.params.nric+"/certification/").update(update_user_certification);*/
-    next();
+    firebase.db.ref("officers/" + req.params.nric + "/").update(update_user, function (error) {
+      if (!error) {
+        res.redirect(url.format({
+          pathname: "/officers/",
+          query: {
+            "valid": "update_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/officers/",
+          query: {
+            "valid": "update_fail"
+          }
+        }));
+      }
+    });
   } else if (req.body.delete_btn != null) {
     firebase.db.ref("officers/" + req.params.nric + "/").set(null, function (error) {
       if (!error) {
-        res.redirect("/officers/");
+        res.redirect(url.format({
+          pathname: "/officers/",
+          query: {
+            "valid": "delete_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/officers/",
+          query: {
+            "valid": "delete_fail"
+          }
+        }));
       }
     });
   } else if (req.body.view_cert_btn != null) {
@@ -412,181 +410,75 @@ router.post('/officers/:nric', functions.verifyAdmin, function (req, res, next) 
       }
     });
   }
-  //console.log(req.officer_details);
-  //res.render('officer_details', {user: req.user, officer_details: req.officer_details, nric: req.params.id});
-}, functions.getEachOfficers, functions.getEachOfficers, functions.getLatestACRecord, functions.getLatestGSRecord, functions.getLatestXrayHBSRecord, functions.getLatestXrayPBRecord, functions.getLatestXrayCargoRecord, function (req, res) {
-  console.log(req.officer_details);
-
-  var alertArr = [];
-  alertArr.gs = false;
-  alertArr.ac = false;
-  alertArr.xray_hbs = false;
-  alertArr.xray_pb = false;
-  alertArr.xray_cargo = false;
-  var curDate = moment().format("YYYYMMDD");
-  if (req.gs_details != null) {
-    var cert = req.gs_details;
-
-    gsDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
-    gsDetail = cert[gsDetailSortedKey[0]];
-
-    if (gsDetail) {
-      var overall_status = gsDetail.overall_status;
-
-      if (overall_status == 1) {
-        gs_date = gsDetail.certified_date;
-      }
-    }
-    if ('undefined' !== typeof gs_date) {
-      var certDate = moment(gs_date),
-        certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-        certDateIncr = moment(certDateFormat).add(11, 'M'),
-        certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-        diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-      if (diffDate > 0 && diffDate < 1) {
-        alertArr.gs = true;
-      }
-    }
-  }
-  if (req.ac_details != null) {
-    var cert = req.ac_details;
-
-    acDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
-    acDetail = cert[acDetailSortedKey[0]];
-
-    if (acDetail) {
-      var overall_status = acDetail.overall_status;
-
-      if (overall_status == 1) {
-        ac_date = acDetail.certified_date;
-      }
-    }
-
-    if ('undefined' !== typeof ac_date) {
-      var certDate = moment(ac_date),
-        certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-        certDateIncr = moment(certDateFormat).add(11, 'M'),
-        certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-        diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-      console.log(diffDate)
-      if (diffDate > 0 && diffDate < 1) {
-        alertArr.ac = true;
-      }
-    }
-  }
-  if (req.xray_hbs_details != null) {
-    var cert = req.xray_hbs_details;
-
-    xrHbDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
-    xrHbDetail = cert[xrHbDetailSortedKey[0]];
-
-    if (xrHbDetail) {
-      var overall_status = xrHbDetail.overall_status;
-
-      if (overall_status == 1) {
-        xray_hbs_date = xrHbDetail.certified_date;
-      }
-    }
-    if ('undefined' !== typeof xray_hbs_date) {
-      var certDate = moment(xray_hbs_date),
-        certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-        certDateIncr = moment(certDateFormat).add(11, 'M'),
-        certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-        diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-      if (diffDate > 0 && diffDate < 1) {
-        alertArr.xray_hbs = true;
-      }
-    }
-  }
-  if (req.xray_pb_details != null) {
-    var cert = req.xray_pb_details;
-
-    xrPbDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
-    xrPbDetail = cert[xrPbDetailSortedKey[0]];
-    console.log('xrPbDetail')
-    console.log(xrPbDetail)
-    if (xrPbDetail) {
-      var overall_status = xrPbDetail.overall_status;
-
-      if (overall_status == 1) {
-        xray_pb_date = xrPbDetail.certified_date;
-      }
-    }
-    if ('undefined' !== typeof xray_pb_date) {
-      console.log('moment(xray_pb_date)')
-      console.log(moment(xray_pb_date))
-      var certDate = moment(xray_pb_date),
-        certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-        certDateIncr = moment(certDateFormat).add(11, 'M'),
-        certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-        diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-      if (diffDate > 0 && diffDate < 1) {
-        alertArr.xray_pb = true;
-      }
-    }
-  }
-  if (req.xray_cargo_details != null) {
-    var cert = req.xray_cargo_details;
-
-    xrCgDetailSortedKey = Object.keys(cert).sort(function (a, b) { return cert[b]['certified_date'] - cert[a]['certified_date'] });
-    xrCgDetail = cert[xrCgDetailSortedKey[0]];
-
-    if (xrCgDetail) {
-      var overall_status = xrCgDetail.overall_status;
-
-      if (overall_status == 1) {
-        xray_cargo_date = xrCgDetail.certified_date;
-      }
-    }
-    if ('undefined' !== typeof xray_cargo_date) {
-      var certDate = moment(xray_cargo_date),
-        certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-        certDateIncr = moment(certDateFormat).add(11, 'M'),
-        certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-        diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-      if (diffDate > 0 && diffDate < 1) {
-        alertArr.xray_cargo = true;
-      }
-    }
-  }
-  console.log('Arr')
-  console.log(alertArr)
-  res.render('officer_details', { user: req.user, officer_details: req.officer_details, ac_details: req.ac_details, gs_details: req.gs_details, xray_hbs_details: req.xray_hbs_details, xray_pb_details: req.xray_pb_details, xray_cargo_details: req.xray_cargo_details, nric: req.params.nric, alertArr: alertArr });
 });
 
 //Access Control Section
 
 router.get('/access_control', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  res.render('main_access_control', { user: req.user, officer_details: req.officer_details });
+  var keys = [];
+  if (req.officer_details != undefined || req.officer_details != null) {
+    var officer_details = Object.keys(req.officer_details).sort(function (a, b) {
+      return req.officer_details[b].nric - req.officer_details[a].nric;
+    }).map(function (category) {
+      var key = getKeyByValue(req.officer_details, req.officer_details[category]);
+      keys.push(key);
+      return req.officer_details[category];
+    });
+    officer_details.forEach((item) => {
+      item.name = item.fname + " " + item.lname;
+    });
+  } else {
+    var officer_details = [];
+  }
+  res.render('main_access_control', { user: req.user, officer_details: officer_details });
 })
 
 router.get('/access_control/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getACRecords, function (req, res) {
-  function getKeyByValue(object, value) {
-    return Object.keys(object).find(key => object[key] === value);
-  }
   var keys = [];
-  var sorted_ac_details = Object.keys(req.ac_details).sort(function (a, b) {
-    return req.ac_details[b].certified_date - req.ac_details[a].certified_date;
-  }).map(function (category) {
-    var key = getKeyByValue(req.ac_details, req.ac_details[category]);
-    keys.push(key);
-    return req.ac_details[category];
-  });
-  console.log(sorted_ac_details);
-  sorted_ac_details.forEach((item, i) => {
-    if (item.overall_status == "1") {
-      item.overall_status = "PASS";
-    };
-    item.certified_date = UNIXConverter(item.certified_date);
-    item.id = i + 1;
-  });
-  console.log(sorted_ac_details);
-
-  res.render('access_control', { user: req.user, officer_details: req.officer_details, ac_details: req.sorted_ac_details });
+  if (req.ac_details != undefined || req.ac_details != null) {
+    var ac_details = Object.keys(req.ac_details).sort(function (a, b) {
+      return req.ac_details[b].certified_date - req.ac_details[a].certified_date;
+    }).map(function (category) {
+      var key = getKeyByValue(req.ac_details, req.ac_details[category]);
+      keys.push(key);
+      return req.ac_details[category];
+    });
+    ac_details.forEach((item, i) => {
+      if (item.overall_status == "1") {
+        item.overall_status = "PASS";
+      } else if (item.overall_status == "0") {
+        item.overall_status = "FAIL";
+      }
+      item.certified_date = UNIXConverter(item.certified_date);
+      item.id = i + 1;
+      item.key = keys[i];
+    });
+  } else {
+    var ac_details = [];
+  }
+  if (req.query.valid == "new_success") {
+    notif = "New record has been added successfully."
+    alert = true;
+  } else if (req.query.valid == "update_success") {
+    notif = "Officer's record updated successfully."
+    alert = true;
+  } else if (req.query.valid == "update_fail") {
+    notif = "Failed to update officer's record."
+    alert = false;
+  } else if (req.query.valid == "delete_success") {
+    notif = "Officer's record deleted."
+    alert = false;
+  } else if (req.query.valid == "delete_fail") {
+    notif = "Failed to delete officer's record."
+    alert = false;
+  } else {
+    notif = null;
+    alert = null;
+  }
+  res.render('access_control', { user: req.user, officer_details: req.officer_details, ac_details: ac_details, notif: notif, alert: alert });
 })
 
 router.get('/access_control/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  var officer_id = req.params.id;
   res.render('new_access_control', { user: req.user, officer_details: req.officer_details })
 })
 
@@ -643,10 +535,14 @@ router.post('/access_control/new/:nric', functions.isAdminPage, functions.verify
     }
   }
 
-  var insertData = firebase.db.ref("officers/" + officer_id + "/certification/access_control/").push(data, function (error) {
+  firebase.db.ref("officers/" + officer_id + "/certification/access_control/").push(data, function (error) {
     if (!error) {
-      var dataId = insertData.key;
-      res.redirect('/access_control/' + officer_id + '/' + dataId);
+      res.redirect(url.format({
+        pathname: "/access_control/" + officer_id,
+        query: {
+          "valid": "new_success"
+        }
+      }));
     }
   });
 })
@@ -665,7 +561,19 @@ router.post('/access_control/:nric/:ac_id', functions.verifyAdmin, function (req
   if (deleteBtn != null) { // IF DELETE BUTTON PRESSED
     firebase.db.ref("officers/" + officer_id + "/certification/access_control/" + ac_id).set(null, function (error) {
       if (!error) {
-        res.redirect('/access_control/' + officer_id);
+        res.redirect(url.format({
+          pathname: "/access_control/" + officer_id,
+          query: {
+            "valid": "delete_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/access_control/" + officer_id,
+          query: {
+            "valid": "delete_fail"
+          }
+        }));
       }
     });
   } else if (editBtn != null) {
@@ -721,7 +629,19 @@ router.post('/access_control/:nric/:ac_id', functions.verifyAdmin, function (req
 
     firebase.db.ref("officers/" + officer_id + "/certification/access_control/" + ac_id).update(data, function (error) {
       if (!error) {
-        res.redirect('/access_control/' + officer_id + '/' + ac_id);
+        res.redirect(url.format({
+          pathname: "/access_control/" + officer_id,
+          query: {
+            "valid": "update_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/access_control/" + officer_id,
+          query: {
+            "valid": "update_fail"
+          }
+        }));
       }
     });
   }
@@ -730,11 +650,67 @@ router.post('/access_control/:nric/:ac_id', functions.verifyAdmin, function (req
 //General Screener Section
 
 router.get('/general_screener', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  res.render('main_general_screener', { user: req.user, officer_details: req.officer_details });
+  var keys = [];
+  if (req.officer_details != undefined || req.officer_details != null) {
+    var officer_details = Object.keys(req.officer_details).sort(function (a, b) {
+      return req.officer_details[b].nric - req.officer_details[a].nric;
+    }).map(function (category) {
+      var key = getKeyByValue(req.officer_details, req.officer_details[category]);
+      keys.push(key);
+      return req.officer_details[category];
+    });
+    officer_details.forEach((item) => {
+      item.name = item.fname + " " + item.lname;
+    });
+  } else {
+    var officer_details = [];
+  }
+  res.render('main_general_screener', { user: req.user, officer_details: officer_details });
 })
 
 router.get('/general_screener/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getGSRecords, function (req, res) {
-  res.render('general_screener', { user: req.user, officer_details: req.officer_details, gs_details: req.gs_details });
+  var keys = [];
+  if (req.gs_details != undefined || req.gs_details != null) {
+    var gs_details = Object.keys(req.gs_details).sort(function (a, b) {
+      return req.gs_details[b].certified_date - req.gs_details[a].certified_date;
+    }).map(function (category) {
+      var key = getKeyByValue(req.gs_details, req.gs_details[category]);
+      keys.push(key);
+      return req.gs_details[category];
+    });
+    gs_details.forEach((item, i) => {
+      if (item.overall_status == "1") {
+        item.overall_status = "PASS";
+      } else if (item.overall_status == "0") {
+        item.overall_status = "FAIL";
+      };
+      item.certified_date = UNIXConverter(item.certified_date);
+      item.id = i + 1;
+      item.key = keys[i];
+    });
+  } else {
+    var gs_details = [];
+  }
+  if (req.query.valid == "new_success") {
+    notif = "New record has been added successfully."
+    alert = true;
+  } else if (req.query.valid == "update_success") {
+    notif = "Officer's record updated successfully."
+    alert = true;
+  } else if (req.query.valid == "update_fail") {
+    notif = "Failed to update officer's record."
+    alert = false;
+  } else if (req.query.valid == "delete_success") {
+    notif = "Officer's record deleted."
+    alert = false;
+  } else if (req.query.valid == "delete_fail") {
+    notif = "Failed to delete officer's record."
+    alert = false;
+  } else {
+    notif = null;
+    alert = null;
+  }
+  res.render('general_screener', { user: req.user, officer_details: req.officer_details, gs_details: gs_details, notif: notif, alert: alert });
 })
 
 router.get('/general_screener/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
@@ -795,10 +771,14 @@ router.post('/general_screener/new/:nric', functions.isAdminPage, functions.veri
     }
   }
 
-  var insertData = firebase.db.ref("officers/" + officer_id + "/certification/general_screener/").push(data, function (error) {
+  firebase.db.ref("officers/" + officer_id + "/certification/general_screener/").push(data, function (error) {
     if (!error) {
-      var dataId = insertData.key;
-      res.redirect('/general_screener/' + officer_id + '/' + dataId);
+      res.redirect(url.format({
+        pathname: "/general_screener/" + officer_id,
+        query: {
+          "valid": "new_success"
+        }
+      }));
     }
   });
 })
@@ -817,7 +797,19 @@ router.post('/general_screener/:nric/:gs_id', functions.verifyAdmin, function (r
   if (deleteBtn != null) { // IF DELETE BUTTON PRESSED
     firebase.db.ref("officers/" + officer_id + "/certification/general_screener/" + gs_id).set(null, function (error) {
       if (!error) {
-        res.redirect('/general_screener/' + officer_id);
+        res.redirect(url.format({
+          pathname: "/general_screener/" + officer_id,
+          query: {
+            "valid": "delete_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/general_screener/" + officer_id,
+          query: {
+            "valid": "delete_fail"
+          }
+        }));
       }
     });
   } else if (editBtn != null) {
@@ -873,7 +865,19 @@ router.post('/general_screener/:nric/:gs_id', functions.verifyAdmin, function (r
 
     firebase.db.ref("officers/" + officer_id + "/certification/general_screener/" + gs_id).update(data, function (error) {
       if (!error) {
-        res.redirect('/general_screener/' + officer_id + '/' + gs_id);
+        res.redirect(url.format({
+          pathname: "/general_screener/" + officer_id,
+          query: {
+            "valid": "update_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/general_screener/" + officer_id,
+          query: {
+            "valid": "update_fail"
+          }
+        }));
       }
     });
   }
@@ -882,15 +886,70 @@ router.post('/general_screener/:nric/:gs_id', functions.verifyAdmin, function (r
 //Xray HBS Section
 
 router.get('/xray_hbs', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  res.render('main_xray_hbs', { user: req.user, officer_details: req.officer_details });
+  var keys = [];
+  if (req.officer_details != undefined || req.officer_details != null) {
+    var officer_details = Object.keys(req.officer_details).sort(function (a, b) {
+      return req.officer_details[b].nric - req.officer_details[a].nric;
+    }).map(function (category) {
+      var key = getKeyByValue(req.officer_details, req.officer_details[category]);
+      keys.push(key);
+      return req.officer_details[category];
+    });
+    officer_details.forEach((item) => {
+      item.name = item.fname + " " + item.lname;
+    });
+  } else {
+    var officer_details = [];
+  }
+  res.render('main_xray_hbs', { user: req.user, officer_details: officer_details });
 })
 
 router.get('/xray_hbs/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getXrayHBSRecords, function (req, res) {
-  res.render('xray_hbs', { user: req.user, officer_details: req.officer_details, xray_hbs_details: req.xray_hbs_details });
+  var keys = [];
+  if (req.xray_hbs_details != undefined || req.xray_hbs_details != null) {
+    var xray_hbs_details = Object.keys(req.xray_hbs_details).sort(function (a, b) {
+      return req.xray_hbs_details[b].certified_date - req.xray_hbs_details[a].certified_date;
+    }).map(function (category) {
+      var key = getKeyByValue(req.xray_hbs_details, req.xray_hbs_details[category]);
+      keys.push(key);
+      return req.xray_hbs_details[category];
+    });
+    xray_hbs_details.forEach((item, i) => {
+      if (item.overall_status == "1") {
+        item.overall_status = "PASS";
+      } else if (item.overall_status == "0") {
+        item.overall_status = "FAIL";
+      }
+      item.certified_date = UNIXConverter(item.certified_date);
+      item.id = i + 1;
+      item.key = keys[i];
+    });
+  } else {
+    var xray_hbs_details = [];
+  }
+  if (req.query.valid == "new_success") {
+    notif = "New record has been added successfully."
+    alert = true;
+  } else if (req.query.valid == "update_success") {
+    notif = "Officer's record updated successfully."
+    alert = true;
+  } else if (req.query.valid == "update_fail") {
+    notif = "Failed to update officer's record."
+    alert = false;
+  } else if (req.query.valid == "delete_success") {
+    notif = "Officer's record deleted."
+    alert = false;
+  } else if (req.query.valid == "delete_fail") {
+    notif = "Failed to delete officer's record."
+    alert = false;
+  } else {
+    notif = null;
+    alert = null;
+  }
+  res.render('xray_hbs', { user: req.user, officer_details: req.officer_details, xray_hbs_details: xray_hbs_details, notif: notif, alert: alert });
 })
 
 router.get('/xray_hbs/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  var officer_id = req.params.id;
   res.render('new_xray_hbs', { user: req.user, officer_details: req.officer_details })
 })
 
@@ -923,10 +982,14 @@ router.post('/xray_hbs/new/:nric', functions.isAdminPage, functions.verifyAdmin,
     }
   }
 
-  var insertData = firebase.db.ref("officers/" + officer_id + "/certification/xray_hbs/").push(data, function (error) {
+  firebase.db.ref("officers/" + officer_id + "/certification/xray_hbs/").push(data, function (error) {
     if (!error) {
-      var dataId = insertData.key;
-      res.redirect('/xray_hbs/' + officer_id + '/' + dataId);
+      res.redirect(url.format({
+        pathname: "/xray_hbs/" + officer_id,
+        query: {
+          "valid": "new_success"
+        }
+      }));
     }
   });
 })
@@ -945,7 +1008,19 @@ router.post('/xray_hbs/:nric/:xray_hbs_id', functions.verifyAdmin, function (req
   if (deleteBtn != null) { // IF DELETE BUTTON PRESSED
     firebase.db.ref("officers/" + officer_id + "/certification/xray_hbs/" + xray_hbs_id).set(null, function (error) {
       if (!error) {
-        res.redirect('/xray_hbs/' + officer_id);
+        res.redirect(url.format({
+          pathname: "/xray_hbs/" + officer_id,
+          query: {
+            "valid": "delete_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/xray_hbs/" + officer_id,
+          query: {
+            "valid": "delete_fail"
+          }
+        }));
       }
     });
   } else if (editBtn != null) {
@@ -977,7 +1052,19 @@ router.post('/xray_hbs/:nric/:xray_hbs_id', functions.verifyAdmin, function (req
 
     firebase.db.ref("officers/" + officer_id + "/certification/xray_hbs/" + xray_hbs_id).update(data, function (error) {
       if (!error) {
-        res.redirect('/xray_hbs/' + officer_id + '/' + xray_hbs_id);
+        res.redirect(url.format({
+          pathname: "/xray_hbs/" + officer_id,
+          query: {
+            "valid": "update_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/xray_hbs/" + officer_id,
+          query: {
+            "valid": "update_fail"
+          }
+        }));
       }
     });
   }
@@ -986,11 +1073,68 @@ router.post('/xray_hbs/:nric/:xray_hbs_id', functions.verifyAdmin, function (req
 //Xray Preboard (PB) Section
 
 router.get('/xray_pb', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  res.render('main_xray_pb', { user: req.user, officer_details: req.officer_details });
+  var keys = [];
+  if (req.officer_details != undefined || req.officer_details != null) {
+    var officer_details = Object.keys(req.officer_details).sort(function (a, b) {
+      return req.officer_details[b].nric - req.officer_details[a].nric;
+    }).map(function (category) {
+      var key = getKeyByValue(req.officer_details, req.officer_details[category]);
+      keys.push(key);
+      return req.officer_details[category];
+    });
+    officer_details.forEach((item) => {
+      item.name = item.fname + " " + item.lname;
+    });
+  } else {
+    var officer_details = [];
+  }
+
+  res.render('main_xray_pb', { user: req.user, officer_details: officer_details });
 })
 
 router.get('/xray_pb/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getXrayPBRecords, function (req, res) {
-  res.render('xray_pb', { user: req.user, officer_details: req.officer_details, xray_pb_details: req.xray_pb_details });
+  var keys = [];
+  if (req.xray_pb_details != undefined || req.xray_pb_details != null) {
+    var xray_pb_details = Object.keys(req.xray_pb_details).sort(function (a, b) {
+      return req.xray_pb_details[b].certified_date - req.xray_pb_details[a].certified_date;
+    }).map(function (category) {
+      var key = getKeyByValue(req.xray_pb_details, req.xray_pb_details[category]);
+      keys.push(key);
+      return req.xray_pb_details[category];
+    });
+    xray_pb_details.forEach((item, i) => {
+      if (item.overall_status == "1") {
+        item.overall_status = "PASS";
+      } else if (item.overall_status == "0") {
+        item.overall_status = "FAIL";
+      }
+      item.certified_date = UNIXConverter(item.certified_date);
+      item.id = i + 1;
+      item.key = keys[i];
+    });
+  } else {
+    var xray_pb_details = [];
+  }
+  if (req.query.valid == "new_success") {
+    notif = "New record has been added successfully."
+    alert = true;
+  } else if (req.query.valid == "update_success") {
+    notif = "Officer's record updated successfully."
+    alert = true;
+  } else if (req.query.valid == "update_fail") {
+    notif = "Failed to update officer's record."
+    alert = false;
+  } else if (req.query.valid == "delete_success") {
+    notif = "Officer's record deleted."
+    alert = false;
+  } else if (req.query.valid == "delete_fail") {
+    notif = "Failed to delete officer's record."
+    alert = false;
+  } else {
+    notif = null;
+    alert = null;
+  }
+  res.render('xray_pb', { user: req.user, officer_details: req.officer_details, xray_pb_details: xray_pb_details, notif: notif, alert: alert });
 })
 
 router.get('/xray_pb/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
@@ -1021,10 +1165,14 @@ router.post('/xray_pb/new/:nric', functions.isAdminPage, functions.verifyAdmin, 
     }
   }
 
-  var insertData = firebase.db.ref("officers/" + officer_id + "/certification/xray_pb/").push(data, function (error) {
+  firebase.db.ref("officers/" + officer_id + "/certification/xray_pb/").push(data, function (error) {
     if (!error) {
-      var dataId = insertData.key;
-      res.redirect('/xray_pb/' + officer_id + '/' + dataId);
+      res.redirect(url.format({
+        pathname: "/xray_pb/" + officer_id,
+        query: {
+          "valid": "new_success"
+        }
+      }));
     }
   });
 })
@@ -1043,7 +1191,19 @@ router.post('/xray_pb/:nric/:xray_pb_id', functions.verifyAdmin, function (req, 
   if (deleteBtn != null) { // IF DELETE BUTTON PRESSED
     firebase.db.ref("officers/" + officer_id + "/certification/xray_pb/" + xray_pb_id).set(null, function (error) {
       if (!error) {
-        res.redirect('/xray_pb/' + officer_id);
+        res.redirect(url.format({
+          pathname: "/xray_pb/" + officer_id,
+          query: {
+            "valid": "delete_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/xray_pb/" + officer_id,
+          query: {
+            "valid": "delete_fail"
+          }
+        }));
       }
     });
   } else if (editBtn != null) {
@@ -1069,7 +1229,19 @@ router.post('/xray_pb/:nric/:xray_pb_id', functions.verifyAdmin, function (req, 
 
     firebase.db.ref("officers/" + officer_id + "/certification/xray_pb/" + xray_pb_id).update(data, function (error) {
       if (!error) {
-        res.redirect('/xray_pb/' + officer_id + '/' + xray_pb_id);
+        res.redirect(url.format({
+          pathname: "/xray_pb/" + officer_id,
+          query: {
+            "valid": "update_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/xray_pb/" + officer_id,
+          query: {
+            "valid": "update_fail"
+          }
+        }));
       }
     });
   }
@@ -1078,11 +1250,67 @@ router.post('/xray_pb/:nric/:xray_pb_id', functions.verifyAdmin, function (req, 
 //Xray Cargo Section
 
 router.get('/xray_cargo', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  res.render('main_xray_cargo', { user: req.user, officer_details: req.officer_details });
+  var keys = [];
+  if (req.officer_details != undefined || req.officer_details != null) {
+    var officer_details = Object.keys(req.officer_details).sort(function (a, b) {
+      return req.officer_details[b].nric - req.officer_details[a].nric;
+    }).map(function (category) {
+      var key = getKeyByValue(req.officer_details, req.officer_details[category]);
+      keys.push(key);
+      return req.officer_details[category];
+    });
+    officer_details.forEach((item) => {
+      item.name = item.fname + " " + item.lname;
+    });
+  } else {
+    var officer_details = [];
+  }
+  res.render('main_xray_cargo', { user: req.user, officer_details: officer_details });
 })
 
 router.get('/xray_cargo/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getXrayCargoRecords, function (req, res) {
-  res.render('xray_cargo', { user: req.user, officer_details: req.officer_details, xray_cargo_details: req.xray_cargo_details });
+  var keys = [];
+  if (req.xray_cargo_details != undefined || req.xray_cargo_details != null) {
+    var xray_cargo_details = Object.keys(req.xray_cargo_details).sort(function (a, b) {
+      return req.xray_cargo_details[b].certified_date - req.xray_cargo_details[a].certified_date;
+    }).map(function (category) {
+      var key = getKeyByValue(req.xray_cargo_details, req.xray_cargo_details[category]);
+      keys.push(key);
+      return req.xray_cargo_details[category];
+    });
+    xray_cargo_details.forEach((item, i) => {
+      if (item.overall_status == "1") {
+        item.overall_status = "PASS";
+      } else if (item.overall_status == "0") {
+        item.overall_status = "FAIL";
+      }
+      item.certified_date = UNIXConverter(item.certified_date);
+      item.id = i + 1;
+      item.key = keys[i];
+    });
+  } else {
+    var xray_cargo_details = [];
+  }
+  if (req.query.valid == "new_success") {
+    notif = "New record has been added successfully."
+    alert = true;
+  } else if (req.query.valid == "update_success") {
+    notif = "Officer's record updated successfully."
+    alert = true;
+  } else if (req.query.valid == "update_fail") {
+    notif = "Failed to update officer's record."
+    alert = false;
+  } else if (req.query.valid == "delete_success") {
+    notif = "Officer's record deleted."
+    alert = false;
+  } else if (req.query.valid == "delete_fail") {
+    notif = "Failed to delete officer's record."
+    alert = false;
+  } else {
+    notif = null;
+    alert = null;
+  }
+  res.render('xray_cargo', { user: req.user, officer_details: req.officer_details, xray_cargo_details: xray_cargo_details, notif: notif, alert: alert });
 })
 
 router.get('/xray_cargo/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
@@ -1119,10 +1347,14 @@ router.post('/xray_cargo/new/:nric', functions.isAdminPage, functions.verifyAdmi
     }
   }
 
-  var insertData = firebase.db.ref("officers/" + officer_id + "/certification/xray_cargo/").push(data, function (error) {
+  firebase.db.ref("officers/" + officer_id + "/certification/xray_cargo/").push(data, function (error) {
     if (!error) {
-      var dataId = insertData.key;
-      res.redirect('/xray_cargo/' + officer_id + '/' + dataId);
+      res.redirect(url.format({
+        pathname: "/xray_cargo/" + officer_id,
+        query: {
+          "valid": "new_success"
+        }
+      }));
     }
   });
 })
@@ -1141,7 +1373,19 @@ router.post('/xray_cargo/:nric/:xray_cargo_id', functions.verifyAdmin, function 
   if (deleteBtn != null) { // IF DELETE BUTTON PRESSED
     firebase.db.ref("officers/" + officer_id + "/certification/xray_cargo/" + xray_cargo_id).set(null, function (error) {
       if (!error) {
-        res.redirect('/xray_cargo/' + officer_id);
+        res.redirect(url.format({
+          pathname: "/xray_cargo/" + officer_id,
+          query: {
+            "valid": "delete_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/xray_cargo/" + officer_id,
+          query: {
+            "valid": "delete_fail"
+          }
+        }));
       }
     });
   } else if (editBtn != null) {
@@ -1173,7 +1417,19 @@ router.post('/xray_cargo/:nric/:xray_cargo_id', functions.verifyAdmin, function 
 
     firebase.db.ref("officers/" + officer_id + "/certification/xray_cargo/" + xray_cargo_id).update(data, function (error) {
       if (!error) {
-        res.redirect('/xray_cargo/' + officer_id + '/' + xray_cargo_id);
+        res.redirect(url.format({
+          pathname: "/xray_cargo/" + officer_id,
+          query: {
+            "valid": "update_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/xray_cargo/" + officer_id,
+          query: {
+            "valid": "update_fail"
+          }
+        }));
       }
     });
   }
@@ -1182,13 +1438,67 @@ router.post('/xray_cargo/:nric/:xray_cargo_id', functions.verifyAdmin, function 
 //Security Test Section
 
 router.get('/security_test', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  res.render('main_security_test', { user: req.user, officer_details: req.officer_details });
+  var keys = [];
+  if (req.officer_details != undefined || req.officer_details != null) {
+    var officer_details = Object.keys(req.officer_details).sort(function (a, b) {
+      return req.officer_details[b].nric - req.officer_details[a].nric;
+    }).map(function (category) {
+      var key = getKeyByValue(req.officer_details, req.officer_details[category]);
+      keys.push(key);
+      return req.officer_details[category];
+    });
+    officer_details.forEach((item) => {
+      item.name = item.fname + " " + item.lname;
+    });
+  } else {
+    var officer_details = [];
+  }
+  res.render('main_security_test', { user: req.user, officer_details: officer_details });
 })
 
 router.get('/security_test/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getSTRecords, function (req, res) {
-  console.log('req.st_details')
-  console.log(req.st_details)
-  res.render('security_test', { user: req.user, officer_details: req.officer_details, st_details: req.security_test_details });
+  var keys = [];
+  if (req.security_test_details != undefined || req.security_test_details != null) {
+    var st_details = Object.keys(req.security_test_details).sort(function (a, b) {
+      return req.security_test_details[b].st_date - req.security_test_details[a].st_date;
+    }).map(function (category) {
+      var key = getKeyByValue(req.security_test_details, req.security_test_details[category]);
+      keys.push(key);
+      return req.security_test_details[category];
+    });
+    st_details.forEach((item, i) => {
+      if (item.overall_status == "1") {
+        item.overall_status = "PASS";
+      } else if (item.overall_status == "0") {
+        item.overall_status = "FAIL";
+      }
+      item.st_date = UNIXConverter(item.st_date);
+      item.key = keys[i];
+    });
+  } else {
+    var st_details = [];
+  }
+  if (req.query.valid == "new_success") {
+    notif = "New record has been added successfully."
+    alert = true;
+  } else if (req.query.valid == "update_success") {
+    notif = "Officer's record updated successfully."
+    alert = true;
+  } else if (req.query.valid == "update_fail") {
+    notif = "Failed to update officer's record."
+    alert = false;
+  } else if (req.query.valid == "delete_success") {
+    notif = "Officer's record deleted."
+    alert = false;
+  } else if (req.query.valid == "delete_fail") {
+    notif = "Failed to delete officer's record."
+    alert = false;
+  } else {
+    notif = null;
+    alert = null;
+  }
+  console.log(st_details);
+  res.render('security_test', { user: req.user, officer_details: req.officer_details, st_details: st_details, notif: notif, alert: alert });
 })
 
 router.get('/security_test/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
@@ -1198,12 +1508,9 @@ router.get('/security_test/new/:nric', functions.isAdminPage, functions.verifyAd
 
 router.post('/security_test/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
   var upload = req.files;
-  var isUploaded = false;
-  var uploadFileName = '';
 
   if (upload && upload.st_image) {
-    upload.st_image.mv('./uploads/' + upload.st_image.name, function (err) {
-    });
+    upload.st_image.mv('./uploads/' + upload.st_image.name);
   }
   var officer_id = req.params.nric;
 
@@ -1252,20 +1559,19 @@ router.post('/security_test/new/:nric', functions.isAdminPage, functions.verifyA
     st_image: st_image,
     st_remarks: st_remarks
   }
-  console.log('insert data')
-  console.log(data)
-  console.log(JSON.parse(JSON.stringify(data)))
-  var insertData = firebase.db.ref("officers/" + officer_id + "/security_records/security_test/").push(JSON.parse(JSON.stringify(data)), function (error) {
+  firebase.db.ref("officers/" + officer_id + "/security_records/security_test/").push(JSON.parse(JSON.stringify(data)), function (error) {
     if (!error) {
-      var dataId = insertData.key;
-      res.redirect('/security_test/' + officer_id + '/' + dataId);
+      res.redirect(url.format({
+        pathname: "/security_test/" + officer_id,
+        query: {
+          "valid": "new_success"
+        }
+      }));
     }
   });
 })
 
 router.get('/security_test/:nric/:st_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachSTRecord, function (req, res) {
-  console.log('req.req.params')
-  console.log(req.params)
   res.render('view_security_test', { user: req.user, officer_details: req.officer_details, st_id: req.params.st_id, st_details: req.security_test_details });
 });
 
@@ -1279,10 +1585,28 @@ router.post('/security_test/:nric/:st_id', functions.verifyAdmin, function (req,
   if (deleteBtn != null) { // IF DELETE BUTTON PRESSED
     firebase.db.ref("officers/" + officer_id + "/security_records/security_test/" + st_id).set(null, function (error) {
       if (!error) {
-        res.redirect('/security_test/' + officer_id);
+        res.redirect(url.format({
+          pathname: "/security_test/" + officer_id,
+          query: {
+            "valid": "delete_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/security_test/" + officer_id,
+          query: {
+            "valid": "delete_fail"
+          }
+        }));
       }
     });
   } else if (editBtn != null) {
+    var upload = req.files;
+
+    if (upload && upload.st_image) {
+      upload.st_image.mv('./uploads/' + upload.st_image.name);
+    }
+
     var overall_status = req.body.overall_status;
     var st_name = req.body.st_name;
     var st_date = functions.dateToUNIX(req.body.st_date);
@@ -1300,7 +1624,10 @@ router.post('/security_test/:nric/:st_id', functions.verifyAdmin, function (req,
     var st_certSeized = req.body.st_certSeized;
     var st_cat = req.body.st_cat;
     var st_supervisor = req.body.st_supervisor;
-    var st_image = req.body.st_image;
+    var st_image = '';
+    if (upload && upload.st_image) {
+      st_image = upload.st_image.name;
+    }
     var st_remarks = req.body.st_remarks;
 
 
@@ -1328,7 +1655,19 @@ router.post('/security_test/:nric/:st_id', functions.verifyAdmin, function (req,
 
     firebase.db.ref("officers/" + officer_id + "/security_records/security_test/" + st_id).update(JSON.parse(JSON.stringify(data)), function (error) {
       if (!error) {
-        res.redirect('/security_test/' + officer_id + '/' + st_id);
+        res.redirect(url.format({
+          pathname: "/security_test/" + officer_id,
+          query: {
+            "valid": "update_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/security_test/" + officer_id,
+          query: {
+            "valid": "update_fail"
+          }
+        }));
       }
     });
   }
@@ -1337,28 +1676,78 @@ router.post('/security_test/:nric/:st_id', functions.verifyAdmin, function (req,
 //Security Breach Section
 
 router.get('/security_breach', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  res.render('main_security_breach', { user: req.user, officer_details: req.officer_details });
+  var keys = [];
+  if (req.officer_details != undefined || req.officer_details != null) {
+    var officer_details = Object.keys(req.officer_details).sort(function (a, b) {
+      return req.officer_details[b].nric - req.officer_details[a].nric;
+    }).map(function (category) {
+      var key = getKeyByValue(req.officer_details, req.officer_details[category]);
+      keys.push(key);
+      return req.officer_details[category];
+    });
+    officer_details.forEach((item) => {
+      item.name = item.fname + " " + item.lname;
+    });
+  } else {
+    var officer_details = [];
+  }
+  res.render('main_security_breach', { user: req.user, officer_details: officer_details });
 })
 
 router.get('/security_breach/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getSBRecords, function (req, res) {
-  console.log('req.sb_details')
-  console.log(req.sb_details)
-  res.render('security_breach', { user: req.user, officer_details: req.officer_details, sb_details: req.security_breach_details });
+  var keys = [];
+  if (req.security_breach_details != undefined || req.security_breach_details != null) {
+    var sb_details = Object.keys(req.security_breach_details).sort(function (a, b) {
+      return req.security_breach_details[b].sb_date - req.security_breach_details[a].sb_date;
+    }).map(function (category) {
+      var key = getKeyByValue(req.security_breach_details, req.security_breach_details[category]);
+      keys.push(key);
+      return req.security_breach_details[category];
+    });
+    sb_details.forEach((item, i) => {
+      if (item.overall_status == "1") {
+        item.overall_status = "PASS";
+      } else if (item.overall_status == "0") {
+        item.overall_status = "FAIL";
+      }
+      item.sb_date = UNIXConverter(item.sb_date);
+      item.key = keys[i];
+    });
+    console.log(sb_details)
+  } else {
+    var sb_details = [];
+  }
+  if (req.query.valid == "new_success") {
+    notif = "New record has been added successfully."
+    alert = true;
+  } else if (req.query.valid == "update_success") {
+    notif = "Officer's record updated successfully."
+    alert = true;
+  } else if (req.query.valid == "update_fail") {
+    notif = "Failed to update officer's record."
+    alert = false;
+  } else if (req.query.valid == "delete_success") {
+    notif = "Officer's record deleted."
+    alert = false;
+  } else if (req.query.valid == "delete_fail") {
+    notif = "Failed to delete officer's record."
+    alert = false;
+  } else {
+    notif = null;
+    alert = null;
+  }
+  res.render('security_breach', { user: req.user, officer_details: req.officer_details, sb_details: sb_details, notif: notif, alert: alert });
 })
 
 router.get('/security_breach/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  var officer_id = req.params.id;
   res.render('new_security_breach', { user: req.user, officer_details: req.officer_details })
 })
 
 router.post('/security_breach/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
   var upload = req.files;
-  var isUploaded = false;
-  var uploadFileName = '';
 
   if (upload && upload.sb_image) {
-    upload.sb_image.mv('./uploads/' + upload.sb_image.name, function (err) {
-    });
+    upload.sb_image.mv('./uploads/' + upload.sb_image.name);
   }
   var officer_id = req.params.nric;
 
@@ -1399,20 +1788,19 @@ router.post('/security_breach/new/:nric', functions.isAdminPage, functions.verif
     sb_image: sb_image,
     sb_remarks: sb_remarks
   }
-  console.log('insert data')
-  console.log(data)
-  console.log(JSON.parse(JSON.stringify(data)))
-  var insertData = firebase.db.ref("officers/" + officer_id + "/security_records/security_breach/").push(JSON.parse(JSON.stringify(data)), function (error) {
+  firebase.db.ref("officers/" + officer_id + "/security_records/security_breach/").push(JSON.parse(JSON.stringify(data)), function (error) {
     if (!error) {
-      var dataId = insertData.key;
-      res.redirect('/security_breach/' + officer_id + '/' + dataId);
+      res.redirect(url.format({
+        pathname: "/security_breach/" + officer_id,
+        query: {
+          "valid": "new_success"
+        }
+      }));
     }
   });
 })
 
 router.get('/security_breach/:nric/:sb_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachSBRecord, function (req, res) {
-  console.log('req.req.params')
-  console.log(req.params)
   res.render('view_security_breach', { user: req.user, officer_details: req.officer_details, sb_id: req.params.sb_id, sb_details: req.security_breach_details });
 });
 
@@ -1426,10 +1814,28 @@ router.post('/security_breach/:nric/:sb_id', functions.verifyAdmin, function (re
   if (deleteBtn != null) { // IF DELETE BUTTON PRESSED
     firebase.db.ref("officers/" + officer_id + "/security_records/security_breach/" + sb_id).set(null, function (error) {
       if (!error) {
-        res.redirect('/security_breach/' + officer_id);
+        res.redirect(url.format({
+          pathname: "/security_breach/" + officer_id,
+          query: {
+            "valid": "delete_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/security_breach/" + officer_id,
+          query: {
+            "valid": "delete_fail"
+          }
+        }));
       }
     });
   } else if (editBtn != null) {
+    var upload = req.files;
+
+    if (upload && upload.sb_image) {
+      upload.sb_image.mv('./uploads/' + upload.sb_image.name);
+    }
+
     var sb_name = req.body.sb_name;
     var sb_date = functions.dateToUNIX(req.body.sb_date);
     var sb_time = req.body.sb_time;
@@ -1443,7 +1849,10 @@ router.post('/security_breach/:nric/:sb_id', functions.verifyAdmin, function (re
     var sb_detect = req.body.sb_detect;
     var sb_certSeized = req.body.sb_certSeized;
     var sb_cat = req.body.sb_cat;
-    var sb_image = req.body.sb_image;
+    var sb_image = '';
+    if (upload && upload.sb_image) {
+      sb_image = upload.sb_image.name;
+    }
     var sb_remarks = req.body.sb_remarks;
 
 
@@ -1467,7 +1876,19 @@ router.post('/security_breach/:nric/:sb_id', functions.verifyAdmin, function (re
 
     firebase.db.ref("officers/" + officer_id + "/security_records/security_breach/" + sb_id).update(JSON.parse(JSON.stringify(data)), function (error) {
       if (!error) {
-        res.redirect('/security_breach/' + officer_id + '/' + sb_id);
+        res.redirect(url.format({
+          pathname: "/security_breach/" + officer_id,
+          query: {
+            "valid": "update_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/security_breach/" + officer_id,
+          query: {
+            "valid": "update_fail"
+          }
+        }));
       }
     });
   }
@@ -1476,17 +1897,65 @@ router.post('/security_breach/:nric/:sb_id', functions.verifyAdmin, function (re
 //Others Section
 
 router.get('/others', functions.verifyAdmin, functions.getOfficers, function (req, res) {
-  res.render('main_others', { user: req.user, officer_details: req.officer_details });
+  var keys = [];
+  if (req.officer_details != undefined || req.officer_details != null) {
+    var officer_details = Object.keys(req.officer_details).sort(function (a, b) {
+      return req.officer_details[b].nric - req.officer_details[a].nric;
+    }).map(function (category) {
+      var key = getKeyByValue(req.officer_details, req.officer_details[category]);
+      keys.push(key);
+      return req.officer_details[category];
+    });
+    officer_details.forEach((item) => {
+      item.name = item.fname + " " + item.lname;
+    });
+  } else {
+    var officer_details = [];
+  }
+  res.render('main_others', { user: req.user, officer_details: officer_details });
 })
 
 router.get('/others/:nric', functions.verifyAdmin, functions.getEachOfficers, functions.getOTHERSRecords, function (req, res) {
-  console.log('req.others_details')
-  console.log(req.others_details)
-  res.render('others', { user: req.user, officer_details: req.officer_details, others_details: req.others_details });
+  var keys = [];
+  if (req.others_details != undefined || req.others_details != null) {
+    var others_details = Object.keys(req.others_details).sort(function (a, b) {
+      return req.others_details[b].others_cardSeized - req.others_details[a].others_cardSeized;
+    }).map(function (category) {
+      var key = getKeyByValue(req.others_details, req.others_details[category]);
+      keys.push(key);
+      return req.others_details[category];
+    });
+    others_details.forEach((item, i) => {
+      item.others_cardSeized = UNIXConverter(item.others_cardSeized);
+      item.others_cardReturned = UNIXConverter(item.others_cardReturned);
+      item.key = keys[i];
+    });
+  } else {
+    var others_details = [];
+  }
+  if (req.query.valid == "new_success") {
+    notif = "New record has been added successfully."
+    alert = true;
+  } else if (req.query.valid == "update_success") {
+    notif = "Officer's record updated successfully."
+    alert = true;
+  } else if (req.query.valid == "update_fail") {
+    notif = "Failed to update officer's record."
+    alert = false;
+  } else if (req.query.valid == "delete_success") {
+    notif = "Officer's record deleted."
+    alert = false;
+  } else if (req.query.valid == "delete_fail") {
+    notif = "Failed to delete officer's record."
+    alert = false;
+  } else {
+    notif = null;
+    alert = null;
+  }
+  res.render('others', { user: req.user, officer_details: req.officer_details, others_details: others_details, notif: notif, alert: alert });
 })
 
 router.get('/others/new/:nric', functions.isAdminPage, functions.verifyAdmin, functions.getEachOfficers, function (req, res) {
-  var officer_id = req.params.id;
   res.render('new_others', { user: req.user, officer_details: req.officer_details })
 })
 
@@ -1513,20 +1982,19 @@ router.post('/others/new/:nric', functions.isAdminPage, functions.verifyAdmin, f
     others_reason: others_reason,
     others_remarks: others_remarks
   }
-  // console.log('insert data')
-  // console.log(data)
-  // console.log(JSON.parse(JSON.stringify(data)))
-  var insertData = firebase.db.ref("officers/" + officer_id + "/others_records/others/").push(JSON.parse(JSON.stringify(data)), function (error) {
+  firebase.db.ref("officers/" + officer_id + "/others_records/others/").push(JSON.parse(JSON.stringify(data)), function (error) {
     if (!error) {
-      var dataId = insertData.key;
-      res.redirect('/others/' + officer_id + '/' + dataId);
+      res.redirect(url.format({
+        pathname: "/others/" + officer_id,
+        query: {
+          "valid": "new_success"
+        }
+      }));
     }
   });
 })
 
 router.get('/others/:nric/:others_id', functions.verifyAdmin, functions.getEachOfficers, functions.getEachOTHERSRecord, function (req, res) {
-  // console.log('req.req.params')
-  // console.log(req.params)
   res.render('view_others', { user: req.user, officer_details: req.officer_details, others_id: req.params.others_id, others_details: req.others_details });
 });
 
@@ -1540,7 +2008,19 @@ router.post('/others/:nric/:others_id', functions.verifyAdmin, function (req, re
   if (deleteBtn != null) { // IF DELETE BUTTON PRESSED
     firebase.db.ref("officers/" + officer_id + "/others_records/others/" + others_id).set(null, function (error) {
       if (!error) {
-        res.redirect('/others/' + officer_id);
+        res.redirect(url.format({
+          pathname: "/others/" + officer_id,
+          query: {
+            "valid": "delete_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/others/" + officer_id,
+          query: {
+            "valid": "delete_fail"
+          }
+        }));
       }
     });
   } else if (editBtn != null) {
@@ -1567,7 +2047,19 @@ router.post('/others/:nric/:others_id', functions.verifyAdmin, function (req, re
 
     firebase.db.ref("officers/" + officer_id + "/others_records/others/" + others_id).update(JSON.parse(JSON.stringify(data)), function (error) {
       if (!error) {
-        res.redirect('/others/' + officer_id + '/' + others_id);
+        res.redirect(url.format({
+          pathname: "/others/" + officer_id,
+          query: {
+            "valid": "update_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/others/" + officer_id,
+          query: {
+            "valid": "update_fail"
+          }
+        }));
       }
     });
   }
@@ -1576,7 +2068,51 @@ router.post('/others/:nric/:others_id', functions.verifyAdmin, function (req, re
 //Admin Section
 
 router.get('/admin', functions.verifyAdmin, functions.getAllAdmin, functions.isAdminPage, function (req, res) {
-  res.render('administration', { user: req.user, admin_details: req.admin_details });
+  var keys = [];
+  if (req.admin_details != undefined || req.admin_details != null) {
+    var admin_details = Object.keys(req.admin_details).sort(function (a, b) {
+      return req.admin_details[b].nric - req.admin_details[a].nric;
+    }).map(function (category) {
+      var key = getKeyByValue(req.admin_details, req.admin_details[category]);
+      keys.push(key);
+      return req.admin_details[category];
+    });
+    admin_details.forEach((item) => {
+      item.name = item.fname + " " + item.lname;
+      if (item.role == 1) {
+        item.role = "Administrator"
+      } else if (item.role == 2) {
+        item.role = "User"
+      } else if (item.role == 3) {
+        item.role = "Read-only User"
+      }
+    });
+  } else {
+    var admin_details = [];
+  }
+  if (req.query.valid == "new_success") {
+    notif = "New admin has been added successfully."
+    alert = true;
+  } else if (req.query.valid == "new_fail") {
+    notif = "Failed to add new admin."
+    alert = false;
+  } else if (req.query.valid == "update_success") {
+    notif = "Admin's details updated successfully."
+    alert = true;
+  } else if (req.query.valid == "update_fail") {
+    notif = "Failed to update admin's details."
+    alert = false;
+  } else if (req.query.valid == "delete_success") {
+    notif = "Admin's record deleted."
+    alert = false;
+  } else if (req.query.valid == "delete_fail") {
+    notif = "Failed to delete admin's record."
+    alert = false;
+  } else {
+    notif = null;
+    alert = null;
+  }
+  res.render('administration', { user: req.user, admin_details: admin_details, notif: notif, alert: alert });
 });
 
 router.get('/admin/new', functions.isAdminPage, functions.verifyAdmin, function (req, res) {
@@ -1603,9 +2139,19 @@ router.post('/admin/new', functions.isAdminPage, functions.verifyAdmin, function
 
     firebase.db.ref("admin/" + username + "/").set(data, function (error) {
       if (!error) {
-        res.redirect('/admin/');
+        res.redirect(url.format({
+          pathname: "/admin/",
+          query: {
+            "valid": "new_success"
+          }
+        }));
       } else {
-        console.log("There is an error inserting admin into firebase.");
+        res.redirect(url.format({
+          pathname: "/officers/",
+          query: {
+            "valid": "new_fail"
+          }
+        }));
       }
     });
   } else {
@@ -1623,7 +2169,6 @@ router.post('/admin/view/:username', functions.isAdminPage, functions.verifyAdmi
   var username = req.params.username;
   var nric = req.body.nric;
   var role = req.body.role;
-  var error = null;
 
   var edit_btn = req.body.edituser_btn;
   var delete_btn = req.body.deleteuser_btn;
@@ -1637,20 +2182,44 @@ router.post('/admin/view/:username', functions.isAdminPage, functions.verifyAdmi
     }
     firebase.db.ref("/admin/" + username).update(data, function (error) {
       if (!error) {
-        res.redirect('/admin/view/' + username);
+        res.redirect(url.format({
+          pathname: "/admin/",
+          query: {
+            "valid": "update_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/admin/",
+          query: {
+            "valid": "update_fail"
+          }
+        }));
       }
     });
   } else if (delete_btn != null) {
     firebase.db.ref("/admin/" + username).set(null, function (error) {
       if (!error) {
-        res.redirect('/admin/');
+        res.redirect(url.format({
+          pathname: "/admin/",
+          query: {
+            "valid": "delete_success"
+          }
+        }));
+      } else {
+        res.redirect(url.format({
+          pathname: "/admin/",
+          query: {
+            "valid": "delete_fail"
+          }
+        }));
       }
     });
   }
 });
 
 router.get('/admin/changepw/:username', functions.isAdminPage, functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
-  res.render('change_admin', { user: req.user, admin_details: req.admin_details, notif: null })
+  res.render('change_pwd', { user: req.user, admin_details: req.admin_details, notif: null })
 });
 
 router.post('/admin/changepw/:username', functions.isAdminPage, functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
@@ -1665,24 +2234,29 @@ router.post('/admin/changepw/:username', functions.isAdminPage, functions.verify
     firebase.db.ref("/admin/" + username).update(data, function (error) {
       if (!error) {
         notif = "Password has been changed successfully.";
-        res.render('change_admin', { user: req.user, admin_details: req.admin_details, notif: notif });
+        alert = true;
+        res.render('change_pwd', { user: req.user, admin_details: req.admin_details, notif: notif, alert: alert });
       } else {
         notif = "Unable to change password!";
-        res.render('change_admin', { user: req.user, admin_details: req.admin_details, notif: notif });
+        alert = false;
+        res.render('change_pwd', { user: req.user, admin_details: req.admin_details, notif: notif, alert: alert });
       }
     });
+  } else {
+    notif = "Passwords do not match!";
+    alert = false;
+    res.render('change_pwd', { user: req.user, admin_details: req.admin_details, notif: notif, alert: alert });
   }
 });
 
 //Profile Section
 
 router.get('/profile', functions.verifyAdmin, functions.getAllAdmin, functions.isAdminPage, function (req, res) {
-  console.log(req.admin_details);
   res.render('profile', { user: req.user, user_details: req.admin_details });
 });
 
 router.get('/user/changepw/:username', functions.isAdminPage, functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
-  res.render('change_admin', { user: req.user, admin_details: req.admin_details, notif: null })
+  res.render('change_pwd', { user: req.user, admin_details: req.admin_details, notif: null })
 });
 
 router.post('/user/changepw/:username', functions.isAdminPage, functions.verifyAdmin, functions.getEachAdmin, function (req, res) {
@@ -1697,12 +2271,18 @@ router.post('/user/changepw/:username', functions.isAdminPage, functions.verifyA
     firebase.db.ref("/admin/" + username).update(data, function (error) {
       if (!error) {
         notif = "Password has been changed successfully.";
+        alert = true;
         res.render('profile', { user: req.user, admin_details: req.admin_details, notif: notif });
       } else {
         notif = "Unable to change password!";
-        res.render('change_admin', { user: req.user, admin_details: req.admin_details, notif: notif });
+        alert = false;
+        res.render('change_pwd', { user: req.user, admin_details: req.admin_details, notif: notif });
       }
     });
+  } else {
+    notif = "Passwords do not match!";
+    alert = false;
+    res.render('change_pwd', { user: req.user, admin_details: req.admin_details, notif: notif, alert: alert });
   }
 });
 
@@ -1712,43 +2292,10 @@ router.get('/logout', function (req, res) {
   res.redirect('/');
 });
 
-/*
-officers
-{ '09AB123':
-   { cert_card_no: 'CertCard',
-     certification:
-      { xray_cargo: [Object], xray_hbs: [Object], xray_pb: [Object] },
-     designation: 'desg',
-     dob: '01/01/2000',
-     fname: 'Canh',
-     gender: '0',
-     lname: 'Nguyen',
-     nric: '09AB123',
-     organisation: 'Org',
-     rank: 'Ranks1',
-     remarks: 'Rem1',
-     serial_no: 'Serial1' },
-  '09AB124':
-   { cert_card_no: 'CertCard2',
-     certification: { access_control: [Object], general_screener: [Object] },
-     designation: 'desg2',
-     dob: '02/01/1999',
-     fname: 'Dem1',
-     gender: '1',
-     lname: 'Last dem1',
-     nric: '09AB124',
-     organisation: 'org2',
-     rank: 'Ranks2',
-     remarks: 'Rem2',
-     serial_no: 'Serial2' } }
- */
-router.get('/expiring', functions.verifyAdmin, functions.getOfficers, function (req, res) {
+router.get('/expiring_ac/', functions.verifyAdmin, functions.getOfficers, function (req, res) {
   var officers = req.officer_details;
-  // console.log('officers')
-  // console.log(officers);
-  // console.log(officers.length)
 
-  var officersToExpire = [];
+  var acToExpire = [];
   if (officers !== null) {
     for (var id in officers) {
       var officerId = officers[id];
@@ -1756,47 +2303,25 @@ router.get('/expiring', functions.verifyAdmin, functions.getOfficers, function (
         var officerCert = officerId.certification;
         if (officerCert) {
           if (officerCert.access_control) {
-            var officerAc = officerCert.access_control;
-            for (var accCrtId in officerAc) {
-              //console.log(officerAc[accCrtId]);
-              var cert = officerAc[accCrtId];
+            var officerAC = officerCert.access_control;
+            for (var acCrtId in officerAC) {
+              var cert = officerAC[acCrtId];
               if (cert) {
                 var curDate = moment().format("YYYYMMDD");
-                //console.log(curDate)
                 var certDate = moment(cert.certified_date),
                   certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
                   certDateIncr = moment(certDateFormat).add(11, 'M'),
                   certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
                   diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-                // console.log('diffDate')
-                // console.log(certDateFormat)
-                // console.log(diffDate)
                 if (diffDate > 0 && diffDate < 1) {
-                  var offc = [];
-                  offc.expiringDate = moment(certDateFormat).format("DD-MM-YYYY");
-                  offc.name = officerId.fname;
+                  var offc = {};
+                  offc.expiringDate = moment(certDateFormat).format("DD/MM/YYYY");
+                  offc.name = officerId.fname + " " + officerId.lname;
                   offc.nric = id;
                   offc.certCardNo = officerId.cert_card_no;
-                  officersToExpire.push(offc)
+                  offc.certId = acCrtId;
+                  acToExpire.push(offc)
                 }
-
-                // var certDate = moment(cert.certified_date),
-                //     certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
-                //     certDateIncr = moment(certDateFormat).add(11,'M'),
-                //     certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
-                //     //diffDate = moment(curDate).diff(moment(certDateIncr), 'days');
-                //     diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
-                // console.log('diffDate')
-                // console.log(certDateFormat)
-                // console.log(diffDate)
-                // if (diffDate >0 && diffDate<1) {
-                //   var offc = [];
-                //   offc.expiringDate = certDateIncr;
-                //   offc.name = officerId.fname;
-                //   offc.nric = id;
-                //   offc.certCardNo = officerId.cert_card_no;
-                //   officersToExpire.push(offc)
-                // }
               }
             }
           }
@@ -1804,17 +2329,14 @@ router.get('/expiring', functions.verifyAdmin, functions.getOfficers, function (
       }
     }
   }
-  res.render('expiring_ac', { user: req.user, officersToExpire: officersToExpire })
+  res.render('expiring_ac', { user: req.user, acToExpire: acToExpire })
 });
 
 
 router.get('/expiring_gs', functions.verifyAdmin, functions.getOfficers, function (req, res) {
   var officers = req.officer_details;
-  // console.log('officers')
-  // console.log(officers);
-  // console.log(officers.length)
 
-  var officersToExpire = [];
+  var gsToExpire = [];
   if (officers !== null) {
     for (var id in officers) {
       var officerId = officers[id];
@@ -1822,27 +2344,25 @@ router.get('/expiring_gs', functions.verifyAdmin, functions.getOfficers, functio
         var officerCert = officerId.certification;
         if (officerCert) {
           if (officerCert.general_screener) {
-            var officerAc = officerCert.general_screener;
-            for (var accCrtId in officerAc) {
-              //console.log(officerAc[accCrtId]);
-              var cert = officerAc[accCrtId];
+            var officerGS = officerCert.general_screener;
+            for (var gsCrtId in officerGS) {
+              var cert = officerGS[gsCrtId];
               if (cert) {
                 var curDate = moment().format("YYYYMMDD");
-                //console.log(curDate)
                 var certDate = moment(cert.certified_date),
                   certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
                   certDateIncr = moment(certDateFormat).add(11, 'M'),
                   certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
                   diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
                 if (diffDate > 0 && diffDate < 1) {
-                  var offc = [];
+                  var offc = {};
                   offc.expiringDate = moment(certDateFormat).format("DD-MM-YYYY");
-                  offc.name = officerId.fname;
+                  offc.name = officerId.fname + " " + officerId.lname;
                   offc.nric = id;
                   offc.certCardNo = officerId.cert_card_no;
-                  officersToExpire.push(offc)
+                  offc.certId = gsCrtId;
+                  gsToExpire.push(offc)
                 }
-
               }
             }
           }
@@ -1850,16 +2370,13 @@ router.get('/expiring_gs', functions.verifyAdmin, functions.getOfficers, functio
       }
     }
   }
-  res.render('expiring_gs', { user: req.user, officersToExpire: officersToExpire })
+  res.render('expiring_gs', { user: req.user, gsToExpire: gsToExpire })
 });
 
 router.get('/expiring_xrpb', functions.verifyAdmin, functions.getOfficers, function (req, res) {
   var officers = req.officer_details;
-  // console.log('officers')
-  // console.log(officers);
-  // console.log(officers.length)
 
-  var officersToExpire = [];
+  var xrpbToExpire = [];
   if (officers !== null) {
     for (var id in officers) {
       var officerId = officers[id];
@@ -1867,25 +2384,24 @@ router.get('/expiring_xrpb', functions.verifyAdmin, functions.getOfficers, funct
         var officerCert = officerId.certification;
         if (officerCert) {
           if (officerCert.xray_pb) {
-            var officerAc = officerCert.xray_pb;
-            for (var accCrtId in officerAc) {
-              //console.log(officerAc[accCrtId]);
-              var cert = officerAc[accCrtId];
+            var officerXRPB = officerCert.xray_pb;
+            for (var xrpbCrtId in officerXRPB) {
+              var cert = officerXRPB[xrpbCrtId];
               if (cert) {
                 var curDate = moment().format("YYYYMMDD");
-                //console.log(curDate)
                 var certDate = moment(cert.certified_date),
                   certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
                   certDateIncr = moment(certDateFormat).add(11, 'M'),
                   certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
                   diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
                 if (diffDate > 0 && diffDate < 1) {
-                  var offc = [];
+                  var offc = {};
                   offc.expiringDate = moment(certDateFormat).format("DD-MM-YYYY");
-                  offc.name = officerId.fname;
+                  offc.name = officerId.fname + " " + officerId.lname;
                   offc.nric = id;
                   offc.certCardNo = officerId.cert_card_no;
-                  officersToExpire.push(offc)
+                  offc.certId = xrpbCrtId;
+                  xrpbToExpire.push(offc)
                 }
 
               }
@@ -1895,16 +2411,13 @@ router.get('/expiring_xrpb', functions.verifyAdmin, functions.getOfficers, funct
       }
     }
   }
-  res.render('expiring_xrpb', { user: req.user, officersToExpire: officersToExpire })
+  res.render('expiring_xrpb', { user: req.user, xrpbToExpire: xrpbToExpire })
 });
 
 router.get('/expiring_xrhbs', functions.verifyAdmin, functions.getOfficers, function (req, res) {
   var officers = req.officer_details;
-  // console.log('officers')
-  // console.log(officers);
-  // console.log(officers.length)
 
-  var officersToExpire = [];
+  var xrhbsToExpire = [];
   if (officers !== null) {
     for (var id in officers) {
       var officerId = officers[id];
@@ -1912,25 +2425,24 @@ router.get('/expiring_xrhbs', functions.verifyAdmin, functions.getOfficers, func
         var officerCert = officerId.certification;
         if (officerCert) {
           if (officerCert.xray_hbs) {
-            var officerAc = officerCert.xray_hbs;
-            for (var accCrtId in officerAc) {
-              //console.log(officerAc[accCrtId]);
-              var cert = officerAc[accCrtId];
+            var officerXRHBS = officerCert.xray_hbs;
+            for (var xrhbsCrtId in officerXRHBS) {
+              var cert = officerXRHBS[xrhbsCrtId];
               if (cert) {
                 var curDate = moment().format("YYYYMMDD");
-                //console.log(curDate)
                 var certDate = moment(cert.certified_date),
                   certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
                   certDateIncr = moment(certDateFormat).add(11, 'M'),
                   certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
                   diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
                 if (diffDate > 0 && diffDate < 1) {
-                  var offc = [];
+                  var offc = {};
                   offc.expiringDate = moment(certDateFormat).format("DD-MM-YYYY");
-                  offc.name = officerId.fname;
+                  offc.name = officerId.fname + " " + officerId.lname;
                   offc.nric = id;
                   offc.certCardNo = officerId.cert_card_no;
-                  officersToExpire.push(offc)
+                  xrhbsToExpire.push(offc)
+                  offc.certId = xrhbsCrtId;
                 }
 
               }
@@ -1940,16 +2452,13 @@ router.get('/expiring_xrhbs', functions.verifyAdmin, functions.getOfficers, func
       }
     }
   }
-  res.render('expiring_xrhbs', { user: req.user, officersToExpire: officersToExpire })
+  res.render('expiring_xrhbs', { user: req.user, xrhbsToExpire: xrhbsToExpire })
 });
 
 router.get('/expiring_xrcg', functions.verifyAdmin, functions.getOfficers, function (req, res) {
   var officers = req.officer_details;
-  // console.log('officers')
-  // console.log(officers);
-  // console.log(officers.length)
 
-  var officersToExpire = [];
+  var xrcgToExpire = [];
   if (officers !== null) {
     for (var id in officers) {
       var officerId = officers[id];
@@ -1957,25 +2466,24 @@ router.get('/expiring_xrcg', functions.verifyAdmin, functions.getOfficers, funct
         var officerCert = officerId.certification;
         if (officerCert) {
           if (officerCert.xray_cargo) {
-            var officerAc = officerCert.xray_cargo;
-            for (var accCrtId in officerAc) {
-              //console.log(officerAc[accCrtId]);
-              var cert = officerAc[accCrtId];
+            var officerXRCG = officerCert.xray_cargo;
+            for (var xrcgCrtId in officerXRCG) {
+              var cert = officerXRCG[xrcgCrtId];
               if (cert) {
                 var curDate = moment().format("YYYYMMDD");
-                //console.log(curDate)
                 var certDate = moment(cert.certified_date),
                   certDateFormat = moment.unix(certDate).format("YYYYMMDD"),
                   certDateIncr = moment(certDateFormat).add(11, 'M'),
                   certDateIncr = moment(certDateIncr).format("YYYYMMDD"),
                   diffDate = moment(curDate).diff(moment(certDateIncr), 'months', true);
                 if (diffDate > 0 && diffDate < 1) {
-                  var offc = [];
+                  var offc = {};
                   offc.expiringDate = moment(certDateFormat).format("DD-MM-YYYY");
-                  offc.name = officerId.fname;
+                  offc.name = officerId.fname + " " + officerId.lname;
                   offc.nric = id;
                   offc.certCardNo = officerId.cert_card_no;
-                  officersToExpire.push(offc)
+                  offc.certId = xrcgCrtId;
+                  xrcgToExpire.push(offc)
                 }
 
               }
@@ -1985,17 +2493,14 @@ router.get('/expiring_xrcg', functions.verifyAdmin, functions.getOfficers, funct
       }
     }
   }
-  res.render('expiring_xrcg', { user: req.user, officersToExpire: officersToExpire })
+  res.render('expiring_xrcg', { user: req.user, xrcgToExpire: xrcgToExpire })
 });
 
 
 router.get('/securitytestfailure', functions.verifyAdmin, functions.getOfficers, function (req, res) {
   var officers = req.officer_details;
-  // console.log('officers')
-  // console.log(officers);
-  // console.log(officers.length)
 
-  var officersSec = [];
+  var officersST = [];
   if (officers !== null) {
     for (var id in officers) {
       var officerId = officers[id];
@@ -2003,22 +2508,21 @@ router.get('/securitytestfailure', functions.verifyAdmin, functions.getOfficers,
         var officerSecRec = officerId.security_records;
         if (officerSecRec) {
           if (officerSecRec.security_test) {
-            var officerSecT = officerSecRec.security_test;
-            for (var accCrtId in officerSecT) {
-              //console.log(officerAc[accCrtId]);
-              var secR = officerSecT[accCrtId];
-              if (secR) {
-                if (secR.overall_status == 0) {
-                  var offc = [];
-                  offc.stId = accCrtId;
-                  offc.stName = secR.st_name;
-                  offc.name = officerId.fname;
+            var officerSTRec = officerSecRec.security_test;
+            for (var stCrtId in officerSTRec) {
+              var stRec = officerSTRec[stCrtId];
+              if (stRec) {
+                if (stRec.overall_status == 0) {
+                  var offc = {};
+                  offc.stId = stCrtId;
+                  offc.stName = stRec.st_name;
+                  offc.name = officerId.fname + " " + officerId.lname;
                   offc.nric = id;
-                  offc.location = secR.st_location;
-                  offc.date = secR.st_date;
-                  offc.time = secR.st_time;
-                  offc.mode = secR.st_mode;
-                  officersSec.push(offc)
+                  offc.location = stRec.st_location;
+                  offc.date = UNIXConverter(stRec.st_date);
+                  offc.time = stRec.st_time;
+                  offc.mode = stRec.st_mode;
+                  officersST.push(offc)
                 }
               }
             }
@@ -2027,17 +2531,14 @@ router.get('/securitytestfailure', functions.verifyAdmin, functions.getOfficers,
       }
     }
   }
-  res.render('securitytestfailure', { user: req.user, officersSec: officersSec })
+  res.render('securitytestfailure', { user: req.user, officersST: officersST })
 });
 
 
 router.get('/securitybreach', functions.verifyAdmin, functions.getOfficers, function (req, res) {
   var officers = req.officer_details;
-  // console.log('officers')
-  // console.log(officers);
-  // console.log(officers.length)
 
-  var officersSec = [];
+  var officersSB = [];
   if (officers !== null) {
     for (var id in officers) {
       var officerId = officers[id];
@@ -2045,20 +2546,19 @@ router.get('/securitybreach', functions.verifyAdmin, functions.getOfficers, func
         var officerSecRec = officerId.security_records;
         if (officerSecRec) {
           if (officerSecRec.security_breach) {
-            var officerSecT = officerSecRec.security_breach;
-            for (var accCrtId in officerSecT) {
-              //console.log(officerAc[accCrtId]);
-              var secR = officerSecT[accCrtId];
-              if (secR) {
-                var offc = [];
+            var officerSBRec = officerSecRec.security_breach;
+            for (var accCrtId in officerSBRec) {
+              var sbRec = officerSBRec[accCrtId];
+              if (sbRec) {
+                var offc = {};
                 offc.sbId = accCrtId;
-                offc.sbName = secR.sb_name;
+                offc.sbName = sbRec.sb_name;
                 offc.name = officerId.fname;
                 offc.nric = id;
-                offc.location = secR.sb_location;
-                offc.date = secR.sb_date;
-                offc.time = secR.sb_time;
-                officersSec.push(offc)
+                offc.location = sbRec.sb_location;
+                offc.date = UNIXConverter(sbRec.sb_date);
+                offc.time = sbRec.sb_time;
+                officersSB.push(offc)
               }
             }
           }
@@ -2066,7 +2566,7 @@ router.get('/securitybreach', functions.verifyAdmin, functions.getOfficers, func
       }
     }
   }
-  res.render('securitybreach', { user: req.user, officersSec: officersSec })
+  res.render('securitybreach', { user: req.user, officersSB: officersSB })
 });
 
 

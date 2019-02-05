@@ -1,176 +1,29 @@
 <% include partials/header %>
 <% include partials/nav %>
-<%
-function UNIXConverter(UNIX_timestamp){
-  try {
-    if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
-      return "-";
-    }
-    var a = new Date(UNIX_timestamp * 1000);
-    var year = a.getFullYear();
-    var month = a.getMonth() + 1;
-    var date = a.getDate();
-    if (month < 10) {
-      month = "0" + month;
-    }
-    if (date < 10) {
-      date = "0" + date;
-    }
-    var time = date + '/' + month + '/' + year;
-    return time;
-  } catch (error) {
-    return "";
-  }
-}
 
 
-//iterate through the certification details to get that particular record.
-var dob = '-';
-var gs_date= '-';
-var ac_date= '-';
-var xray_hbs_date = '-';
-var xray_pb_date = '-'
-var xray_cargo_date = '-';
-
-if (gs_details != null) {
-  gsDetailSortedKey = Object.keys(gs_details).sort(function(a,b){return gs_details[b]['certified_date']-gs_details[a]['certified_date']});
-  gsDetail = gs_details[gsDetailSortedKey[0]];
-
-  if(gsDetail){
-    var overall_status = gsDetail.overall_status;
-
-    if (overall_status == 1) {
-      gs_date = gsDetail.certified_date;
-    }
-  }
-  // for (var id in gs_details) { // since you're not sure of the latest ID, iterate to get the ID.
-  //   var overall_status = gs_details[id].overall_status;
-  //
-  //   if (overall_status == 1) {
-  //     gs_date = gs_details[id].certified_date;
-  //   }
-  // }
-}
-
-if (ac_details != null) {
-  acDetailSortedKey = Object.keys(ac_details).sort(function(a,b){return ac_details[b]['certified_date']-ac_details[a]['certified_date']});
-  acDetail = ac_details[acDetailSortedKey[0]];
-
-  if(acDetail){
-    var overall_status = acDetail.overall_status;
-
-    if (overall_status == 1) {
-      ac_date = acDetail.certified_date;
-    }
-  }
-
-  // for (var id in ac_details) { // since you're not sure of the latest ID, iterate to get the ID.
-  //   var overall_status = ac_details[id].overall_status;
-  //
-  //   if (overall_status == 1) {
-  //     ac_date = ac_details[id].certified_date;
-  //   }
-  // }
-}
-
-if (xray_hbs_details != null) {
-  xrHbDetailSortedKey = Object.keys(xray_hbs_details).sort(function(a,b){return xray_hbs_details[b]['certified_date']-xray_hbs_details[a]['certified_date']});
-  xrHbDetail = xray_hbs_details[xrHbDetailSortedKey[0]];
-
-  if(xrHbDetail){
-    var overall_status = xrHbDetail.overall_status;
-
-    if (overall_status == 1) {
-      xray_hbs_date = xrHbDetail.certified_date;
-    }
-  }
-
-  // for (var id in xray_hbs_details) { // since you're not sure of the latest ID, iterate to get the ID.
-  //   var overall_status = xray_hbs_details[id].overall_status;
-  //
-  //   if (overall_status == 1) {
-  //     xray_hbs_date = xray_hbs_details[id].certified_date;
-  //   }
-  // }
-}
-
-if (xray_pb_details != null) {
-  xrPbDetailSortedKey = Object.keys(xray_pb_details).sort(function(a,b){return xray_pb_details[b]['certified_date']-xray_pb_details[a]['certified_date']});
-  xrPbDetail = xray_pb_details[xrPbDetailSortedKey[0]];
-
-  if(xrPbDetail){
-    var overall_status = xrPbDetail.overall_status;
-
-    if (overall_status == 1) {
-      xray_pb_date = xrPbDetail.certified_date;
-    }
-  }
-  // for (var id in xray_pb_details) { // since you're not sure of the latest ID, iterate to get the ID.
-  //   var overall_status = xray_pb_details[id].overall_status;
-  //
-  //   if (overall_status == 1) {
-  //     xray_pb_date = xray_pb_details[id].certified_date;
-  //   }
-  // }
-}
-
-if (xray_cargo_details != null) {
-  xrCgDetailSortedKey = Object.keys(xray_cargo_details).sort(function(a,b){return xray_cargo_details[b]['certified_date']-xray_cargo_details[a]['certified_date']});
-  xrCgDetail = xray_cargo_details[xrCgDetailSortedKey[0]];
-
-  if(xrCgDetail){
-    var overall_status = xrCgDetail.overall_status;
-
-    if (overall_status == 1) {
-      xray_cargo_date = xrCgDetail.certified_date;
-    }
-  }
-  // for (var id in xray_cargo_details) { // since you're not sure of the latest ID, iterate to get the ID.
-  //   var overall_status = xray_cargo_details[id].overall_status;
-  //
-  //   if (overall_status == 1) {
-  //     xray_cargo_date = xray_cargo_details[id].certified_date;
-  //   }
-  // }
-}
-
-// in some cases, there will not be any XRAY fields upon creation of officers, therefore this is used as a safe check.
-
-/*var etd_date=0;
-var front_loader_date=0;
-
-if (officer_details.certification !== undefined) {
-  if (officer_details.certification.etd != null) { etd_date = officer_details.certification.etd; }
-  if (officer_details.certification.front_loader != null) { front_loader_date = officer_details.certification.front_loader; }
-
-  dob = officer_details.dob;
-}*/
-
-// if(alertArr.ac){
-//   alert('Officer\'s Access Control Certificate expiring soon!')
-// }
-// if(alertArr.gs){
-//   alert('Officer\'s General Access Certificate expiring soon!');
-// }
-// if(alertArr.xray_cargo){
-//   alert('Officer\'s X-Ray Cargo Certificate expiring soon!');
-// }
-//
-// if(alertArr.xray_hbs){
-//   alert('Officer\'s X-Ray HBS Certificate expiring soon!');
-// }
-// if(alertArr.xray_pb){
-//   alert('Officer\'s X-Ray Pre-Board Certificate expiring soon!');
-// }
-%>
 <% if (user.role == 1) { %>
+<% if (!Array.isArray(notif) || !notif.length) { %>
+<div class="mt-3">
+  <% for (var key in notif) { %>
+  <%  if (notif[key] != null) { %>
+  <div class="alert alert-warning alert-dismissible fade show mx-auto col-11 col-sm-6 mb-1" role="alert">
+    <%= notif[key] %>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <% } %>
+  <% } %>
+</div>
+<% } %>
 <div class="container-fluid">
   <h4 class="mt-4">
     <%=officer_details.fname%>
     <%=officer_details.lname%>'s Details</h4>
   <hr>
 
-  <form action='/officers/<%=nric%>/' method="POST">
+  <form action='/officers/<%=officer_details.nric%>/' method="POST">
     <div class="card d-flex mx-auto mb-5 text-left">
       <div class="card-body px-4">
         <div class="row mb-2">
@@ -191,7 +44,8 @@ if (officer_details.certification !== undefined) {
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="nric">NRIC:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control" name="nric" id="nric" value="<%=nric%>" required>
+              <input type="text" class="form-control nric_textbox" name="nric" id="nric" value="<%=officer_details.nric%>"
+                required disabled>
             </div>
           </div>
         </div>
@@ -274,17 +128,17 @@ if (officer_details.certification !== undefined) {
         <h5 class="card-title text-center my-3">Certified On:</h5>
         <div class="row mb-2">
           <div class="col-sm-4">
-            <label class="font-weight-bold mb-0" for="general_screener">General Screener:</label><br />
+            <label class="font-weight-bold mb-0" for="access_control">Access Control:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="general_screener" id="general_screener" value="<%=UNIXConverter(gs_date)%>"
-                readonly disabled>
+              <input type="text" class="form-control datepicker" name="access_control" id="access_control" value="<%=ac_date%>"
+                disabled>
             </div>
           </div>
           <div class="col-sm-4">
-            <label class="font-weight-bold mb-0" for="access_control">Access Control:</label><br />
+            <label class="font-weight-bold mb-0" for="general_screener">General Screener:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="access_control" id="access_control" value="<%=UNIXConverter(ac_date)%>"
-                disabled>
+              <input type="text" class="form-control datepicker" name="general_screener" id="general_screener" value="<%=gs_date%>"
+                readonly disabled>
             </div>
           </div>
         </div>
@@ -293,21 +147,21 @@ if (officer_details.certification !== undefined) {
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="xray_hbs">X-Ray HBS:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="xray_hbs" id="xray_hbs" value="<%=UNIXConverter(xray_hbs_date)%>"
+              <input type="text" class="form-control datepicker" name="xray_hbs" id="xray_hbs" value="<%=xray_hbs_date%>"
                 disabled>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="xray_pb">X-Ray Pre-Board:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="xray_pb" id="xray_pb" value="<%=UNIXConverter(xray_pb_date)%>"
+              <input type="text" class="form-control datepicker" name="xray_pb" id="xray_pb" value="<%=xray_pb_date%>"
                 disabled>
             </div>
           </div>
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="xray_cargo">X-Ray Cargo:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control datepicker" name="xray_cargo" id="xray_cargo" value="<%=UNIXConverter(xray_cargo_date)%>"
+              <input type="text" class="form-control datepicker" name="xray_cargo" id="xray_cargo" value="<%=xray_cargo_date%>"
                 disabled>
             </div>
           </div>
@@ -322,37 +176,30 @@ if (officer_details.certification !== undefined) {
   </form>
 </div>
 
-<% if('undefined'!==typeof alertArr || alertArr!=='' || alertArr!==null) { %>
-<% if
-  (alertArr.ac) { %>
-<script>alert('Officer\'s Access Control Certificate expiring soon!')</script>
-<% } %>
-<% if
-  (alertArr.gs) { %>
-<script>alert('Officer\'s General Screener Certificate expiring soon!');</script>
-<% } %>
-<% if
-  (alertArr.xray_cargo) { %>
-<script>alert('Officer\'s X-Ray-Cargo Certificate expiring soon!');</script>
-<% } %>
-<% if
-  (alertArr.xray_hbs) { %>
-<script>alert('Officer\'s X-Ray-HBS Certificate expiring soon!');</script>
-<% } %>
-
-<% if
-  (alertArr.xray_pb) { %>
-<script>alert('Officer\'s X-Ray-Pre-Board Certificate expiring soon!');</script>
-<% } %>
-<% } %>
-
 <% } else if (user.role == 2 || user.role == 3) { %>
-<div class="title">
-  <h4>
+<div class="title d-flex">
+  <span class="justify-content-start align-self-center position-absolute pl-3" style="font-size: 2rem;">
+    <a href="/" class="backBtn"><i class="fas fa-angle-left"></i></a>
+  </span>
+  <h4 class="mx-auto mt-2">
     <%=officer_details.fname%>
-    <%=officer_details.lname%>'s Profile</h4>
+    <%=officer_details.lname%>'s Record</h4>
 </div>
 <div class="container-fluid">
+  <% if (!Array.isArray(notif) || !notif.length) { %>
+  <div class="mb-4">
+    <% for (var key in notif) { %>
+    <%  if (notif[key] != null) { %>
+    <div class="alert alert-warning alert-dismissible fade show mx-auto col-11 col-sm-6 mb-1" role="alert">
+      <%= notif[key] %>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <% } %>
+    <% } %>
+  </div>
+  <% } %>
 
   <div class="card d-flex mx-auto text-left" style="margin-bottom: 90px">
     <div class="card-header text-left">
@@ -381,16 +228,16 @@ if (officer_details.certification !== undefined) {
       <h5 class="card-title text-center">Certified On:</h5>
       <div class="row mb-2">
         <div class="col-sm-4">
-          <label class="font-weight-bold mb-0" for="general_screener">General Screener:</label><br />
+          <label class="font-weight-bold mb-0" for="access_control">Access Control:</label><br />
           <div class="input-group mb-3">
-            <input type="text" class="form-control datepicker" name="general_screener" id="general_screener" value="<%=UNIXConverter(gs_date)%>"
+            <input type="text" class="form-control datepicker" name="access_control" id="access_control" value="<%=ac_date%>"
               readonly>
           </div>
         </div>
         <div class="col-sm-4">
-          <label class="font-weight-bold mb-0" for="access_control">Access Control:</label><br />
+          <label class="font-weight-bold mb-0" for="general_screener">General Screener:</label><br />
           <div class="input-group mb-3">
-            <input type="text" class="form-control datepicker" name="access_control" id="access_control" value="<%=UNIXConverter(ac_date)%>"
+            <input type="text" class="form-control datepicker" name="general_screener" id="general_screener" value="<%=gs_date%>"
               readonly>
           </div>
         </div>
@@ -400,21 +247,21 @@ if (officer_details.certification !== undefined) {
         <div class="col-sm-4">
           <label class="font-weight-bold mb-0" for="xray_hbs">X-Ray HBS:</label><br />
           <div class="input-group mb-3">
-            <input type="text" class="form-control datepicker" name="xray_hbs" id="xray_hbs" value="<%=UNIXConverter(xray_hbs_date)%>"
+            <input type="text" class="form-control datepicker" name="xray_hbs" id="xray_hbs" value="<%=xray_hbs_date%>"
               readonly>
           </div>
         </div>
         <div class="col-sm-4">
           <label class="font-weight-bold mb-0" for="xray_pb">X-Ray Pre-Board:</label><br />
           <div class="input-group mb-3">
-            <input type="text" class="form-control datepicker" name="xray_pb" id="xray_pb" value="<%=UNIXConverter(xray_pb_date)%>"
+            <input type="text" class="form-control datepicker" name="xray_pb" id="xray_pb" value="<%=xray_pb_date%>"
               readonly>
           </div>
         </div>
         <div class="col-sm-4">
           <label class="font-weight-bold mb-0" for="xray_cargo">X-Ray Cargo:</label><br />
           <div class="input-group mb-0">
-            <input type="text" class="form-control datepicker" name="xray_cargo" id="xray_cargo" value="<%=UNIXConverter(xray_cargo_date)%>"
+            <input type="text" class="form-control datepicker" name="xray_cargo" id="xray_cargo" value="<%=xray_cargo_date%>"
               readonly>
           </div>
         </div>
@@ -426,29 +273,6 @@ if (officer_details.certification !== undefined) {
     </div>
   </div>
 
-  <% if('undefined'!==typeof alertArr || alertArr!=='' || alertArr!==null) { %>
-  <% if
-      (alertArr.ac) { %>
-  <script>alert('Officer\'s Access Control Certificate expiring soon!')</script>
-  <% } %>
-  <% if
-      (alertArr.gs) { %>
-  <script>alert('Officer\'s General Screener Certificate expiring soon!');</script>
-  <% } %>
-  <% if
-      (alertArr.xray_cargo) { %>
-  <script>alert('Officer\'s X-Ray-Cargo Certificate expiring soon!');</script>
-  <% } %>
-  <% if
-      (alertArr.xray_hbs) { %>
-  <script>alert('Officer\'s X-Ray-HBS Certificate expiring soon!');</script>
-  <% } %>
-
-  <% if
-      (alertArr.xray_pb) { %>
-  <script>alert('Officer\'s X-Ray-Pre-Board Certificate expiring soon!');</script>
-  <% } %>
-  <% } %>
   <% } %>
 
   <% include partials/footer %>

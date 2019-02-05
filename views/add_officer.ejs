@@ -1,30 +1,6 @@
 <% include partials/header %>
 <% include partials/nav %>
-<%
-function UNIXConverter(UNIX_timestamp){
-  try {
-    if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
-      return "-";
-    }
-    var a = new Date(UNIX_timestamp * 1000);
-    var year = a.getFullYear();
-    var month = a.getMonth() + 1;
-    var date = a.getDate();
-    if (month < 10) {
-      month = "0" + month;
-    }
-    if (date < 10) {
-      date = "0" + date;
-    }
-    var time = date + '/' + month + '/' + year;
-    return time;
-  } catch (error) {
-    return "";
-  }
-}
-
-var message;
-%>
+<% var message; %>
 <div class="container-fluid">
   <h3 class="my-4">
     <% if (message != null) { %>Message:
@@ -53,7 +29,7 @@ var message;
           <div class="col-sm-4">
             <label class="font-weight-bold mb-0" for="nric">NRIC:</label><br />
             <div class="input-group mb-3">
-              <input type="text" class="form-control" name="nric" id="nric" value="" required>
+              <input type="text" class="form-control nric_textbox" name="nric" id="nric" value="" required>
             </div>
           </div>
         </div>

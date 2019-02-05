@@ -1,179 +1,166 @@
 <% include partials/header %>
 <% include partials/nav %>
-
-<%
-function UNIXConverter(UNIX_timestamp){
-  try {
-    if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
-      return "-";
-    }
-    var a = new Date(UNIX_timestamp * 1000);
-    var year = a.getFullYear();
-    var month = a.getMonth() + 1;
-    var date = a.getDate();
-    if (month < 10) {
-      month = "0" + month;
-    }
-    if (date < 10) {
-      date = "0" + date;
-    }
-    var time = date + '/' + month + '/' + year;
-    return time;
-  } catch (error) {
-    return "";
-  }
-}
+<% 
+var data = JSON.stringify(st_details);
+var nric = JSON.stringify(officer_details.nric);
 %>
+<script>
+  $(function () {
+    var data = <%- data %>;
+    var nric = <%- nric %>;
+    $("#stTable").bootstrapTable({ data: data });
+    $("#stTable").on('click-cell.bs.table', function (field, columnName, valueClicked, data) {
+      window.location.href = "/security_test/" + nric + "/" + data.key;
+    });
+  })
+</script>
 
 <% if (user.role == 1) { %>
 <div class="container-fluid">
-  <h4 class="mt-4">Security Test -
-    <%=officer_details.nric%>
-  </h4>
-  <hr>
-
-  <ul class="nav nav-tabs mb-4">
-    <li class="nav-item">
-      <a class="nav-link" href="/access_control/<%=officer_details.nric%>">AC</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="/general_screener/<%=officer_details.nric%>">GS</a>
-    </li>
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-        aria-expanded="false">X-Ray</a>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" href="/xray_hbs/<%=officer_details.nric%>">X-Ray HBS</a>
-        <a class="dropdown-item" href="/xray_pb/<%=officer_details.nric%>">X-Ray Pre-Board</a>
-        <a class="dropdown-item" href="/xray_cargo/<%=officer_details.nric%>">X-Ray Cargo</a>
-      </div>
-    </li>
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-        aria-expanded="false">ST & SB</a>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">Security Test</a>
-        <a class="dropdown-item" href="/security_breach/<%=officer_details.nric%>">Security Breach</a>
-      </div>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="/others/<%=officer_details.nric%>">Others</a>
-    </li>
-  </ul>
-
-  <table class="table table-hover table-bordered table-striped table-responsive-sm col-sm-10 mx-auto p-0 mb-4">
-    <thead class="thead-light">
-      <tr>
-        <th>Test Name</th>
-        <th>Status</th>
-        <th>Location</th>
-        <th>Date</th>
-        <th>Time</th>
-        <th>Mode</th>
-      </tr>
-    </thead>
-    <% if (st_details == null) { %>
-    <tr>
-      <td class="mx-auto text-danger" colspan="5">Officer does not have any existing security test records.</td>
-    </tr>
-    <% } %>
-
-    <% for (var security_test_id in st_details) { %>
-    <% var status; %>
-    <tr class='clickable-row' data-href='/security_test/<%=officer_details.nric%>/<%=security_test_id%>'>
-      <td>
-        <%=st_details[security_test_id].st_name%>
-      </td>
-      <% if (st_details[security_test_id].overall_status == "1") { %>
-      <td>
-        PASS
-      </td>
-      <% } else { %>
-      <td class="text-danger">
-        FAIL
-      </td>
+  <% if (notif != null) { %>
+  <% if('undefined'!== typeof alert || alert !== '' || alert !== null) { %>
+  <% if (alert) { %>
+  <div class="alert alert-success alert-dismissible fade show mx-auto col-11 col-sm-6 mt-3" role="alert">
+    <% } else { %>
+    <div class="alert alert-danger alert-dismissible fade show mx-auto col-11 col-sm-6 mt-3" role="alert">
       <% } %>
-      <td>
-        <%=st_details[security_test_id].st_location%>
-      </td>
-      <td>
-        <%=UNIXConverter(st_details[security_test_id].st_date)%>
-      </td>
-      <td>
-        <%=st_details[security_test_id].st_time%>
-      </td>
-      <td>
-        <%=st_details[security_test_id].st_mode%>
-      </td>
-    </tr>
+      <%=notif%>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
     <% } %>
-  </table>
-
-  <div class="mb-4 col-11 mx-auto">
-    <% if (user.role == 1) { %>
-    <a href="/security_test/new/<%=officer_details.nric%>" class="btn btn-primary col-sm-6">Add New Record</a>
     <% } %>
 
+    <h4 class="mt-4">Security Test -
+      <%=officer_details.nric%>
+    </h4>
+    <hr>
+
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link" href="/access_control/<%=officer_details.nric%>">AC</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/general_screener/<%=officer_details.nric%>">GS</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+          aria-expanded="false">X-Ray</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="/xray_hbs/<%=officer_details.nric%>">X-Ray HBS</a>
+          <a class="dropdown-item" href="/xray_pb/<%=officer_details.nric%>">X-Ray Pre-Board</a>
+          <a class="dropdown-item" href="/xray_cargo/<%=officer_details.nric%>">X-Ray Cargo</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+          aria-expanded="false">ST & SB</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="#">Security Test</a>
+          <a class="dropdown-item" href="/security_breach/<%=officer_details.nric%>">Security Breach</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/others/<%=officer_details.nric%>">Others</a>
+      </li>
+    </ul>
+
+    <table class="table table-hover table-bordered table-striped mx-auto" id="stTable" data-search="true"
+      data-pagination="true">
+      <thead class="thead-light">
+        <tr>
+          <th data-field="st_name" data-sortable="true">Test Name</th>
+          <th data-field="overall_status" data-sortable="true">Status</th>
+          <th data-field="st_location" data-sortable="true">Location</th>
+          <th data-field="st_date" data-sortable="true">Date</th>
+          <th data-field="st_time" data-sortable="true">Time</th>
+          <th data-field="st_mode" data-sortable="true">Mode</th>
+        </tr>
+      </thead>
+    </table>
+
+    <div class="mb-4 col-11 mx-auto">
+      <a href="/security_test/new/<%=officer_details.nric%>" class="btn btn-primary col-sm-6"><i class="fas fa-plus-circle"></i>&nbsp;&nbsp;Add
+        New Record</a>
+    </div>
   </div>
-</div>
 
-<% } else if (user.role == 2 || user.role == 3) { %>
-<div class="title">
-  <h4>
-    Security Test -
-    <%=officer_details.nric%>
-  </h4>
-</div>
-<div class="container-fluid">
-  <% if (user.role == 2) { %>
-  <div class="col-11 mx-auto">
-    <a href="/security_test/new/<%=officer_details.nric%>" class="btn btn-primary col-sm-6"><i class="fas fa-plus-circle"></i>
-      &nbsp;Add New Record</a>
+
+
+  <% } else if (user.role == 2 || user.role == 3) { %>
+  <div class="title d-flex">
+      <span class="justify-content-start align-self-center position-absolute pl-3" style="font-size: 2rem;">
+        <a href="/officers/<%=officer_details.nric%>" class="backBtn"><i class="fas fa-angle-left"></i></a>
+      </span>
+    <h4 class="mx-auto mt-2" style="font-size: 22px!important">
+      Security Test -
+      <%=officer_details.nric%>
+    </h4>
   </div>
-  <hr>
-  <% } %>
-
-
-  <% if (st_details == null) { %>
-  <p class="text-danger">Officer does not have any existing security test records.</p>
-  <% } %>
-
-  <% for (var security_test_id in st_details) { %>
-  <% var status; %>
-  <a href="/security_test/<%=officer_details.nric%>/<%=security_test_id%>" class="card bg-light mb-3 text-left mx-auto">
-    <div class="card-header font-weight-bold d-flex">
-      <div class="mr-auto">
-        Test Name:
-        <%=st_details[security_test_id].st_name%>
-      </div>
-      <% if (st_details[security_test_id].overall_status == "1") { %>
-      <span class="badge badge-success pt-1">Pass</span>
+  <div class="container-fluid" style="margin-bottom:90px">
+    <% if (notif != null) { %>
+    <% if('undefined'!== typeof alert || alert !== '' || alert !== null) { %>
+    <% if (alert) { %>
+    <div class="alert alert-success alert-dismissible fade show mx-auto col-11 col-sm-6 mt-3" role="alert">
       <% } else { %>
-      <span class="badge badge-danger pt-1">Fail</span>
-      <% } %>
-    </div>
-    <div class="card-body py-2 px-3">
-
-      <div class="card-text">
-        <p class="mb-0">Location:
-          <%=st_details[security_test_id].st_location%>
-        </p>
-        <p class="mb-0">Date:
-          <%=UNIXConverter(st_details[security_test_id].st_date)%>
-        </p>
-        <p class="mb-0">Time:
-          <%=st_details[security_test_id].st_time%>
-        </p>
-        <p class="mb-0">Mode:
-          <%=st_details[security_test_id].st_mode%>
-        </p>
-
+      <div class="alert alert-danger alert-dismissible fade show mx-auto col-11 col-sm-6 mt-3" role="alert">
+        <% } %>
+        <%=notif%>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
+      <% } %>
+      <% } %>
+      <% if (user.role == 2) { %>
+      <div class="col-11 mx-auto">
+        <a href="/security_test/new/<%=officer_details.nric%>" class="btn btn-primary col-sm-6"><i class="fas fa-plus-circle"></i>
+          &nbsp;Add New Record</a>
+      </div>
+      <hr>
+      <% } %>
+
+
+      <% if (st_details == null) { %>
+      <p class="text-danger">Officer does not have any existing security test records.</p>
+      <% } %>
+
+      <% st_details.forEach(item => { %>
+      <a href="/security_test/<%=officer_details.nric%>/<%=item.key%>" class="card bg-light mb-3 text-left mx-auto">
+        <div class="card-header font-weight-bold d-flex">
+          <div class="mr-auto">
+            Test Name:
+            <%=item.st_name%>
+          </div>
+          <% if (item.overall_status == "PASS") { %>
+          <span class="badge badge-success pt-1">Pass</span>
+          <% } else if (item.overall_status == "FAIL") { %>
+          <span class="badge badge-danger pt-1">Fail</span>
+          <% } %>
+        </div>
+        <div class="card-body py-2 px-3">
+
+          <div class="card-text">
+            <p class="mb-0">Location:
+              <%=item.st_location%>
+            </p>
+            <p class="mb-0">Date:
+              <%=item.st_date%>
+            </p>
+            <p class="mb-0">Time:
+              <%=item.st_time%>
+            </p>
+            <p class="mb-0">Mode:
+              <%=item.st_mode%>
+            </p>
+
+          </div>
+        </div>
+      </a>
+
+      <% }) %>
+
     </div>
-  </a>
-
-  <% } %>
-
-</div>
-<% } %>
-<% include partials/footer %>
+    <% } %>
+    <% include partials/footer %>

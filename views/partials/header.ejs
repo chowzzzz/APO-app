@@ -30,7 +30,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
   <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
     crossorigin="anonymous">
 
   <!-- Bootstrap JS -->
@@ -63,7 +63,6 @@
 
   <!-- Bootstrap table -->
   <link href="https://unpkg.com/bootstrap-table@1.13.3/dist/bootstrap-table.min.css" rel="stylesheet">
-  <script src="https://unpkg.com/bootstrap-table@1.13.3/dist/bootstrap-table.min.js"></script>
 
   <script>
     $(window).on('load', function () {
@@ -83,22 +82,7 @@
         window.location = $(this).data("href");
       });
 
-      /*$("#search_nric").keyup(function () {
-        alert("Test");
-        var value = $(this).val();
-        var patt = new RegExp("^[A-Za-z]");
-
-        if (value.length == 1) {
-          if (!patt.test(value)) {
-            alert(patt.test(value));
-            return false;
-          }
-        } else {
-          alert("length not 1");
-        }
-      });*/
-
-      $("#search_nric").on("keypress", function (e) {
+      $(".nric_textbox").on("keypress", function (e) {
         var value = $(this).val();
         var keypress_value = String.fromCharCode(e.which);
         var patt1 = new RegExp("[A-Za-z]");
@@ -116,27 +100,8 @@
           if (!patt1.test(keypress_value)) {
             e.preventDefault();
           }
-        }
-      });
-
-      $("#nric_textbox").on("keypress", function (e) {
-        var value = $(this).val();
-        var keypress_value = String.fromCharCode(e.which);
-        var patt1 = new RegExp("[A-Za-z]");
-        var patt2 = new RegExp("[0-9]");
-
-        if (value.length == 0) { // FIRST LETTER BEING PRESSED
-          if (!patt1.test(keypress_value)) {
-            e.preventDefault();
-          }
-        } else if (value.length >= 1 && value.length <= 7) {
-          if (!patt2.test(keypress_value)) {
-            e.preventDefault();
-          }
-        } else if (value.length == 8) {
-          if (!patt1.test(keypress_value)) {
-            e.preventDefault();
-          }
+        } else if (value.length == 9) {
+          e.preventDefault();
         }
       });
 
@@ -146,10 +111,6 @@
         } else {
           e.preventDefault();
         }
-      });
-
-      $("#search_nric").autocomplete({
-        source: availableTags
       });
     });
 

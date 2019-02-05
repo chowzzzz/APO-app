@@ -1,65 +1,51 @@
 <% include partials/header %>
 <% include partials/nav %>
-
-<%
-
-var roles = ["Administrator", "User", "Read-only User"];
-
-function UNIXConverter(UNIX_timestamp){
-  try {
-    if (UNIX_timestamp == 0 || isNaN(UNIX_timestamp)) {
-      return "-";
-    }
-    var a = new Date(UNIX_timestamp * 1000);
-    var year = a.getFullYear();
-    var month = a.getMonth() + 1;
-    var date = a.getDate();
-    if (month < 10) {
-      month = "0" + month;
-    }
-    if (date < 10) {
-      date = "0" + date;
-    }
-    var time = date + '/' + month + '/' + year;
-    return time;
-  } catch (error) {
-    return "";
-  }
-}
-%>
+<% var data = JSON.stringify(admin_details); %>
+<script>
+  $(function () {
+    var data = <%- data %>;
+    $("#AdminTable").bootstrapTable({ data: data });
+    $("#AdminTable").on('click-cell.bs.table', function (field, columnName, valueClicked, data) {
+      window.location.href = "/admin/view/" + data.username + "/";
+    });
+  })
+</script>
 <div class="container-fluid">
-
-  <h4 class="mt-4">Administration</h4>
-  <hr>
-  <table class="table table-hover table-bordered table-striped table-responsive-sm col-sm-10 mx-auto p-0">
-    <thead class="thead-light">
-      <tr>
-        <th>Name</th>
-        <th>NRIC</th>
-        <th>Role</th>
-      </tr>
-    </thead>
-    <% for (var admin_id in admin_details) { %>
-    <tr class='clickable-row' data-href='/admin/view/<%=admin_id%>'>
-      <td>
-        <%=admin_details[admin_id].fname%>
-        <%=admin_details[admin_id].lname%>
-      </td>
-      <td>
-        <%=admin_details[admin_id].nric%>
-      </td>
-      <td>
-        <%=roles[admin_details[admin_id].role - 1]%>
-      </td>
-    </tr>
+  <% if (notif != null) { %>
+  <% if('undefined'!== typeof alert || alert !== '' || alert !== null) { %>
+  <% if (alert) { %>
+  <div class="alert alert-success alert-dismissible fade show mx-auto col-11 col-sm-6 mt-3" role="alert">
+    <% } else { %>
+    <div class="alert alert-danger alert-dismissible fade show mx-auto col-11 col-sm-6 mt-3" role="alert">
+      <% } %>
+      <%=notif%>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
     <% } %>
-  </table>
-
-  <div class="mb-4 col-11 mx-auto">
-    <% if (user.role == 1) { %>
-    <a href="/admin/new/" class="btn btn-primary col-sm-6">Add New Admin</a>
     <% } %>
 
-  </div>
+    <h4 class="mt-4">Administration</h4>
+    <hr>
 
-  <% include partials/footer %>
+    <table class="table table-hover table-bordered table-striped mx-auto" id="AdminTable" data-search="true"
+      data-pagination="true">
+      <thead class="thead-light">
+        <tr>
+          <th data-field="name" data-sortable="true">Name</th>
+          <th data-field="nric" data-sortable="true">NRIC</th>
+          <th data-field="role" data-sortable="true">Role</th>
+        </tr>
+      </thead>
+    </table>
+
+    <div class="mb-4 col-11 mx-auto">
+      <% if (user.role == 1) { %>
+      <a href="/admin/new/" class="btn btn-primary col-sm-6"><i class="fas fa-plus-circle"></i>&nbsp;&nbsp;Add New
+        Admin</a>
+      <% } %>
+
+    </div>
+
+    <% include partials/footer %>
