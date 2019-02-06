@@ -89,7 +89,9 @@ var preLoad = function () {
 			'./views/partials/footer.ejs',
 			'./views/partials/header.ejs',
 			'./views/partials/nav.ejs',
-			'/'
+			'./',
+			'./manifest.json',
+			'./sw.js'
 		]);
 	});
 };

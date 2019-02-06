@@ -7,7 +7,7 @@ var flash = require('connect-flash');
 var fileUpload = require('express-fileupload');
 var routes = require('./controllers/routes');
 var firebase = require('./controllers/firebase');
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcrypt-nodejs');
 
 var app = express();
 
