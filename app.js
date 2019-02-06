@@ -1,7 +1,7 @@
 var express = require('express');
 var expressValidator = require('express-validator');
 // var http = require('http');
-// var enforce = require('express-sslify');
+var enforce = require('express-sslify');
 var bodyParser = require('body-parser');
 var passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
 var path = require('path');
@@ -14,7 +14,7 @@ var bcrypt = require('bcrypt-nodejs');
 var app = express();
 
 // ENFORCE HTTPS ON HEROKU
-// app.use(enforce.HTTPS({ trustProtoHeader: true }))
+app.use(enforce.HTTPS({ trustProtoHeader: true }))
 
 // flash
 app.use(flash());
