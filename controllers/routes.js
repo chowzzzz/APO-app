@@ -4,7 +4,7 @@ var passport = require('passport')
 var router = express.Router();
 
 var moment = require('moment');
-var bcrypt = require('bcrypt-nodejs');
+var bcrypt = require('bcryptjs');
 var functions = require('./modules');
 var firebase = require('./firebase');
 var url = require('url');
