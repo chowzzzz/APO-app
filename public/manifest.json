@@ -3,11 +3,11 @@
 	"short_name": "APO",
 	"description": "APOapp description",
 	"background_color": "#00205B",
-	"start_url": "/",
+	"start_url": "./",
 	"display": "standalone",
 	"theme_color": "#00205B",
 	"script": {
-		"start": "http-server -c-1"
+		"start": "https-server -c-1"
 	},
 	"icons": [
 		{
