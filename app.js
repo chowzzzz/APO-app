@@ -1,5 +1,7 @@
 var express = require('express');
 var expressValidator = require('express-validator');
+// var http = require('http');
+var enforce = require('express-sslify');
 var bodyParser = require('body-parser');
 var passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
 var path = require('path');
@@ -10,6 +12,9 @@ var firebase = require('./controllers/firebase');
 var bcrypt = require('bcrypt-nodejs');
 
 var app = express();
+
+// ENFORCE HTTPS ON HEROKU
+app.use(enforce.HTTPS({ trustProtoHeader: true }))
 
 // flash
 app.use(flash());
@@ -74,5 +79,9 @@ app.use('/', routes);
 const port = process.env.PORT || 3000
 
 app.listen(port, function () {
-  console.log('Server started on port ', port);
+  console.log('Server started on port', port);
 });
+
+// http.createServer(app).listen(app.get('port'), function() {
+//   console.log('Express server listening on port ' + app.get('port'));
+// });
