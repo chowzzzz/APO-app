@@ -3,7 +3,7 @@
 	"short_name": "APO",
 	"description": "APOapp description",
 	"background_color": "#00205B",
-	"start_url": "./",
+	"start_url": "./login",
 	"display": "standalone",
 	"theme_color": "#00205B",
 	"script": {
