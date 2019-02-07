@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // SET STATIC PATH
 app.use(express.static(path.join(__dirname, 'public')));
-app.use("/uploads", express.static(__dirname + "/public/uploads"));
+app.use("/uploads", express.static(__dirname + "/uploads"));
 
 // EXPRESS VALIDATOR
 app.use(expressValidator());

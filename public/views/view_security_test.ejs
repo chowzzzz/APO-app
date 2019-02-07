@@ -227,7 +227,7 @@
           <div class="col-sm-6">
             <label class="font-weight-bold mb-0" for="st_image">Image:</label><br />
             <div class="input-group mb-3">
-              <img src="/uploads/<%=st_details.st_image %>" class="img-fluid">
+              <img src="/uploads/<%=st_details.st_image %>" class="img-fluid" style="height:100%;width:100%">
               <input type="file" name="st_image" />
             </div>
           </div>
@@ -457,7 +457,7 @@
           <div class="col-sm-6">
             <label class="font-weight-bold mb-0" for="st_image">Image:</label><br />
             <div class="input-group mb-3">
-              <img src="/uploads/<%=st_details.st_image %>" class="img-fluid">
+              <img src="/uploads/<%=st_details.st_image %>" class="img-fluid" style="height:100%;width:100%">
               <% if (user.role==2) { %>
               <!-- <input type="file" accept="image/*" name="st_image" capture> -->
               <input type="file" name="st_image" />
