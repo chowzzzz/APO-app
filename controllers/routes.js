@@ -1622,7 +1622,7 @@ router.get('/security_test/:nric', functions.verifyAdmin, functions.getEachOffic
         item.key = keys[i];
       });
     } else {
-      var st_details = [];
+      var st_details = null;
     }
     if (req.query.valid == "new_success") {
       notif = "New record has been added successfully."
@@ -1882,7 +1882,7 @@ router.get('/security_breach/:nric', functions.verifyAdmin, functions.getEachOff
         item.key = keys[i];
       });
     } else {
-      var sb_details = [];
+      var sb_details = null;
     }
     if (req.query.valid == "new_success") {
       notif = "New record has been added successfully."

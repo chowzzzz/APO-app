@@ -90,9 +90,9 @@ var nric = JSON.stringify(officer_details.nric);
 
   <% } else if (user.role == 2 || user.role == 3) { %>
   <div class="title d-flex">
-      <span class="justify-content-start align-self-center position-absolute pl-3" style="font-size: 2rem;">
-        <a href="/officers/<%=officer_details.nric%>" class="backBtn"><i class="fas fa-angle-left"></i></a>
-      </span>
+    <span class="justify-content-start align-self-center position-absolute pl-3" style="font-size: 2rem;">
+      <a href="/officers/<%=officer_details.nric%>" class="backBtn"><i class="fas fa-angle-left"></i></a>
+    </span>
     <h4 class="mx-auto mt-2" style="font-size: 22px!important">
       Security Test -
       <%=officer_details.nric%>
@@ -124,7 +124,7 @@ var nric = JSON.stringify(officer_details.nric);
 
       <% if (st_details == null) { %>
       <p class="text-danger">Officer does not have any existing security test records.</p>
-      <% } %>
+      <% } else { %>
 
       <% st_details.forEach(item => { %>
       <a href="/security_test/<%=officer_details.nric%>/<%=item.key%>" class="card bg-light mb-3 text-left mx-auto">
@@ -160,6 +160,7 @@ var nric = JSON.stringify(officer_details.nric);
       </a>
 
       <% }) %>
+      <% } %>
 
     </div>
     <% } %>
