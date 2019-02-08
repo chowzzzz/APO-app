@@ -2302,22 +2302,22 @@ router.get('/admin', functions.verifyAdmin, functions.getAllAdmin, functions.isA
       var admin_details = [];
     }
     if (req.query.valid == "new_success") {
-      notif = "New admin has been added successfully."
+      notif = "New user has been added successfully."
       alert = true;
     } else if (req.query.valid == "new_fail") {
-      notif = "Failed to add new admin."
+      notif = "Failed to add new user."
       alert = false;
     } else if (req.query.valid == "update_success") {
-      notif = "Admin's details updated successfully."
+      notif = "User's details updated successfully."
       alert = true;
     } else if (req.query.valid == "update_fail") {
-      notif = "Failed to update admin's details."
+      notif = "Failed to update user's details."
       alert = false;
     } else if (req.query.valid == "delete_success") {
-      notif = "Admin's record deleted."
+      notif = "User's record deleted."
       alert = false;
     } else if (req.query.valid == "delete_fail") {
-      notif = "Failed to delete admin's record."
+      notif = "Failed to delete user's record."
       alert = false;
     } else {
       notif = null;
