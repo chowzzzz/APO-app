@@ -122,7 +122,7 @@ var nric = JSON.stringify(officer_details.nric);
       <% } %>
 
 
-      <% if (st_details == null) { %>
+      <% if (st_details === undefined || st_details.length == 0) { %>
       <p class="text-danger">Officer does not have any existing security test records.</p>
       <% } else { %>
 
