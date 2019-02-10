@@ -92,7 +92,7 @@
       <div class="card-footer">
         <% if (user.role == 1) { %>
         <button type="submit" class="btn btn-primary btn-block" name="edituser_btn">Update</button>
-        <% if (admin_count > 1) { %>
+        <% if (admin_count == 1) { %> 
         <button type="submit" class="btn btn-danger btn-block" name="deleteuser_btn">Delete</button>
         <% } %>
         <% } %>
